@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ByteMePC.io — Dark Forge · All Screens</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:        #050810;
+    --bg-2:      #0a1020;
+    --line:      rgba(0,212,255,0.15);
+    --line-2:    rgba(0,212,255,0.08);
+    --cyan:      #00d4ff;
+    --purple:    #a855f7;
+    --red:       #ff4655;
+    --green:     #22d3a8;
+    --text:      #ffffff;
+    --text-dim:  #8ea3bd;
+    --text-mute: #5577aa;
+    --text-low:  #445566;
+    --grad:      linear-gradient(90deg, #00d4ff, #a855f7);
+    --grad-3:    linear-gradient(90deg, #00d4ff 0%, #a855f7 50%, #ff4655 100%);
+    --clip:      polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  /* Page background grid + glow */
+  body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,180,255,0.10) 0%, transparent 60%),
+      linear-gradient(rgba(0,212,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.035) 1px, transparent 1px);
+    background-size: auto, 60px 60px, 60px 60px;
+    background-color: var(--bg);
+  }
+
+  /* ─── Top screen-jump nav ─────────────────────────── */
+  .jump {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    background: rgba(5,8,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .jump-title { font-size: 11px; letter-spacing: 2px; color: var(--text-mute); text-transform: uppercase; margin-right: 8px; }
+  .jump a {
+    padding: 6px 12px; font-size: 12px; font-weight: 700; text-decoration: none;
+    color: var(--cyan); border: 1px solid rgba(0,212,255,0.35);
+    background: rgba(0,212,255,0.04); border-radius: 3px;
+    transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .jump a:hover { background: var(--cyan); color: var(--bg); }
+
+  /* ─── App chrome (shared) ─────────────────────────── */
+  .screen {
+    border-bottom: 2px solid rgba(0,212,255,0.10);
+    padding-bottom: 60px;
+  }
+  .screen-label {
+    text-align: center; padding: 14px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #445;
+  }
+
+  .app-nav {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 60px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(5,8,16,0.6);
+  }
+  .logo {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+    background: var(--grad);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .logo span { color: #fff; -webkit-text-fill-color: #fff; }
+  .navlinks { display: flex; gap: 28px; list-style: none; }
+  .navlinks a {
+    color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.5px; transition: color 0.2s;
+  }
+  .navlinks a:hover { color: var(--cyan); }
+  .navlinks a.active { color: var(--cyan); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-cta {
+    padding: 9px 22px; background: transparent;
+    border: 1px solid var(--cyan); color: var(--cyan);
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+    cursor: pointer; border-radius: 3px; clip-path: var(--clip);
+  }
+  .nav-cta.primary {
+    background: var(--grad); color: var(--bg); border: none;
+  }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--grad);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: var(--bg); font-size: 13px;
+    cursor: pointer; border: 2px solid rgba(0,212,255,0.4);
+  }
+
+  /* Generic widgets */
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 14px; border: 1px solid rgba(0,212,255,0.4);
+    border-radius: 2px;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan);
+    background: rgba(0,212,255,0.06);
+  }
+  .badge::before { content:''; width:6px; height:6px; background: var(--cyan); border-radius:50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .btn-primary {
+    padding: 12px 28px; background: var(--grad); color: var(--bg);
+    font-weight: 800; font-size: 14px; letter-spacing: 0.5px;
+    border: none; cursor: pointer; border-radius: 3px; clip-path: var(--clip);
+  }
+  .btn-ghost {
+    padding: 12px 28px; background: transparent;
+    border: 1px solid rgba(255,255,255,0.2); color: #aaa;
+    font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 3px;
+  }
+  .btn-ghost:hover { color: #fff; border-color: var(--cyan); }
+  .btn-danger {
+    padding: 10px 22px; background: transparent;
+    border: 1px solid rgba(255,70,85,0.5); color: var(--red);
+    font-weight: 700; font-size: 13px; cursor: pointer; border-radius: 3px;
+  }
+
+  .card {
+    background: rgba(10,18,32,0.6);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+
+  .field-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mute); margin-bottom: 8px; display: block; }
+  .input, .select {
+    width: 100%; padding: 11px 14px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--line);
+    color: var(--text); font-size: 14px;
+    border-radius: 3px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .input:focus, .select:focus { border-color: var(--cyan); }
+
+  .section-title {
+    font-size: 24px; font-weight: 900; letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .section-sub { font-size: 13px; color: var(--text-mute); margin-bottom: 24px; }
+
+  .h-tag {
+    display: inline-block; padding: 3px 8px;
+    background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25);
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--cyan); border-radius: 2px;
+  }
+  .h-tag.warn { background: rgba(255,70,85,0.08); border-color: rgba(255,70,85,0.35); color: var(--red); }
+  .h-tag.ok   { background: rgba(34,211,168,0.08); border-color: rgba(34,211,168,0.35); color: var(--green); }
+  .h-tag.purp { background: rgba(168,85,247,0.08); border-color: rgba(168,85,247,0.35); color: var(--purple); }
+
+  .price { font-weight: 900; color: var(--cyan); font-size: 16px; }
+  .price.big { font-size: 28px; letter-spacing: -1px; }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN 01 — LANDING / HOME
+  ════════════════════════════════════════════════════ */
+  .hero {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: 80px 40px 50px;
+  }
+  .hero .badge { margin-bottom: 28px; }
+  .hero h1 {
+    font-size: 72px; font-weight: 900; line-height: 1; letter-spacing: -2px;
+  }
+  .hero h1 .l1 { color: #fff; display: block; }
+  .hero h1 .l2 {
+    display: block;
+    background: var(--grad-3);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 18px; color: var(--text-mute); max-width: 560px; line-height: 1.6;
+    margin: 22px 0 40px;
+  }
+  .hero .ctas { display: flex; gap: 14px; }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 0;
+    margin: 50px 60px 0;
+    border: 1px solid var(--line); border-radius: 4px; overflow: hidden;
+    background: rgba(0,212,255,0.03);
+  }
+  .stat { padding: 24px; text-align: center; border-right: 1px solid var(--line); }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-size: 32px; font-weight: 900; letter-spacing: -1px;
+    background: var(--grad);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+
+  .features3 {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    margin: 1px 60px 0;
+    background: var(--line);
+  }
+  .feat-card { background: var(--bg); padding: 32px; transition: background 0.3s; }
+  .feat-card:hover { background: rgba(0,212,255,0.05); }
+  .feat-icon {
+    width: 40px; height: 40px; margin-bottom: 14px;
+    border: 1px solid rgba(0,212,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  }
+  .feat-card h3 { font-size: 16px; color: #cdd; margin-bottom: 8px; }
+  .feat-card p { font-size: 13px; color: var(--text-low); line-height: 1.6; }
+
+  /* ════════════════════════════════════════════════════
+     AUTH SCREENS (Sign In / Sign Up)
+  ════════════════════════════════════════════════════ */
+  .auth-wrap {
+    display: flex; align-items: center; justify-content: center;
+    padding: 80px 24px;
+  }
+  .auth-card {
+    width: 100%; max-width: 440px;
+    padding: 40px;
+    background: rgba(10,18,32,0.75);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    position: relative;
+  }
+  .auth-card::before {
+    content: ''; position: absolute; top:-1px; left: 0; right: 0; height: 2px;
+    background: var(--grad); border-radius: 4px 4px 0 0;
+  }
+  .auth-card h2 {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .auth-card .sub { font-size: 13px; color: var(--text-mute); margin-bottom: 28px; }
+  .form-row { margin-bottom: 18px; }
+  .auth-btn { width: 100%; margin-top: 8px; }
+  .auth-foot { text-align: center; margin-top: 22px; font-size: 13px; color: var(--text-mute); }
+  .auth-foot a { color: var(--cyan); text-decoration: none; font-weight: 700; }
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 22px 0; color: var(--text-low); font-size: 11px; letter-spacing: 2px;
+  }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--line); }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — BROWSE PARTS CATALOG
+  ════════════════════════════════════════════════════ */
+  .page { padding: 36px 60px; }
+  .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+
+  .tabs {
+    display: flex; gap: 0; margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tab {
+    padding: 12px 22px; font-size: 13px; font-weight: 700;
+    color: var(--text-mute); cursor: pointer;
+    text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .tab:hover:not(.active) { color: #cdd; }
+
+  .catalog {
+    display: grid; grid-template-columns: 260px 1fr; gap: 24px;
+  }
+  .filters {
+    background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line);
+    border-radius: 4px; padding: 20px;
+    height: fit-content;
+  }
+  .filters h4 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mute); margin-bottom: 14px; }
+  .filter-group { margin-bottom: 22px; }
+  .filter-group label { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; color: #ccd; cursor: pointer; }
+  .filter-group input[type=checkbox] { accent-color: var(--cyan); }
+
+  .range {
+    display: flex; gap: 8px;
+  }
+  .range input { flex: 1; padding: 8px; font-size: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--line); color: #fff; border-radius: 2px; }
+
+  .parts-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .part-card {
+    background: rgba(10,18,32,0.6);
+    border: 1px solid var(--line);
+    border-radius: 4px; padding: 18px;
+    cursor: pointer; transition: all 0.2s;
+    position: relative;
+  }
+  .part-card:hover { border-color: var(--cyan); transform: translateY(-2px); }
+  .part-card .pin {
+    position: absolute; top: 12px; right: 12px;
+    width: 28px; height: 28px;
+    background: rgba(0,0,0,0.4); border: 1px solid var(--line);
+    border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; cursor: pointer;
+  }
+  .part-card.pinned .pin { background: rgba(168,85,247,0.15); border-color: var(--purple); color: var(--purple); }
+  .part-img {
+    height: 120px; background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(168,85,247,0.08));
+    border: 1px solid var(--line-2); border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; margin-bottom: 14px; color: var(--text-mute);
+  }
+  .part-card h4 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .part-spec { font-size: 12px; color: var(--text-mute); margin-bottom: 10px; line-height: 1.5; }
+  .part-foot { display: flex; justify-content: space-between; align-items: center; }
+
+  .search-bar {
+    display: flex; gap: 12px; margin-bottom: 24px;
+  }
+  .search-bar .input { flex: 1; }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — PART DETAIL
+  ════════════════════════════════════════════════════ */
+  .breadcrumb { font-size: 12px; color: var(--text-mute); margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase; }
+  .breadcrumb a { color: var(--cyan); text-decoration: none; }
+  .breadcrumb span { color: var(--text-low); margin: 0 8px; }
+
+  .part-detail {
+    display: grid; grid-template-columns: 420px 1fr; gap: 32px;
+  }
+  .detail-hero {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(168,85,247,0.06));
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 120px; color: var(--text-mute);
+  }
+  .detail-info h1 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; line-height: 1.1; }
+  .detail-info .brand { font-size: 13px; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .detail-info .price.big { margin: 18px 0 22px; display: block; }
+  .detail-actions { display: flex; gap: 10px; margin-bottom: 28px; }
+
+  .spec-table {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .spec-row {
+    display: grid; grid-template-columns: 180px 1fr;
+    border-bottom: 1px solid var(--line-2);
+    font-size: 13px;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row dt {
+    background: rgba(0,212,255,0.04);
+    padding: 11px 16px; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: 1px; font-size: 11px;
+  }
+  .spec-row dd { padding: 11px 16px; color: #fff; }
+
+  .ports {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+  }
+
+  .compat-section {
+    margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line);
+  }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — MANUAL PC BUILDER
+  ════════════════════════════════════════════════════ */
+  .builder {
+    display: grid; grid-template-columns: 280px 1fr 320px; gap: 24px;
+  }
+  .build-side {
+    background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line);
+    border-radius: 4px; padding: 18px;
+    height: fit-content;
+  }
+  .build-side h4 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mute); margin-bottom: 12px; }
+  .slot-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; border-radius: 3px;
+    margin-bottom: 6px; font-size: 13px; cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .slot-item:hover { background: rgba(0,212,255,0.05); }
+  .slot-item.active { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.3); }
+  .slot-icon { font-size: 18px; width: 24px; text-align: center; }
+  .slot-name { flex: 1; color: #cdd; font-weight: 600; }
+  .slot-status { font-size: 11px; }
+  .slot-status.filled { color: var(--green); }
+  .slot-status.empty { color: var(--text-low); }
+  .slot-status.warn { color: var(--red); }
+
+  .builder-main {
+    background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line);
+    border-radius: 4px; padding: 24px;
+  }
+  .builder-main .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .builder-main h2 { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+  .builder-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .comp-card {
+    background: rgba(5,8,16,0.7);
+    border: 1.5px solid var(--line);
+    border-radius: 3px; padding: 14px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .comp-card:hover { border-color: var(--cyan); }
+  .comp-card.selected {
+    border-color: var(--cyan);
+    background: rgba(0,212,255,0.08);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+  }
+  .comp-card .name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .comp-card .spec { font-size: 11px; color: var(--text-mute); line-height: 1.4; }
+  .comp-card .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+
+  .build-summary {
+    background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line);
+    border-radius: 4px; padding: 20px;
+    height: fit-content;
+    position: sticky; top: 80px;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between;
+    padding: 9px 0; font-size: 13px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .lbl { color: var(--text-mute); }
+  .summary-row .val { color: #fff; font-weight: 600; }
+  .summary-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 0 0; margin-top: 12px;
+    border-top: 2px solid var(--cyan);
+  }
+  .summary-total .lbl { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 2px; }
+
+  .compat-list { margin: 18px 0; }
+  .compat-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; font-size: 12px; color: #cdd;
+  }
+  .compat-row .icon { font-size: 14px; }
+  .compat-row.ok .icon { color: var(--green); }
+  .compat-row.warn .icon { color: var(--red); }
+  .compat-row.pending .icon { color: var(--text-low); }
+
+  .builder-actions { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
+  .builder-actions button { width: 100%; }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — BUDGET AUTO-BUILDER
+  ════════════════════════════════════════════════════ */
+  .budget-hero {
+    background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(168,85,247,0.04));
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 36px;
+    margin-bottom: 24px;
+    display: grid; grid-template-columns: 1fr 360px; gap: 36px; align-items: center;
+  }
+  .budget-hero h2 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; }
+  .budget-hero p { font-size: 14px; color: var(--text-mute); line-height: 1.6; max-width: 480px; }
+  .budget-input-wrap { background: rgba(0,0,0,0.45); border: 1px solid var(--line); border-radius: 3px; padding: 22px; }
+  .budget-input-wrap .field-label { margin-bottom: 12px; }
+  .budget-amount {
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .budget-currency {
+    font-size: 14px; color: var(--cyan); letter-spacing: 2px; font-weight: 700;
+  }
+  .budget-amount input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: #fff; font-size: 36px; font-weight: 900; letter-spacing: -1px;
+  }
+  .budget-presets { display: flex; gap: 8px; margin-top: 14px; }
+  .budget-presets button {
+    flex: 1; padding: 7px 0; background: rgba(0,212,255,0.05);
+    border: 1px solid var(--line); color: var(--cyan); border-radius: 2px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+
+  .lock-list {
+    background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line);
+    border-radius: 4px; padding: 18px; margin-bottom: 24px;
+  }
+  .lock-list h4 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mute); margin-bottom: 12px; }
+  .lock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .lock-cell {
+    padding: 14px; border: 1px dashed var(--line);
+    border-radius: 3px; text-align: center;
+    color: var(--text-mute); font-size: 12px; cursor: pointer;
+  }
+  .lock-cell.locked {
+    border: 1px solid var(--purple); background: rgba(168,85,247,0.08);
+    color: var(--purple); border-style: solid;
+  }
+  .lock-cell .ic { font-size: 22px; display: block; margin-bottom: 6px; }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — MY BUILDS DASHBOARD
+  ════════════════════════════════════════════════════ */
+  .dash-header {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 16px;
+    margin-bottom: 28px;
+  }
+  .dash-stat {
+    padding: 20px; background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line); border-radius: 4px;
+  }
+  .dash-stat .lbl { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mute); margin-bottom: 8px; }
+  .dash-stat .val { font-size: 28px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+
+  .builds-table {
+    background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .builds-table .head, .builds-table .row {
+    display: grid; grid-template-columns: 2fr 1.2fr 1fr 1fr 1fr 160px;
+    align-items: center;
+    padding: 14px 20px; font-size: 13px;
+  }
+  .builds-table .head {
+    background: rgba(0,212,255,0.05);
+    border-bottom: 1px solid var(--line);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-mute);
+  }
+  .builds-table .row {
+    border-bottom: 1px solid var(--line-2);
+    color: #cdd;
+  }
+  .builds-table .row:last-child { border-bottom: none; }
+  .builds-table .row:hover { background: rgba(0,212,255,0.03); }
+  .builds-table .row .name { color: #fff; font-weight: 700; }
+  .row-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 30px; height: 30px; border-radius: 3px;
+    background: rgba(0,0,0,0.4); border: 1px solid var(--line);
+    color: var(--text-mute); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .icon-btn:hover { color: var(--cyan); border-color: var(--cyan); }
+  .icon-btn.danger:hover { color: var(--red); border-color: var(--red); }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — PUBLIC BUILDS FEED
+  ════════════════════════════════════════════════════ */
+  .feed-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  .build-card {
+    background: rgba(10,18,32,0.6);
+    border: 1px solid var(--line);
+    border-radius: 4px; overflow: hidden;
+    cursor: pointer; transition: all 0.2s;
+    position: relative;
+  }
+  .build-card:hover { border-color: var(--cyan); transform: translateY(-2px); }
+  .build-img {
+    height: 160px;
+    background:
+      linear-gradient(135deg, rgba(0,212,255,0.15), rgba(168,85,247,0.10) 60%, transparent),
+      radial-gradient(circle at 70% 40%, rgba(255,70,85,0.2), transparent 50%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 60px; color: var(--text-mute);
+    border-bottom: 1px solid var(--line);
+  }
+  .build-body { padding: 18px; }
+  .build-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-mute); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .build-card h3 { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .build-card .desc { font-size: 13px; color: var(--text-mute); line-height: 1.5; margin-bottom: 12px; }
+  .build-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .build-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 12px; border-top: 1px solid var(--line-2);
+  }
+  .build-foot .meta { font-size: 11px; color: var(--text-mute); display: flex; gap: 12px; }
+  .heart {
+    width: 32px; height: 32px; border-radius: 3px;
+    background: rgba(0,0,0,0.4); border: 1px solid var(--line);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; cursor: pointer; color: var(--text-mute);
+  }
+  .heart.fav { color: var(--red); border-color: rgba(255,70,85,0.4); background: rgba(255,70,85,0.06); }
+
+  .feed-controls {
+    display: flex; gap: 12px; margin-bottom: 24px; align-items: center;
+  }
+  .chip {
+    padding: 7px 14px; background: rgba(0,0,0,0.3);
+    border: 1px solid var(--line); border-radius: 100px;
+    font-size: 12px; color: var(--text-mute); cursor: pointer; font-weight: 600;
+  }
+  .chip.active { background: rgba(0,212,255,0.1); border-color: var(--cyan); color: var(--cyan); }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — BUILD DETAIL (Public view)
+  ════════════════════════════════════════════════════ */
+  .build-hero-wrap {
+    display: grid; grid-template-columns: 1fr 360px; gap: 32px;
+    margin-bottom: 32px;
+  }
+  .build-hero-img {
+    aspect-ratio: 16/10;
+    background:
+      linear-gradient(135deg, rgba(0,212,255,0.2), rgba(168,85,247,0.15) 60%, transparent),
+      radial-gradient(circle at 70% 30%, rgba(255,70,85,0.25), transparent 50%);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 140px; color: var(--text-mute);
+  }
+  .build-info h1 { font-size: 40px; font-weight: 900; letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 14px; }
+  .author-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .mini-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--bg); font-size: 12px; }
+  .author-row .uname { font-size: 13px; color: var(--cyan); font-weight: 700; }
+  .author-row .meta { font-size: 12px; color: var(--text-mute); }
+  .build-info p { color: var(--text-mute); line-height: 1.7; margin-bottom: 22px; font-size: 14px; }
+
+  .parts-list {
+    background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .parts-list .row {
+    display: grid; grid-template-columns: 100px 1fr 160px;
+    padding: 14px 18px; font-size: 14px;
+    border-bottom: 1px solid var(--line-2);
+    align-items: center;
+  }
+  .parts-list .row:last-child { border-bottom: none; }
+  .parts-list .row .tag { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cyan); }
+  .parts-list .row .part-name { color: #fff; font-weight: 600; }
+  .parts-list .row .part-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
+  .parts-list .row .pr { text-align: right; font-weight: 800; color: var(--cyan); }
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — FAVOURITES & PINNED  (use card grids reused)
+  ════════════════════════════════════════════════════ */
+
+  /* ════════════════════════════════════════════════════
+     SCREEN — PROFILE
+  ════════════════════════════════════════════════════ */
+  .profile-head {
+    display: flex; gap: 28px; align-items: center;
+    padding: 32px; background: rgba(10,18,32,0.5);
+    border: 1px solid var(--line); border-radius: 4px;
+    margin-bottom: 28px;
+  }
+  .profile-avatar {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: var(--grad);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px; font-weight: 900; color: var(--bg);
+    border: 3px solid rgba(0,212,255,0.4);
+  }
+  .profile-meta h1 { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .profile-meta .handle { color: var(--cyan); font-size: 14px; font-weight: 700; letter-spacing: 1px; margin-bottom: 14px; }
+  .profile-counts { display: flex; gap: 28px; }
+  .profile-counts div { font-size: 13px; color: var(--text-mute); }
+  .profile-counts strong { font-size: 18px; color: #fff; display: block; }
+  .profile-actions { margin-left: auto; display: flex; gap: 10px; }
+
+  /* small footer for sections */
+  .empty-state {
+    padding: 60px 24px; text-align: center;
+    color: var(--text-mute);
+    border: 1px dashed var(--line); border-radius: 4px;
+  }
+  .empty-state .ic { font-size: 40px; margin-bottom: 12px; }
+
+  @media (max-width: 1100px) {
+    .builder { grid-template-columns: 1fr; }
+    .catalog { grid-template-columns: 1fr; }
+    .part-detail { grid-template-columns: 1fr; }
+    .build-hero-wrap { grid-template-columns: 1fr; }
+    .budget-hero { grid-template-columns: 1fr; }
+    .stats, .features3, .dash-header, .parts-grid, .feed-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── JUMP NAV ─────────────────────────── -->
+<nav class="jump">
+  <span class="jump-title">Dark Forge · screens →</span>
+  <a href="#s-landing">01 Landing</a>
+  <a href="#s-signin">02 Sign In</a>
+  <a href="#s-signup">03 Sign Up</a>
+  <a href="#s-browse">04 Browse</a>
+  <a href="#s-detail">05 Part Detail</a>
+  <a href="#s-builder">06 Builder</a>
+  <a href="#s-budget">07 Budget Auto</a>
+  <a href="#s-mybuilds">08 My Builds</a>
+  <a href="#s-buildview">09 Build View</a>
+  <a href="#s-feed">10 Public Feed</a>
+  <a href="#s-favs">11 Favourites</a>
+  <a href="#s-pins">12 Pinned</a>
+  <a href="#s-profile">13 Profile</a>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════════
+     01 — LANDING / HOME
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-landing">
+  <div class="screen-label">── SCREEN 01 · LANDING / HOME ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-cta">Sign In</button>
+      <button class="nav-cta primary">Get Started</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="badge">⚡ PC Build Configurator — Now in Beta</div>
+    <h1>
+      <span class="l1">BUILD YOUR</span>
+      <span class="l2">DREAM RIG</span>
+    </h1>
+    <p>Configure, validate, and share your perfect PC build. From entry-level to extreme overclocks — all in one place.</p>
+    <div class="ctas">
+      <button class="btn-primary">Start Building →</button>
+      <button class="btn-ghost">Browse Builds</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">12,400+</div><div class="stat-label">Builds Created</div></div>
+    <div class="stat"><div class="stat-num">3,200+</div><div class="stat-label">Components Listed</div></div>
+    <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Compat Accuracy</div></div>
+    <div class="stat"><div class="stat-num">8,900+</div><div class="stat-label">Community Members</div></div>
+  </div>
+
+  <div class="features3">
+    <div class="feat-card">
+      <div class="feat-icon">🔧</div>
+      <h3>Smart Builder</h3>
+      <p>Real-time socket, RAM, and PSU compatibility checks as you pick parts.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💰</div>
+      <h3>Budget Auto-Build</h3>
+      <p>Drop your budget. Get a fully compatible build optimized for performance.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🌐</div>
+      <h3>Community Builds</h3>
+      <p>Browse, favourite, and pin builds from thousands of other enthusiasts.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     02 — SIGN IN
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-signin">
+  <div class="screen-label">── SCREEN 02 · SIGN IN ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-cta">Sign Up</button>
+    </div>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h2>Welcome Back</h2>
+      <p class="sub">Sign in to continue building.</p>
+
+      <div class="form-row">
+        <label class="field-label">Email</label>
+        <input class="input" type="email" placeholder="you@bytemepc.io" value="">
+      </div>
+      <div class="form-row">
+        <label class="field-label">Password</label>
+        <input class="input" type="password" placeholder="••••••••">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-mute);margin-bottom:8px">
+        <label style="display:flex;gap:8px;align-items:center;cursor:pointer">
+          <input type="checkbox" style="accent-color:var(--cyan)"> Remember me
+        </label>
+        <a href="#" style="color:var(--cyan);text-decoration:none">Forgot password?</a>
+      </div>
+
+      <button class="btn-primary auth-btn">Sign In →</button>
+
+      <div class="divider">OR</div>
+
+      <button class="btn-ghost" style="width:100%">Continue with Google</button>
+
+      <div class="auth-foot">
+        Don't have an account? <a href="#s-signup">Create one</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     03 — SIGN UP
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-signup">
+  <div class="screen-label">── SCREEN 03 · SIGN UP ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-cta">Sign In</button>
+    </div>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h2>Join Byte Me PC</h2>
+      <p class="sub">Start building, sharing, and saving rigs in seconds.</p>
+
+      <div class="form-row">
+        <label class="field-label">Username</label>
+        <input class="input" type="text" placeholder="@shadow_ripper">
+      </div>
+      <div class="form-row">
+        <label class="field-label">Email</label>
+        <input class="input" type="email" placeholder="you@bytemepc.io">
+      </div>
+      <div class="form-row">
+        <label class="field-label">Password</label>
+        <input class="input" type="password" placeholder="At least 8 characters">
+      </div>
+
+      <label style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--text-mute);margin:14px 0 4px;cursor:pointer">
+        <input type="checkbox" style="accent-color:var(--cyan);margin-top:3px">
+        <span>I agree to the <a href="#" style="color:var(--cyan);text-decoration:none">Terms</a> and <a href="#" style="color:var(--cyan);text-decoration:none">Privacy Policy</a>.</span>
+      </label>
+
+      <button class="btn-primary auth-btn">Create Account →</button>
+
+      <div class="auth-foot">
+        Already have an account? <a href="#s-signin">Sign in</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     04 — BROWSE PARTS CATALOG
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-browse">
+  <div class="screen-label">── SCREEN 04 · BROWSE PARTS CATALOG ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#" class="active">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="section-title">Browse Parts</div>
+        <div class="section-sub">3,247 components across 5 categories.</div>
+      </div>
+      <button class="btn-ghost">⚙ Sort: Most Popular</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">CPU · 412</div>
+      <div class="tab">Motherboard · 638</div>
+      <div class="tab">GPU · 287</div>
+      <div class="tab">RAM · 920</div>
+      <div class="tab">PSU · 343</div>
+    </div>
+
+    <div class="search-bar">
+      <input class="input" placeholder="🔍  Search CPUs by name, brand, socket…">
+      <button class="btn-ghost">Clear filters</button>
+    </div>
+
+    <div class="catalog">
+      <!-- Filter sidebar -->
+      <aside class="filters">
+        <h4>Filters</h4>
+        <div class="filter-group">
+          <label class="field-label">Brand</label>
+          <label><input type="checkbox" checked> Intel <span style="margin-left:auto;color:var(--text-low);font-size:11px">218</span></label>
+          <label><input type="checkbox" checked> AMD <span style="margin-left:auto;color:var(--text-low);font-size:11px">194</span></label>
+        </div>
+        <div class="filter-group">
+          <label class="field-label">Socket</label>
+          <label><input type="checkbox" checked> LGA1700 <span style="margin-left:auto;color:var(--text-low);font-size:11px">87</span></label>
+          <label><input type="checkbox"> AM5 <span style="margin-left:auto;color:var(--text-low);font-size:11px">62</span></label>
+          <label><input type="checkbox"> LGA1200 <span style="margin-left:auto;color:var(--text-low);font-size:11px">44</span></label>
+          <label><input type="checkbox"> AM4 <span style="margin-left:auto;color:var(--text-low);font-size:11px">132</span></label>
+        </div>
+        <div class="filter-group">
+          <label class="field-label">Cores</label>
+          <div class="range">
+            <input placeholder="Min" value="6">
+            <input placeholder="Max" value="24">
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="field-label">Price (PHP)</label>
+          <div class="range">
+            <input placeholder="₱ Min" value="5000">
+            <input placeholder="₱ Max" value="45000">
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%">Apply Filters</button>
+      </aside>
+
+      <!-- Parts grid -->
+      <div class="parts-grid">
+        <div class="part-card pinned">
+          <div class="pin">📌</div>
+          <div class="part-img">🖥</div>
+          <span class="h-tag">Intel</span>
+          <h4 style="margin-top:8px">Core i9-13900K</h4>
+          <div class="part-spec">24 cores · LGA1700 · 5.8GHz boost</div>
+          <div class="part-foot">
+            <span class="price">₱32,500</span>
+            <button class="btn-ghost" style="padding:6px 12px;font-size:11px">Details →</button>
+          </div>
+        </div>
+        <div class="part-card">
+          <div class="pin">📌</div>
+          <div class="part-img">🖥</div>
+          <span class="h-tag">AMD</span>
+          <h4 style="margin-top:8px">Ryzen 9 7950X</h4>
+          <div class="part-spec">16 cores · AM5 · 5.7GHz boost</div>
+          <div class="part-foot">
+            <span class="price">₱34,900</span>
+            <button class="btn-ghost" style="padding:6px 12px;font-size:11px">Details →</button>
+          </div>
+        </div>
+        <div class="part-card">
+          <div class="pin">📌</div>
+          <div class="part-img">🖥</div>
+          <span class="h-tag">Intel</span>
+          <h4 style="margin-top:8px">Core i7-13700K</h4>
+          <div class="part-spec">16 cores · LGA1700 · 5.4GHz boost</div>
+          <div class="part-foot">
+            <span class="price">₱22,800</span>
+            <button class="btn-ghost" style="padding:6px 12px;font-size:11px">Details →</button>
+          </div>
+        </div>
+        <div class="part-card">
+          <div class="pin">📌</div>
+          <div class="part-img">🖥</div>
+          <span class="h-tag">AMD</span>
+          <h4 style="margin-top:8px">Ryzen 7 7800X3D</h4>
+          <div class="part-spec">8 cores · AM5 · 5.0GHz boost · 3D V-Cache</div>
+          <div class="part-foot">
+            <span class="price">₱26,500</span>
+            <button class="btn-ghost" style="padding:6px 12px;font-size:11px">Details →</button>
+          </div>
+        </div>
+        <div class="part-card">
+          <div class="pin">📌</div>
+          <div class="part-img">🖥</div>
+          <span class="h-tag">Intel</span>
+          <h4 style="margin-top:8px">Core i5-13600K</h4>
+          <div class="part-spec">14 cores · LGA1700 · 5.1GHz boost</div>
+          <div class="part-foot">
+            <span class="price">₱17,200</span>
+            <button class="btn-ghost" style="padding:6px 12px;font-size:11px">Details →</button>
+          </div>
+        </div>
+        <div class="part-card">
+          <div class="pin">📌</div>
+          <div class="part-img">🖥</div>
+          <span class="h-tag">AMD</span>
+          <h4 style="margin-top:8px">Ryzen 5 7600X</h4>
+          <div class="part-spec">6 cores · AM5 · 5.3GHz boost</div>
+          <div class="part-foot">
+            <span class="price">₱14,800</span>
+            <button class="btn-ghost" style="padding:6px 12px;font-size:11px">Details →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     05 — PART DETAIL
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-detail">
+  <div class="screen-label">── SCREEN 05 · PART DETAIL ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#" class="active">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="breadcrumb">
+      <a href="#s-browse">Browse</a> <span>/</span>
+      <a href="#s-browse">Motherboards</a> <span>/</span>
+      ASUS ROG MAXIMUS Z790 HERO
+    </div>
+
+    <div class="part-detail">
+      <div>
+        <div class="detail-hero">🧩</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px">
+          <div style="aspect-ratio:1;background:rgba(10,18,32,0.6);border:1px solid var(--cyan);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--text-mute)">🧩</div>
+          <div style="aspect-ratio:1;background:rgba(10,18,32,0.6);border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--text-mute)">📷</div>
+          <div style="aspect-ratio:1;background:rgba(10,18,32,0.6);border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--text-mute)">📷</div>
+          <div style="aspect-ratio:1;background:rgba(10,18,32,0.6);border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--text-mute)">📷</div>
+        </div>
+      </div>
+
+      <div class="detail-info">
+        <div class="brand">ASUS</div>
+        <h1>ROG MAXIMUS Z790 HERO</h1>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <span class="h-tag purp">Motherboard</span>
+          <span class="h-tag">LGA1700</span>
+          <span class="h-tag">DDR5</span>
+          <span class="h-tag ok">In Stock</span>
+        </div>
+
+        <span class="price big">₱36,290</span>
+
+        <div class="detail-actions">
+          <button class="btn-primary">Add to Build</button>
+          <button class="btn-ghost">📌 Pin</button>
+          <button class="btn-ghost">♡ Save</button>
+        </div>
+
+        <h3 style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:12px">Specifications</h3>
+        <dl class="spec-table">
+          <div class="spec-row"><dt>Socket</dt><dd>LGA1700</dd></div>
+          <div class="spec-row"><dt>Chipset</dt><dd>Intel Z790</dd></div>
+          <div class="spec-row"><dt>Form Factor</dt><dd>ATX</dd></div>
+          <div class="spec-row"><dt>RAM Type</dt><dd>DDR5</dd></div>
+          <div class="spec-row"><dt>RAM Slots</dt><dd>4 (Max 192 GB)</dd></div>
+          <div class="spec-row"><dt>Max RAM Speed</dt><dd>7800 MHz</dd></div>
+          <div class="spec-row">
+            <dt>Ports</dt>
+            <dd>
+              <div class="ports">
+                <span class="h-tag">USB-C ×2</span>
+                <span class="h-tag">USB 3.2 ×6</span>
+                <span class="h-tag">HDMI</span>
+                <span class="h-tag">Thunderbolt 4</span>
+                <span class="h-tag">2.5G LAN</span>
+                <span class="h-tag">WiFi 6E</span>
+              </div>
+            </dd>
+          </div>
+        </dl>
+
+        <div class="compat-section">
+          <h3 style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:14px">Compatible CPUs</h3>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+            <div class="comp-card">
+              <div class="name">Intel Core i9-13900K</div>
+              <div class="spec">24 cores · 5.8GHz · LGA1700</div>
+              <div class="foot"><span class="price">₱32,500</span><span class="h-tag ok">Match</span></div>
+            </div>
+            <div class="comp-card">
+              <div class="name">Intel Core i7-13700K</div>
+              <div class="spec">16 cores · 5.4GHz · LGA1700</div>
+              <div class="foot"><span class="price">₱22,800</span><span class="h-tag ok">Match</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     06 — MANUAL PC BUILDER
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-builder">
+  <div class="screen-label">── SCREEN 06 · MANUAL PC BUILDER ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#" class="active">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="section-title">Apex Predator V2</div>
+        <div class="section-sub">Editing build · <span style="color:var(--green)">● Saved 2 min ago</span></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-ghost">⚙ Build Settings</button>
+        <button class="btn-primary">Save Build</button>
+      </div>
+    </div>
+
+    <div class="builder">
+
+      <!-- Slot sidebar -->
+      <aside class="build-side">
+        <h4>Components</h4>
+        <div class="slot-item">
+          <div class="slot-icon">🖥</div>
+          <div class="slot-name">CPU</div>
+          <span class="slot-status filled">✓</span>
+        </div>
+        <div class="slot-item active">
+          <div class="slot-icon">🧩</div>
+          <div class="slot-name">Motherboard</div>
+          <span class="slot-status empty">—</span>
+        </div>
+        <div class="slot-item">
+          <div class="slot-icon">🎮</div>
+          <div class="slot-name">GPU</div>
+          <span class="slot-status filled">✓</span>
+        </div>
+        <div class="slot-item">
+          <div class="slot-icon">💾</div>
+          <div class="slot-name">RAM ×2</div>
+          <span class="slot-status filled">✓</span>
+        </div>
+        <div class="slot-item">
+          <div class="slot-icon">💡</div>
+          <div class="slot-name">PSU</div>
+          <span class="slot-status warn">!</span>
+        </div>
+        <div class="slot-item">
+          <div class="slot-icon">💽</div>
+          <div class="slot-name">Storage</div>
+          <span class="slot-status empty">—</span>
+        </div>
+        <div class="slot-item">
+          <div class="slot-icon">🗃</div>
+          <div class="slot-name">Case</div>
+          <span class="slot-status empty">—</span>
+        </div>
+        <div class="slot-item">
+          <div class="slot-icon">❄</div>
+          <div class="slot-name">Cooler</div>
+          <span class="slot-status empty">—</span>
+        </div>
+      </aside>
+
+      <!-- Picker area -->
+      <main class="builder-main">
+        <div class="head">
+          <div>
+            <h2>Choose a Motherboard</h2>
+            <div class="section-sub" style="margin:4px 0 0">638 listed · 87 compatible with your CPU (LGA1700)</div>
+          </div>
+          <button class="btn-ghost">⚙ Filter</button>
+        </div>
+
+        <div class="builder-grid">
+          <div class="comp-card selected">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <div class="name">ASUS ROG MAXIMUS Z790 HERO</div>
+                <div class="spec">ATX · LGA1700 · DDR5 · 4 slots · Z790</div>
+              </div>
+              <span class="h-tag ok">Selected</span>
+            </div>
+            <div class="foot"><span class="price">₱36,290</span><span style="font-size:11px;color:var(--text-mute)">WiFi 6E · TB4</span></div>
+          </div>
+          <div class="comp-card">
+            <div class="name">MSI MAG Z790 TOMAHAWK</div>
+            <div class="spec">ATX · LGA1700 · DDR5 · 4 slots · Z790</div>
+            <div class="foot"><span class="price">₱18,500</span><span class="h-tag ok">Compatible</span></div>
+          </div>
+          <div class="comp-card">
+            <div class="name">Gigabyte Z790 AORUS ELITE</div>
+            <div class="spec">ATX · LGA1700 · DDR5 · 4 slots · Z790</div>
+            <div class="foot"><span class="price">₱16,900</span><span class="h-tag ok">Compatible</span></div>
+          </div>
+          <div class="comp-card">
+            <div class="name">ASRock Z790 PG Lightning</div>
+            <div class="spec">ATX · LGA1700 · DDR5 · 4 slots · Z790</div>
+            <div class="foot"><span class="price">₱13,200</span><span class="h-tag ok">Compatible</span></div>
+          </div>
+          <div class="comp-card">
+            <div class="name">ASUS PRIME B660M-A</div>
+            <div class="spec">mATX · LGA1700 · DDR4 · 4 slots</div>
+            <div class="foot"><span class="price">₱9,200</span><span class="h-tag warn">RAM mismatch</span></div>
+          </div>
+          <div class="comp-card">
+            <div class="name">MSI PRO B660-A DDR4</div>
+            <div class="spec">ATX · LGA1700 · DDR4 · 4 slots</div>
+            <div class="foot"><span class="price">₱8,800</span><span class="h-tag warn">RAM mismatch</span></div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Build summary -->
+      <aside class="build-summary">
+        <h4 style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:14px">Current Build</h4>
+
+        <div class="summary-row"><span class="lbl">CPU</span><span class="val">i9-13900K</span></div>
+        <div class="summary-row"><span class="lbl">Motherboard</span><span class="val" style="color:var(--text-low)">Not selected</span></div>
+        <div class="summary-row"><span class="lbl">GPU</span><span class="val">RTX 4090</span></div>
+        <div class="summary-row"><span class="lbl">RAM</span><span class="val">32GB DDR5 ×2</span></div>
+        <div class="summary-row"><span class="lbl">PSU</span><span class="val" style="color:var(--red)">Underpowered</span></div>
+
+        <div class="summary-total">
+          <span class="lbl">Subtotal</span>
+          <span class="price big">₱128,300</span>
+        </div>
+
+        <div class="compat-list">
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin:18px 0 8px">Compatibility</div>
+          <div class="compat-row ok"><span class="icon">✓</span> CPU socket matches MB</div>
+          <div class="compat-row ok"><span class="icon">✓</span> RAM type DDR5 OK</div>
+          <div class="compat-row warn"><span class="icon">✗</span> PSU 750W &lt; estimated 920W</div>
+          <div class="compat-row pending"><span class="icon">○</span> Storage not yet selected</div>
+        </div>
+
+        <div class="builder-actions">
+          <button class="btn-primary">Validate & Save</button>
+          <button class="btn-ghost">Make Public</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     07 — BUDGET AUTO-BUILDER
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-budget">
+  <div class="screen-label">── SCREEN 07 · BUDGET AUTO-BUILDER ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#" class="active">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="section-title">Budget Auto-Builder</div>
+        <div class="section-sub">Drop your budget. We'll pick a fully compatible build optimized for performance.</div>
+      </div>
+      <button class="btn-ghost">Switch to Manual →</button>
+    </div>
+
+    <div class="budget-hero">
+      <div>
+        <h2>BUILD WITHIN<br><span style="background:var(--grad-3);-webkit-background-clip:text;-webkit-text-fill-color:transparent">YOUR LIMITS.</span></h2>
+        <p>Tell us how much you want to spend. Our auto-builder picks compatible parts that maximize raw performance per peso — then lets you tune the result before saving.</p>
+      </div>
+      <div class="budget-input-wrap">
+        <label class="field-label">Your budget</label>
+        <div class="budget-amount">
+          <span class="budget-currency">PHP</span>
+          <input type="text" value="120,000">
+        </div>
+        <div class="budget-presets">
+          <button>₱40k</button>
+          <button>₱80k</button>
+          <button>₱120k</button>
+          <button>₱200k</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lock parts -->
+    <div class="lock-list">
+      <h4>Lock parts you already own <span style="color:var(--text-low);font-weight:400;text-transform:none;letter-spacing:0">— optional</span></h4>
+      <div class="lock-grid">
+        <div class="lock-cell"><span class="ic">🖥</span>CPU<br><span style="color:var(--text-low);font-size:11px">Any</span></div>
+        <div class="lock-cell"><span class="ic">🧩</span>Motherboard<br><span style="color:var(--text-low);font-size:11px">Any</span></div>
+        <div class="lock-cell locked"><span class="ic">🎮</span>GPU<br><span style="color:var(--purple);font-size:11px">RTX 4080</span></div>
+        <div class="lock-cell"><span class="ic">💾</span>RAM<br><span style="color:var(--text-low);font-size:11px">Any</span></div>
+        <div class="lock-cell"><span class="ic">💡</span>PSU<br><span style="color:var(--text-low);font-size:11px">Any</span></div>
+        <div class="lock-cell"><span class="ic">💽</span>Storage<br><span style="color:var(--text-low);font-size:11px">Any</span></div>
+        <div class="lock-cell"><span class="ic">🗃</span>Case<br><span style="color:var(--text-low);font-size:11px">Any</span></div>
+        <div class="lock-cell"><span class="ic">❄</span>Cooler<br><span style="color:var(--text-low);font-size:11px">Any</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:28px">
+      <button class="btn-primary" style="padding:14px 42px;font-size:15px">⚡ Generate Build</button>
+      <button class="btn-ghost">Advanced Options</button>
+    </div>
+
+    <!-- Suggested result -->
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:24px">
+      <div class="parts-list">
+        <div style="padding:18px;border-bottom:1px solid var(--line);background:rgba(0,212,255,0.05);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);font-weight:800">Suggested Build · 99% budget utilized</div>
+        <div class="row"><span class="tag">CPU</span><div><div class="part-name">AMD Ryzen 9 7900X</div><div class="part-sub">12 cores · AM5 · 5.6GHz boost</div></div><div class="pr">₱28,900</div></div>
+        <div class="row"><span class="tag">MOBO</span><div><div class="part-name">ASUS ROG STRIX B650-E</div><div class="part-sub">ATX · AM5 · DDR5</div></div><div class="pr">₱16,800</div></div>
+        <div class="row"><span class="tag">GPU</span><div><div class="part-name">NVIDIA RTX 4080</div><div class="part-sub">16GB GDDR6X · LOCKED</div></div><div class="pr">₱68,500</div></div>
+        <div class="row"><span class="tag">RAM</span><div><div class="part-name">Corsair Vengeance 32GB DDR5-6000</div><div class="part-sub">2 × 16GB</div></div><div class="pr">₱9,200</div></div>
+        <div class="row"><span class="tag">PSU</span><div><div class="part-name">Corsair RM850x</div><div class="part-sub">850W · 80+ Gold</div></div><div class="pr">₱8,400</div></div>
+        <div class="row"><span class="tag">SSD</span><div><div class="part-name">Samsung 990 Pro 2TB</div><div class="part-sub">NVMe Gen4</div></div><div class="pr">₱9,800</div></div>
+        <div class="row"><span class="tag">CASE</span><div><div class="part-name">Lian Li Lancool 216</div><div class="part-sub">ATX Mid Tower</div></div><div class="pr">₱5,200</div></div>
+      </div>
+      <div class="build-summary" style="position:static">
+        <h4 style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:14px">Auto Result</h4>
+        <div class="summary-row"><span class="lbl">Budget</span><span class="val">₱120,000</span></div>
+        <div class="summary-row"><span class="lbl">Total</span><span class="val">₱146,800</span></div>
+        <div class="summary-row"><span class="lbl">Over budget</span><span class="val" style="color:var(--red)">+ ₱26,800</span></div>
+        <div class="summary-row"><span class="lbl">Est. perf score</span><span class="val">9,420</span></div>
+        <div class="summary-total">
+          <span class="lbl">Status</span>
+          <span class="h-tag warn">Over budget</span>
+        </div>
+        <div class="builder-actions">
+          <button class="btn-primary">Tweak Build</button>
+          <button class="btn-ghost">Re-generate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     08 — MY BUILDS DASHBOARD
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-mybuilds">
+  <div class="screen-label">── SCREEN 08 · MY BUILDS DASHBOARD ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#" class="active">My Builds</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="section-title">My Builds</div>
+        <div class="section-sub">All your saved configurations.</div>
+      </div>
+      <button class="btn-primary">+ New Build</button>
+    </div>
+
+    <div class="dash-header">
+      <div class="dash-stat"><div class="lbl">Total Builds</div><div class="val">12</div></div>
+      <div class="dash-stat"><div class="lbl">Public</div><div class="val">4</div></div>
+      <div class="dash-stat"><div class="lbl">Favourites</div><div class="val">28</div></div>
+      <div class="dash-stat"><div class="lbl">Pinned Parts</div><div class="val">17</div></div>
+    </div>
+
+    <div class="builds-table">
+      <div class="head">
+        <span>Build Name</span>
+        <span>Last Updated</span>
+        <span>Status</span>
+        <span>Visibility</span>
+        <span>Total</span>
+        <span style="text-align:right">Actions</span>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="name">Apex Predator V2</div>
+          <div style="font-size:11px;color:var(--text-mute);margin-top:2px">i9-13900K · RTX 4090 · 32GB</div>
+        </div>
+        <span>2 min ago</span>
+        <span><span class="h-tag warn">PSU warning</span></span>
+        <span><span class="h-tag purp">Public</span></span>
+        <span class="price">₱128,300</span>
+        <div class="row-actions" style="justify-content:flex-end">
+          <button class="icon-btn">✎</button>
+          <button class="icon-btn">↗</button>
+          <button class="icon-btn">⎘</button>
+          <button class="icon-btn danger">🗑</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="name">Silent Storm</div>
+          <div style="font-size:11px;color:var(--text-mute);margin-top:2px">Ryzen 9 7900X · RTX 4080 · 64GB</div>
+        </div>
+        <span>Yesterday</span>
+        <span><span class="h-tag ok">Complete</span></span>
+        <span><span class="h-tag purp">Public</span></span>
+        <span class="price">₱146,800</span>
+        <div class="row-actions" style="justify-content:flex-end">
+          <button class="icon-btn">✎</button>
+          <button class="icon-btn">↗</button>
+          <button class="icon-btn">⎘</button>
+          <button class="icon-btn danger">🗑</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="name">Budget Beast Mk1</div>
+          <div style="font-size:11px;color:var(--text-mute);margin-top:2px">Ryzen 5 7600 · RX 7800 XT · 16GB</div>
+        </div>
+        <span>3 days ago</span>
+        <span><span class="h-tag ok">Complete</span></span>
+        <span><span class="h-tag">Private</span></span>
+        <span class="price">₱58,400</span>
+        <div class="row-actions" style="justify-content:flex-end">
+          <button class="icon-btn">✎</button>
+          <button class="icon-btn">↗</button>
+          <button class="icon-btn">⎘</button>
+          <button class="icon-btn danger">🗑</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="name">Workstation 2026</div>
+          <div style="font-size:11px;color:var(--text-mute);margin-top:2px">Threadripper · A6000 · 128GB</div>
+        </div>
+        <span>1 week ago</span>
+        <span><span class="h-tag">Draft</span></span>
+        <span><span class="h-tag">Private</span></span>
+        <span class="price">₱412,900</span>
+        <div class="row-actions" style="justify-content:flex-end">
+          <button class="icon-btn">✎</button>
+          <button class="icon-btn">↗</button>
+          <button class="icon-btn">⎘</button>
+          <button class="icon-btn danger">🗑</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="name">First Build (Old)</div>
+          <div style="font-size:11px;color:var(--text-mute);margin-top:2px">i5-12400 · RTX 3060 · 16GB</div>
+        </div>
+        <span>2 months ago</span>
+        <span><span class="h-tag ok">Complete</span></span>
+        <span><span class="h-tag purp">Public</span></span>
+        <span class="price">₱42,100</span>
+        <div class="row-actions" style="justify-content:flex-end">
+          <button class="icon-btn">✎</button>
+          <button class="icon-btn">↗</button>
+          <button class="icon-btn">⎘</button>
+          <button class="icon-btn danger">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     09 — BUILD DETAIL (public view of a build)
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-buildview">
+  <div class="screen-label">── SCREEN 09 · BUILD DETAIL (PUBLIC VIEW) ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#" class="active">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="breadcrumb">
+      <a href="#s-feed">Community</a> <span>/</span>
+      <a href="#s-feed">Public Builds</a> <span>/</span>
+      Apex Predator V2
+    </div>
+
+    <div class="build-hero-wrap">
+      <div class="build-hero-img">🖥</div>
+      <div class="build-info">
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <span class="h-tag purp">High-End</span>
+          <span class="h-tag">4K Gaming</span>
+          <span class="h-tag ok">Verified Compat</span>
+        </div>
+        <h1>APEX PREDATOR V2</h1>
+        <div class="author-row">
+          <div class="mini-avatar">SR</div>
+          <span class="uname">@shadow_ripper</span>
+          <span class="meta">· Updated 2 min ago · 4,212 views</span>
+        </div>
+        <p>Maxed-out 4K gaming + streaming monster. Tuned for the i9-13900K with a 4090 paired on a high-end Z790 board. Fully validated PSU headroom for OC overhead.</p>
+
+        <div style="display:flex;gap:10px;margin-top:6px">
+          <button class="btn-primary">⎘ Duplicate</button>
+          <button class="btn-ghost">♡ Favourite</button>
+          <button class="btn-ghost">↗ Share</button>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:14px">Parts List</h3>
+    <div class="parts-list">
+      <div class="row"><span class="tag">CPU</span><div><div class="part-name">Intel Core i9-13900K</div><div class="part-sub">24 cores · LGA1700 · 5.8GHz boost</div></div><div class="pr">₱32,500</div></div>
+      <div class="row"><span class="tag">MOBO</span><div><div class="part-name">ASUS ROG MAXIMUS Z790 HERO</div><div class="part-sub">ATX · LGA1700 · DDR5</div></div><div class="pr">₱36,290</div></div>
+      <div class="row"><span class="tag">GPU</span><div><div class="part-name">NVIDIA RTX 4090 Founders Edition</div><div class="part-sub">24GB GDDR6X · 450W TDP</div></div><div class="pr">₱94,500</div></div>
+      <div class="row"><span class="tag">RAM</span><div><div class="part-name">Corsair Vengeance 32GB DDR5-6400 ×2</div><div class="part-sub">2 × 32GB · 64GB total</div></div><div class="pr">₱12,800</div></div>
+      <div class="row"><span class="tag">PSU</span><div><div class="part-name">Corsair HX1000i</div><div class="part-sub">1000W · 80+ Platinum · Fully Modular</div></div><div class="pr">₱13,900</div></div>
+      <div class="row"><span class="tag">SSD</span><div><div class="part-name">Samsung 990 Pro 2TB</div><div class="part-sub">NVMe Gen4 · 7,450 MB/s</div></div><div class="pr">₱9,800</div></div>
+      <div class="row" style="background:rgba(0,212,255,0.05);font-weight:800">
+        <span class="tag" style="color:var(--purple)">TOTAL</span>
+        <div></div>
+        <div class="pr" style="font-size:22px;color:var(--cyan)">₱199,790</div>
+      </div>
+    </div>
+
+    <div class="compat-section">
+      <h3 style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:14px">Validation Report</h3>
+      <div class="compat-list">
+        <div class="compat-row ok"><span class="icon">✓</span> CPU socket (LGA1700) matches motherboard</div>
+        <div class="compat-row ok"><span class="icon">✓</span> RAM type DDR5 matches motherboard</div>
+        <div class="compat-row ok"><span class="icon">✓</span> RAM slot count (2) ≤ MB slots (4)</div>
+        <div class="compat-row ok"><span class="icon">✓</span> PSU 1000W ≥ estimated 920W (12% headroom)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     10 — PUBLIC BUILDS FEED
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-feed">
+  <div class="screen-label">── SCREEN 10 · PUBLIC BUILDS FEED ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#" class="active">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="section-title">Community Builds</div>
+        <div class="section-sub">8,942 public builds shared by the ByteMePC community.</div>
+      </div>
+      <button class="btn-ghost">⚙ Sort: Most Popular</button>
+    </div>
+
+    <div class="feed-controls">
+      <div class="chip active">All</div>
+      <div class="chip">Gaming</div>
+      <div class="chip">Workstation</div>
+      <div class="chip">Budget</div>
+      <div class="chip">High-End</div>
+      <div class="chip">SFF / ITX</div>
+      <div style="flex:1"></div>
+      <input class="input" placeholder="🔍  Search builds…" style="max-width:280px">
+    </div>
+
+    <div class="feed-grid">
+      <div class="build-card">
+        <div class="build-img">🖥</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@shadow_ripper</span><span>4.2k views</span></div>
+          <h3>APEX PREDATOR V2</h3>
+          <p class="desc">Maxed-out 4K gaming + streaming monster.</p>
+          <div class="build-tags">
+            <span class="h-tag">i9-13900K</span>
+            <span class="h-tag">RTX 4090</span>
+            <span class="h-tag">DDR5</span>
+          </div>
+          <div class="build-foot">
+            <span class="price">₱199,790</span>
+            <div class="heart fav">♥</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="build-card">
+        <div class="build-img">⚡</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@budget_king</span><span>2.8k views</span></div>
+          <h3>VALUE SLAYER</h3>
+          <p class="desc">Best 1080p high-refresh build under ₱45k.</p>
+          <div class="build-tags">
+            <span class="h-tag">Ryzen 5</span>
+            <span class="h-tag">RX 7800 XT</span>
+            <span class="h-tag">DDR5</span>
+          </div>
+          <div class="build-foot">
+            <span class="price">₱42,100</span>
+            <div class="heart">♡</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="build-card">
+        <div class="build-img">❄</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@silent_ops</span><span>1.9k views</span></div>
+          <h3>SILENT STORM</h3>
+          <p class="desc">Zero-noise workstation for creative pros.</p>
+          <div class="build-tags">
+            <span class="h-tag">Ryzen 9</span>
+            <span class="h-tag">RTX 4080</span>
+            <span class="h-tag">ITX</span>
+          </div>
+          <div class="build-foot">
+            <span class="price">₱146,800</span>
+            <div class="heart fav">♥</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="build-card">
+        <div class="build-img">🎮</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@neon_void</span><span>1.4k views</span></div>
+          <h3>NEON CASCADE</h3>
+          <p class="desc">RGB-loaded gaming rig with vertical GPU.</p>
+          <div class="build-tags">
+            <span class="h-tag">i7-13700K</span>
+            <span class="h-tag">RTX 4070 Ti</span>
+            <span class="h-tag">ATX</span>
+          </div>
+          <div class="build-foot">
+            <span class="price">₱95,400</span>
+            <div class="heart">♡</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="build-card">
+        <div class="build-img">💼</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@dev_machine</span><span>980 views</span></div>
+          <h3>DAILY DRIVER PRO</h3>
+          <p class="desc">Quiet code/build/test daily workhorse.</p>
+          <div class="build-tags">
+            <span class="h-tag">i5-13600K</span>
+            <span class="h-tag">RTX 4060</span>
+            <span class="h-tag">64GB</span>
+          </div>
+          <div class="build-foot">
+            <span class="price">₱62,300</span>
+            <div class="heart">♡</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="build-card">
+        <div class="build-img">🚀</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@overclock_lord</span><span>3.1k views</span></div>
+          <h3>OVERCLOCK MAYHEM</h3>
+          <p class="desc">7800X3D pushed to 5.5GHz on custom loop.</p>
+          <div class="build-tags">
+            <span class="h-tag">7800X3D</span>
+            <span class="h-tag">RTX 4090</span>
+            <span class="h-tag">Custom Loop</span>
+          </div>
+          <div class="build-foot">
+            <span class="price">₱214,500</span>
+            <div class="heart fav">♥</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     11 — FAVOURITES
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-favs">
+  <div class="screen-label">── SCREEN 11 · FAVOURITE BUILDS ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#" class="active">Favourites</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="section-title">Favourite Builds</div>
+        <div class="section-sub">28 builds you've saved from the community.</div>
+      </div>
+      <button class="btn-ghost">⚙ Sort by Date</button>
+    </div>
+
+    <div class="feed-grid">
+      <div class="build-card">
+        <div class="build-img">🖥</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@shadow_ripper</span><span>4.2k views</span></div>
+          <h3>APEX PREDATOR V2</h3>
+          <p class="desc">Maxed-out 4K gaming + streaming monster.</p>
+          <div class="build-tags">
+            <span class="h-tag">i9-13900K</span><span class="h-tag">RTX 4090</span>
+          </div>
+          <div class="build-foot"><span class="price">₱199,790</span><div class="heart fav">♥</div></div>
+        </div>
+      </div>
+      <div class="build-card">
+        <div class="build-img">❄</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@silent_ops</span><span>1.9k views</span></div>
+          <h3>SILENT STORM</h3>
+          <p class="desc">Zero-noise workstation for creative pros.</p>
+          <div class="build-tags">
+            <span class="h-tag">Ryzen 9</span><span class="h-tag">RTX 4080</span>
+          </div>
+          <div class="build-foot"><span class="price">₱146,800</span><div class="heart fav">♥</div></div>
+        </div>
+      </div>
+      <div class="build-card">
+        <div class="build-img">🚀</div>
+        <div class="build-body">
+          <div class="build-meta"><span>@overclock_lord</span><span>3.1k views</span></div>
+          <h3>OVERCLOCK MAYHEM</h3>
+          <p class="desc">7800X3D pushed to 5.5GHz on custom loop.</p>
+          <div class="build-tags">
+            <span class="h-tag">7800X3D</span><span class="h-tag">RTX 4090</span>
+          </div>
+          <div class="build-foot"><span class="price">₱214,500</span><div class="heart fav">♥</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     12 — PINNED COMPONENTS
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-pins">
+  <div class="screen-label">── SCREEN 12 · PINNED COMPONENTS ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#" class="active">Pinned</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="section-title">Pinned Components</div>
+        <div class="section-sub">Parts you're watching across all categories.</div>
+      </div>
+      <button class="btn-ghost">Clear All Pins</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">All · 17</div>
+      <div class="tab">CPU · 4</div>
+      <div class="tab">Motherboard · 3</div>
+      <div class="tab">GPU · 5</div>
+      <div class="tab">RAM · 3</div>
+      <div class="tab">PSU · 2</div>
+    </div>
+
+    <div class="parts-grid">
+      <div class="part-card pinned">
+        <div class="pin">📌</div>
+        <div class="part-img">🖥</div>
+        <span class="h-tag">CPU · Intel</span>
+        <h4 style="margin-top:8px">Core i9-13900K</h4>
+        <div class="part-spec">24 cores · LGA1700</div>
+        <div class="part-foot"><span class="price">₱32,500</span><span style="font-size:11px;color:var(--text-mute)">Pinned 4 days ago</span></div>
+      </div>
+      <div class="part-card pinned">
+        <div class="pin">📌</div>
+        <div class="part-img">🎮</div>
+        <span class="h-tag">GPU · NVIDIA</span>
+        <h4 style="margin-top:8px">RTX 4090 Founders</h4>
+        <div class="part-spec">24GB GDDR6X · 450W TDP</div>
+        <div class="part-foot"><span class="price">₱94,500</span><span style="font-size:11px;color:var(--text-mute)">Pinned 1 week ago</span></div>
+      </div>
+      <div class="part-card pinned">
+        <div class="pin">📌</div>
+        <div class="part-img">🧩</div>
+        <span class="h-tag">MB · ASUS</span>
+        <h4 style="margin-top:8px">ROG MAXIMUS Z790 HERO</h4>
+        <div class="part-spec">ATX · LGA1700 · DDR5</div>
+        <div class="part-foot"><span class="price">₱36,290</span><span style="font-size:11px;color:var(--text-mute)">Pinned 2 weeks ago</span></div>
+      </div>
+      <div class="part-card pinned">
+        <div class="pin">📌</div>
+        <div class="part-img">💾</div>
+        <span class="h-tag">RAM · Corsair</span>
+        <h4 style="margin-top:8px">Vengeance 32GB DDR5-6400</h4>
+        <div class="part-spec">2 × 16GB · CL32</div>
+        <div class="part-foot"><span class="price">₱9,200</span><span style="font-size:11px;color:var(--text-mute)">Pinned 3 weeks ago</span></div>
+      </div>
+      <div class="part-card pinned">
+        <div class="pin">📌</div>
+        <div class="part-img">💡</div>
+        <span class="h-tag">PSU · Corsair</span>
+        <h4 style="margin-top:8px">HX1000i 1000W</h4>
+        <div class="part-spec">80+ Platinum · Fully Modular</div>
+        <div class="part-foot"><span class="price">₱13,900</span><span style="font-size:11px;color:var(--text-mute)">Pinned 1 month ago</span></div>
+      </div>
+      <div class="part-card pinned">
+        <div class="pin">📌</div>
+        <div class="part-img">🖥</div>
+        <span class="h-tag">CPU · AMD</span>
+        <h4 style="margin-top:8px">Ryzen 7 7800X3D</h4>
+        <div class="part-spec">8 cores · AM5 · 3D V-Cache</div>
+        <div class="part-foot"><span class="price">₱26,500</span><span style="font-size:11px;color:var(--text-mute)">Pinned 1 month ago</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     13 — PROFILE
+════════════════════════════════════════════════════ -->
+<section class="screen" id="s-profile">
+  <div class="screen-label">── SCREEN 13 · PROFILE ──</div>
+  <nav class="app-nav">
+    <div class="logo">byte<span>me</span>pc</div>
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Builder</a></li>
+      <li><a href="#">Browse Parts</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar">G</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="profile-head">
+      <div class="profile-avatar">G</div>
+      <div class="profile-meta">
+        <h1>George Senagan</h1>
+        <div class="handle">@georgebruh</div>
+        <div class="profile-counts">
+          <div><strong>12</strong> Builds</div>
+          <div><strong>4</strong> Public</div>
+          <div><strong>28</strong> Favourites</div>
+          <div><strong>17</strong> Pinned</div>
+          <div><strong>342</strong> Total Views</div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn-ghost">⚙ Edit Profile</button>
+        <button class="btn-primary">+ New Build</button>
+      </div>
+    </div>
+
+    <!-- Account settings -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:18px">Account</h3>
+        <div class="form-row">
+          <label class="field-label">Display Name</label>
+          <input class="input" value="George Senagan">
+        </div>
+        <div class="form-row">
+          <label class="field-label">Username</label>
+          <input class="input" value="@georgebruh">
+        </div>
+        <div class="form-row">
+          <label class="field-label">Email</label>
+          <input class="input" value="senagan.george@gmail.com" disabled>
+        </div>
+        <button class="btn-primary" style="margin-top:8px">Save Changes</button>
+      </div>
+
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin-bottom:18px">Preferences</h3>
+        <div class="form-row">
+          <label class="field-label">Default Currency</label>
+          <select class="select">
+            <option>PHP — ₱ Philippine Peso</option>
+            <option>USD — $ US Dollar</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="field-label">Default Build Visibility</label>
+          <select class="select">
+            <option>Private (you decide later)</option>
+            <option>Public</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label style="display:flex;gap:10px;align-items:center;font-size:13px;color:#cdd;cursor:pointer">
+            <input type="checkbox" checked style="accent-color:var(--cyan)">
+            Email me when someone favourites a build
+          </label>
+        </div>
+        <div class="form-row">
+          <label style="display:flex;gap:10px;align-items:center;font-size:13px;color:#cdd;cursor:pointer">
+            <input type="checkbox" style="accent-color:var(--cyan)">
+            Weekly digest of trending builds
+          </label>
+        </div>
+        <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line)">
+          <button class="btn-danger">Delete Account</button>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mute);margin:36px 0 14px">Recent Activity</h3>
+    <div class="parts-list">
+      <div class="row" style="grid-template-columns:120px 1fr 140px">
+        <span class="tag">PUBLISHED</span>
+        <div><div class="part-name">Apex Predator V2</div><div class="part-sub">Made public · ₱128,300</div></div>
+        <span style="text-align:right;color:var(--text-mute);font-size:12px">2 min ago</span>
+      </div>
+      <div class="row" style="grid-template-columns:120px 1fr 140px">
+        <span class="tag" style="color:var(--purple)">FAVOURITED</span>
+        <div><div class="part-name">SILENT STORM</div><div class="part-sub">by @silent_ops</div></div>
+        <span style="text-align:right;color:var(--text-mute);font-size:12px">Yesterday</span>
+      </div>
+      <div class="row" style="grid-template-columns:120px 1fr 140px">
+        <span class="tag" style="color:var(--green)">PINNED</span>
+        <div><div class="part-name">NVIDIA RTX 4090 Founders</div><div class="part-sub">GPU · ₱94,500</div></div>
+        <span style="text-align:right;color:var(--text-mute);font-size:12px">3 days ago</span>
+      </div>
+      <div class="row" style="grid-template-columns:120px 1fr 140px">
+        <span class="tag">CREATED</span>
+        <div><div class="part-name">Workstation 2026</div><div class="part-sub">Draft build</div></div>
+        <span style="text-align:right;color:var(--text-mute);font-size:12px">1 week ago</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
