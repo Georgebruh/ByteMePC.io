@@ -1,298 +1,275 @@
-@import "tailwindcss";
+/* ─── Global styles for ByteMePC.io · "Dark Forge" theme ───
+   Design tokens + base utility classes shared across every screen.
+   Per-screen styling lives inside each .vue component (scoped).
+*/
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* Core palette */
+  --bg:        #050810;
+  --bg-2:      #0a1020;
+  --line:      rgba(0, 212, 255, 0.15);
+  --line-2:    rgba(0, 212, 255, 0.08);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Accents */
+  --cyan:      #00d4ff;
+  --purple:    #a855f7;
+  --red:       #ff4655;
+  --green:     #22d3a8;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
+  /* Text ramp */
+  --text:      #ffffff;
+  --text-dim:  #8ea3bd;
+  --text-mute: #5577aa;
+  --text-low:  #445566;
+
+  /* Reused gradients */
+  --grad:      linear-gradient(90deg, #00d4ff, #a855f7);
+  --grad-3:    linear-gradient(90deg, #00d4ff 0%, #a855f7 50%, #ff4655 100%);
+
+  /* Angled clip-path for the signature button shape */
+  --clip:      polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+
+html, body {
   background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
+/* Page-level background: subtle glow + cyan grid overlay.
+   Kept as one body rule so every route gets it for free. */
 body {
-  margin: 0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 180, 255, 0.10) 0%, transparent 60%),
+    linear-gradient(rgba(0, 212, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.035) 1px, transparent 1px);
+  background-size: auto, 60px 60px, 60px 60px;
+  background-color: var(--bg);
+  background-attachment: fixed;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+a { color: inherit; text-decoration: none; }
+
+/* ─── Buttons ─── */
+.btn-primary {
+  padding: 12px 28px;
+  background: var(--grad);
+  color: var(--bg);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  clip-path: var(--clip);
+  transition: filter 0.2s;
+}
+.btn-primary:hover { filter: brightness(1.1); }
+
+.btn-ghost {
+  padding: 12px 28px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #aaa;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { color: #fff; border-color: var(--cyan); }
+
+.btn-danger {
+  padding: 10px 22px;
+  background: transparent;
+  border: 1px solid rgba(255, 70, 85, 0.5);
+  color: var(--red);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.btn-danger:hover { background: rgba(255, 70, 85, 0.08); }
+
+/* ─── Form inputs ─── */
+.field-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 8px;
+  display: block;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
-
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-}
-
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#app {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
+.input, .select {
   width: 100%;
+  padding: 11px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-size: 14px;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.input:focus, .select:focus { border-color: var(--cyan); }
+.input:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+/* ─── Tag chips (used everywhere for status / category) ─── */
+.h-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--cyan);
+  border-radius: 2px;
+}
+.h-tag.warn { background: rgba(255, 70, 85, 0.08); border-color: rgba(255, 70, 85, 0.35); color: var(--red); }
+.h-tag.ok   { background: rgba(34, 211, 168, 0.08); border-color: rgba(34, 211, 168, 0.35); color: var(--green); }
+.h-tag.purp { background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.35); color: var(--purple); }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+/* ─── Reusable announcement badge with pulsing dot ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  border-radius: 2px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.06);
+}
+.badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--cyan);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.3 } }
+
+/* ─── Price helpers ─── */
+.price { font-weight: 900; color: var(--cyan); font-size: 16px; }
+.price.big { font-size: 28px; letter-spacing: -1px; }
+
+/* ─── Section title block (used at the top of most pages) ─── */
+.section-title {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.section-sub { font-size: 13px; color: var(--text-mute); margin-bottom: 24px; }
+
+/* ─── Page container — standard padding for every screen ─── */
+.page { padding: 36px 60px; }
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+/* ─── Card shell ─── */
+.card {
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+/* ─── Breadcrumb trail ─── */
+.breadcrumb {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.breadcrumb a { color: var(--cyan); }
+.breadcrumb span { color: var(--text-low); margin: 0 8px; }
+
+/* ─── Avatar bubble used in the navbar and profile ─── */
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--bg);
+  font-size: 13px;
+  cursor: pointer;
+  border: 2px solid rgba(0, 212, 255, 0.4);
+}
+
+/* ─── Tabs row (used on browse + pinned) ─── */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+.tab {
+  padding: 12px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-mute);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-family: inherit;
+}
+.tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+.tab:hover:not(.active) { color: #cdd; }
+
+/* ─── Small icon button (the ones in My Builds row actions) ─── */
+.icon-btn {
+  width: 30px; height: 30px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--line);
+  color: var(--text-mute);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-family: inherit;
+}
+.icon-btn:hover { color: var(--cyan); border-color: var(--cyan); }
+.icon-btn.danger:hover { color: var(--red); border-color: var(--red); }
+
+/* ─── Empty-state placeholder ─── */
+.empty-state {
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--text-mute);
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+}
+
+/* Mobile fallback — keep things readable on narrow screens. */
+@media (max-width: 900px) {
+  .page { padding: 24px 20px; }
 }
