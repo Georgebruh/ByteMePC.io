@@ -30,6 +30,16 @@
 
   /* Angled clip-path for the signature button shape */
   --clip:      polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+
+  /* ─── Workshop Terminal additions ───
+     New typography stack and an extra warning/amber accent used by
+     the redesigned landing page + nav. The legacy Segoe-UI body
+     font stays as the global default for all other screens; the
+     mono / display fonts are pulled in by individual components
+     that opt into the terminal look. */
+  --mono:      'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --display:   'Space Grotesk', system-ui, sans-serif;
+  --amber:     #ffb547;
 }
 
 html, body {
