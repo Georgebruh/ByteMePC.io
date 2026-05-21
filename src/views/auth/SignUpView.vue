@@ -23,8 +23,10 @@ function onSubmit(e: Event) {
   <AppNav :show-avatar="false" :right-cta="{ label: 'Sign In', to: '/sign-in' }" />
 
   <div class="auth-wrap">
-    <form class="auth-card" @submit="onSubmit">
-      <h2>Join Byte Me PC</h2>
+    <form class="auth-card spec-frame" @submit="onSubmit">
+      <span class="corner"></span>
+      <span class="kicker">// access · enrol</span>
+      <h2>Join Byte Me PC.</h2>
       <p class="sub">Start building, sharing, and saving rigs in seconds.</p>
 
       <div class="form-row">
@@ -50,7 +52,9 @@ function onSubmit(e: Event) {
         </span>
       </label>
 
-      <button type="submit" class="btn-primary auth-btn" :disabled="!acceptedTerms">Create Account →</button>
+      <button type="submit" class="t-btn primary full" :disabled="!acceptedTerms">
+        Create Account <span class="arrow">→</span>
+      </button>
 
       <div class="auth-foot">
         Already have an account?
@@ -66,37 +70,30 @@ function onSubmit(e: Event) {
   align-items: center;
   justify-content: center;
   padding: 80px 24px;
+  font-family: var(--mono);
 }
 
+/* Spec-sheet frame with corner brackets — provided by .spec-frame. */
 .auth-card {
   width: 100%;
   max-width: 440px;
-  padding: 40px;
+  padding: 36px 40px;
   background: rgba(10, 18, 32, 0.75);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  position: relative;
-}
-.auth-card::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--grad);
-  border-radius: 4px 4px 0 0;
 }
 
+.auth-card .kicker { margin-bottom: 10px; }
+
 .auth-card h2 {
-  font-size: 28px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   margin-bottom: 6px;
-  text-transform: uppercase;
+  color: var(--text);
+  line-height: 1.05;
 }
 .auth-card .sub {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-mute);
   margin-bottom: 28px;
 }
@@ -111,20 +108,17 @@ function onSubmit(e: Event) {
   align-items: flex-start;
   font-size: 12px;
   color: var(--text-mute);
-  margin: 14px 0 4px;
+  margin: 14px 0 18px;
   cursor: pointer;
 }
 .terms input { accent-color: var(--cyan); margin-top: 3px; }
-.terms a { color: var(--cyan); font-weight: 700; }
-
-.auth-btn { width: 100%; margin-top: 8px; }
-.auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.terms a { color: var(--cyan); font-weight: 600; }
 
 .auth-foot {
   text-align: center;
   margin-top: 22px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-mute);
 }
-.auth-foot a { color: var(--cyan); font-weight: 700; }
+.auth-foot a { color: var(--cyan); font-weight: 600; }
 </style>

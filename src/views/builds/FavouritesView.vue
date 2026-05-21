@@ -16,13 +16,14 @@ const favouriteBuilds = computed(() => builds.filter(b => b.favourited))
   <div class="page">
     <div class="page-header">
       <div>
+        <span class="kicker">// saved · favourites</span>
         <div class="section-title">Favourite Builds</div>
         <div class="section-sub">
           {{ favouriteBuilds.length }} build{{ favouriteBuilds.length === 1 ? '' : 's' }}
-          you've saved from the community.
+          saved from the community
         </div>
       </div>
-      <button class="btn-ghost">⚙ Sort by Date</button>
+      <button class="t-btn">Sort: Date Saved</button>
     </div>
 
     <div v-if="favouriteBuilds.length" class="feed-grid">
@@ -38,10 +39,29 @@ const favouriteBuilds = computed(() => builds.filter(b => b.favourited))
 </template>
 
 <style scoped>
+.page { font-family: var(--mono); }
+
+.page-header .kicker { display: block; margin-bottom: 6px; }
+.section-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.section-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+
 .feed-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  gap: 16px;
 }
 
 @media (max-width: 1100px) {

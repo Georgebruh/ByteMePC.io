@@ -13,11 +13,14 @@ const build = computed(() => {
   return findBuild(id) ?? builds[0]
 })
 
-// User initials for the small author avatar.
+// User initials for the hex-tile author chip.
 const authorInitials = computed(() => {
   const handle = build.value.user.replace(/^@/, '')
   return handle.slice(0, 2).toUpperCase()
 })
+
+// Mono build slug shown in the hero panel corner.
+const buildSlug = computed(() => build.value.id.toUpperCase())
 
 // Pre-baked validation rows — these match the design preview. A real
 // impl would build them from compatibility checks on the parts list.
@@ -41,37 +44,40 @@ const validations = [
       {{ build.name }}
     </div>
 
-    <!-- ─── Hero strip (image + meta) ─── -->
-    <div class="build-hero-wrap">
-      <div class="build-hero-img">{{ build.icon }}</div>
-
-      <div class="build-info">
+    <!-- ─── Hero strip: spec-sheet panel + meta ─── -->
+    <div class="build-hero spec-frame grid-paper">
+      <span class="corner"></span>
+      <div class="hero-left">
+        <span class="kicker">// build · {{ buildSlug }}</span>
+        <h1>{{ build.name }}</h1>
+        <div class="hero-meta">
+          ↑ 412 PINS · {{ build.views.toLocaleString() }} VIEWS · UPDATED 2 MIN AGO
+        </div>
         <div class="hero-tags">
           <span class="h-tag purp">High-End</span>
           <span class="h-tag">4K Gaming</span>
           <span class="h-tag ok">Verified Compat</span>
         </div>
-        <h1>{{ build.name }}</h1>
-
-        <!-- Author row: avatar + handle + last-updated + view count. -->
         <div class="author-row">
-          <div class="mini-avatar">{{ authorInitials }}</div>
+          <span class="hex-tile ini">{{ authorInitials }}</span>
           <span class="uname">{{ build.user }}</span>
-          <span class="meta">· Updated 2 min ago · {{ build.views.toLocaleString() }} views</span>
         </div>
-
         <p class="build-desc">{{ build.desc }}</p>
-
         <div class="hero-actions">
-          <button class="btn-primary">⎘ Duplicate</button>
-          <button class="btn-ghost">♡ Favourite</button>
-          <button class="btn-ghost">↗ Share</button>
+          <button class="t-btn primary">⎘ Duplicate</button>
+          <button class="t-btn">♡ Favourite</button>
+          <button class="t-btn">↗ Share</button>
         </div>
+      </div>
+      <div class="hero-right">
+        <div class="price-lbl">TOTAL · PHP</div>
+        <div class="price-val">{{ php(build.totalPrice) }}</div>
+        <div class="price-sub">{{ build.parts.length }} parts · compat ✓</div>
       </div>
     </div>
 
     <!-- ─── Parts list ─── -->
-    <h3 class="caps-label">Parts List</h3>
+    <span class="kicker mute section-kicker">// parts list</span>
     <div class="parts-list">
       <div v-for="row in build.parts" :key="row.tag" class="row">
         <span class="tag">{{ row.tag }}</span>
@@ -81,9 +87,9 @@ const validations = [
         </div>
         <div class="pr">{{ php(row.price) }}</div>
       </div>
-      <!-- Bottom row is the total — emphasised cyan bar. -->
+      <!-- Bottom row is the total — amber underscore. -->
       <div class="row total">
-        <span class="tag total-tag">TOTAL</span>
+        <span class="tag total-tag">// TOTAL · PHP</span>
         <div></div>
         <div class="pr big">{{ php(build.totalPrice) }}</div>
       </div>
@@ -91,10 +97,10 @@ const validations = [
 
     <!-- ─── Validation block ─── -->
     <section class="validation-section">
-      <h3 class="caps-label">Validation Report</h3>
+      <span class="kicker mute section-kicker">// validation report</span>
       <div class="compat-list">
-        <div v-for="v in validations" :key="v.text" class="compat-row ok">
-          <span class="icon">✓</span>
+        <div v-for="v in validations" :key="v.text" class="compat-row">
+          <span class="icon">[OK]</span>
           <span>{{ v.text }}</span>
         </div>
       </div>
@@ -103,135 +109,192 @@ const validations = [
 </template>
 
 <style scoped>
-.build-hero-wrap {
+.page { font-family: var(--mono); }
+
+.breadcrumb {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+/* ─── Hero — grid-paper spec-frame ─── */
+.build-hero {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 32px;
+  grid-template-columns: 1fr auto;
+  gap: 28px;
+  align-items: center;
+  padding: 28px 32px;
   margin-bottom: 32px;
 }
+.build-hero .kicker { display: block; margin-bottom: 10px; }
 
-.build-hero-img {
-  aspect-ratio: 16 / 10;
-  background:
-    linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.15) 60%, transparent),
-    radial-gradient(circle at 70% 30%, rgba(255, 70, 85, 0.25), transparent 50%);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 140px;
-  color: var(--text-mute);
+.hero-left h1 {
+  font-family: var(--display);
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 10px;
+  color: var(--text);
 }
-
-.build-info h1 {
-  font-size: 40px;
-  font-weight: 900;
-  letter-spacing: -1.5px;
-  line-height: 1.05;
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--text-low);
+  text-transform: uppercase;
   margin-bottom: 14px;
-  color: #fff;
 }
-
-.hero-tags { display: flex; gap: 8px; margin-bottom: 14px; }
+.hero-tags { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
 
 .author-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
-.mini-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--grad);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  color: var(--bg);
-  font-size: 12px;
+.author-row .ini {
+  width: 26px;
+  height: 26px;
+  font-size: 10px;
 }
-.uname { font-size: 13px; color: var(--cyan); font-weight: 700; }
-.meta { font-size: 12px; color: var(--text-mute); }
+.author-row .uname {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
 
 .build-desc {
-  color: var(--text-mute);
-  line-height: 1.7;
-  margin-bottom: 22px;
-  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.65;
+  margin-bottom: 20px;
+  font-family: var(--mono);
+  font-size: 12px;
 }
 
-.hero-actions { display: flex; gap: 10px; }
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-.caps-label {
-  font-size: 13px;
-  letter-spacing: 2px;
+.hero-right {
+  text-align: right;
+  border-left: 1px dashed var(--line);
+  padding-left: 28px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero-right .price-lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-low);
   text-transform: uppercase;
-  color: var(--text-mute);
-  margin-bottom: 14px;
-  font-weight: 700;
+  margin-bottom: 4px;
 }
+.hero-right .price-val {
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--amber);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.hero-right .price-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-low);
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.section-kicker { display: block; margin-bottom: 12px; }
 
 /* ─── Parts list ─── */
 .parts-list {
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
-  border-radius: 4px;
   overflow: hidden;
 }
 .row {
   display: grid;
-  grid-template-columns: 100px 1fr 160px;
-  padding: 14px 18px;
-  font-size: 14px;
-  border-bottom: 1px solid var(--line-2);
+  grid-template-columns: 110px 1fr 160px;
+  padding: 13px 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  border-bottom: 1px dashed var(--line);
   align-items: center;
 }
 .row:last-child { border-bottom: none; }
 .row .tag {
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--cyan);
 }
-.row .part-name { color: #fff; font-weight: 600; }
-.row .part-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
+.row .part-name {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.015em;
+}
+.row .part-sub { font-size: 10.5px; color: var(--text-mute); margin-top: 3px; letter-spacing: 0.04em; }
 .row .pr {
   text-align: right;
-  font-weight: 800;
-  color: var(--cyan);
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--amber);
+  font-size: 14px;
+  letter-spacing: -0.015em;
 }
 
 .row.total {
-  background: rgba(0, 212, 255, 0.05);
-  font-weight: 800;
+  background: rgba(0, 212, 255, 0.04);
+  border-top: 1px solid var(--cyan);
+  border-bottom: none;
 }
-.total-tag { color: var(--purple) !important; }
-.row .pr.big { font-size: 22px; }
+.row.total .total-tag { color: var(--cyan); }
+.row .pr.big {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
 
 /* ─── Validation strip ─── */
 .validation-section {
-  margin-top: 36px;
-  padding-top: 28px;
+  margin-top: 32px;
+  padding-top: 22px;
   border-top: 1px solid var(--line);
 }
 .compat-list { margin-bottom: 4px; }
 .compat-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  font-size: 13px;
-  color: #cdd;
+  gap: 12px;
+  padding: 6px 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
 }
-.compat-row.ok .icon { color: var(--green); font-size: 14px; }
+.compat-row .icon {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  font-weight: 700;
+}
 
 @media (max-width: 1100px) {
-  .build-hero-wrap { grid-template-columns: 1fr; }
-  .build-info h1 { font-size: 32px; }
+  .build-hero { grid-template-columns: 1fr; gap: 18px; }
+  .hero-right {
+    border-left: none;
+    border-top: 1px dashed var(--line);
+    padding-left: 0;
+    padding-top: 18px;
+    text-align: left;
+  }
+  .hero-left h1 { font-size: 30px; }
 }
 </style>

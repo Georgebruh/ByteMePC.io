@@ -3,15 +3,6 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppNav from '../components/AppNav.vue'
 
-// ─── Profile header counts ──────────────────────────
-const profileCounts = [
-  { lbl: 'Builds',     val: 12 },
-  { lbl: 'Public',     val: 4 },
-  { lbl: 'Favourites', val: 28 },
-  { lbl: 'Pinned',     val: 17 },
-  { lbl: 'Total Views', val: 342 },
-]
-
 // ─── Account form state ─────────────────────────────
 // Pre-populated with the user info known from the system context.
 const displayName = ref('George Senagan')
@@ -42,13 +33,13 @@ const activity: Activity[] = [
   { kind: 'CREATED',    name: 'Workstation 2026',        sub: 'Draft build',              when: '1 week ago' },
 ]
 
-// Tag colour per activity kind — matches the design preview.
-function tagStyle(k: ActivityKind): string {
+// Map activity kind to the .h-tag variant that matches its meaning.
+function tagClass(k: ActivityKind): string {
   switch (k) {
-    case 'PUBLISHED':  return 'color: var(--cyan)'
-    case 'FAVOURITED': return 'color: var(--purple)'
-    case 'PINNED':     return 'color: var(--green)'
-    case 'CREATED':    return 'color: var(--cyan)'
+    case 'PUBLISHED':  return 'h-tag'
+    case 'FAVOURITED': return 'h-tag purp'
+    case 'PINNED':     return 'h-tag ok'
+    case 'CREATED':    return 'h-tag amber'
   }
 }
 </script>
@@ -58,29 +49,40 @@ function tagStyle(k: ActivityKind): string {
 
   <div class="page">
     <!-- ─── Profile header card ─── -->
-    <div class="profile-head">
-      <div class="profile-avatar">G</div>
+    <div class="profile-head spec-frame">
+      <span class="corner"></span>
+      <span class="hex-tile profile-avatar">G</span>
       <div class="profile-meta">
+        <span class="kicker">// profile · {{ username }}</span>
         <h1>{{ displayName }}</h1>
-        <div class="handle">{{ username }}</div>
-        <div class="profile-counts">
-          <div v-for="c in profileCounts" :key="c.lbl">
-            <strong>{{ c.val }}</strong>
-            {{ c.lbl }}
-          </div>
-        </div>
       </div>
       <div class="profile-actions">
-        <button class="btn-ghost">⚙ Edit Profile</button>
-        <RouterLink to="/builder" class="btn-primary new-build">+ New Build</RouterLink>
+        <button class="t-btn">Edit Profile</button>
+        <RouterLink to="/builder" class="t-btn primary">+ New Build</RouterLink>
       </div>
+    </div>
+
+    <!-- Status strip showing the profile counts. -->
+    <div class="terminal-strip stats-strip" aria-hidden="true">
+      <span class="dot"></span>
+      <span class="lbl">BUILDS · 12</span>
+      <span class="sep">/</span>
+      <span class="lbl">PUBLIC · 4</span>
+      <span class="sep">/</span>
+      <span class="lbl">FAV · 28</span>
+      <span class="sep">/</span>
+      <span class="lbl">PINS · 17</span>
+      <span class="sep">/</span>
+      <span class="lbl">VIEWS · 342</span>
+      <span class="grow"></span>
+      <span class="lbl">JOINED 2026-02-11</span>
     </div>
 
     <!-- ─── Settings: Account + Preferences ─── -->
     <div class="settings-grid">
 
-      <div class="card pad">
-        <h3 class="caps-label">Account</h3>
+      <div class="settings-card">
+        <span class="kicker mute">// account</span>
 
         <div class="form-row">
           <label class="field-label" for="dn">Display Name</label>
@@ -95,11 +97,11 @@ function tagStyle(k: ActivityKind): string {
           <input id="em" class="input" v-model="email" disabled />
         </div>
 
-        <button class="btn-primary save">Save Changes</button>
+        <button class="t-btn primary save">Save Changes</button>
       </div>
 
-      <div class="card pad">
-        <h3 class="caps-label">Preferences</h3>
+      <div class="settings-card">
+        <span class="kicker mute">// preferences</span>
 
         <div class="form-row">
           <label class="field-label" for="cur">Default Currency</label>
@@ -131,16 +133,16 @@ function tagStyle(k: ActivityKind): string {
         </div>
 
         <div class="danger-zone">
-          <button class="btn-danger">Delete Account</button>
+          <button class="t-btn warn">Delete Account</button>
         </div>
       </div>
     </div>
 
     <!-- ─── Recent activity ─── -->
-    <h3 class="caps-label section-spacer">Recent Activity</h3>
+    <span class="kicker mute section-kicker">// recent activity</span>
     <div class="activity-list">
       <div v-for="a in activity" :key="a.name + a.when" class="row">
-        <span class="tag" :style="tagStyle(a.kind)">{{ a.kind }}</span>
+        <span :class="tagClass(a.kind)">{{ a.kind }}</span>
         <div>
           <div class="part-name">{{ a.name }}</div>
           <div class="part-sub">{{ a.sub }}</div>
@@ -152,130 +154,130 @@ function tagStyle(k: ActivityKind): string {
 </template>
 
 <style scoped>
+.page { font-family: var(--mono); }
+
 /* ─── Header card ─── */
 .profile-head {
   display: flex;
-  gap: 28px;
+  gap: 24px;
   align-items: center;
-  padding: 32px;
-  background: rgba(10, 18, 32, 0.5);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  margin-bottom: 28px;
+  padding: 28px 32px;
+  margin-bottom: 0;
   flex-wrap: wrap;
 }
 .profile-avatar {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: var(--grad);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42px;
-  font-weight: 900;
-  color: var(--bg);
-  border: 3px solid rgba(0, 212, 255, 0.4);
+  width: 80px;
+  height: 64px;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: 0.04em;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
 }
 
+.profile-meta .kicker { display: block; margin-bottom: 6px; }
 .profile-meta h1 {
+  font-family: var(--display);
   font-size: 32px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  margin-bottom: 4px;
-  color: #fff;
-}
-.handle {
-  color: var(--cyan);
-  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 1px;
-  margin-bottom: 14px;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  line-height: 1.05;
 }
-.profile-counts {
-  display: flex;
-  gap: 28px;
-  flex-wrap: wrap;
-}
-.profile-counts div { font-size: 13px; color: var(--text-mute); }
-.profile-counts strong { font-size: 18px; color: #fff; display: block; }
 
 .profile-actions {
   margin-left: auto;
   display: flex;
   gap: 10px;
 }
-.profile-actions .new-build { text-decoration: none; display: inline-block; }
+
+/* Stats status strip — sits directly under the profile header. */
+.stats-strip {
+  margin: 14px 0 28px;
+  border-top: none;
+}
 
 /* ─── Settings grid (Account + Preferences) ─── */
 .settings-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  grid-template-columns: 1fr 1px 1fr;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 0;
 }
-.card.pad { padding: 24px; }
-
-.caps-label {
-  font-size: 13px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  margin-bottom: 18px;
-  font-weight: 700;
+.settings-card {
+  background: var(--bg);
+  padding: 22px;
 }
-.section-spacer { margin: 36px 0 14px; }
+.settings-grid::after {
+  /* The 1px middle column already gives the divider; no extra rule. */
+}
+.settings-card .kicker { display: block; margin-bottom: 14px; }
 
-.form-row { margin-bottom: 18px; }
+.section-kicker {
+  display: block;
+  margin: 32px 0 14px;
+}
+
+.form-row { margin-bottom: 16px; }
 .check-line {
   display: flex;
   gap: 10px;
   align-items: center;
-  font-size: 13px;
-  color: #cdd;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
   cursor: pointer;
 }
 .check-line input { accent-color: var(--cyan); }
 
-.btn-primary.save { margin-top: 8px; }
+.t-btn.save { margin-top: 6px; }
 
 .danger-zone {
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
 }
 
 /* ─── Activity list ─── */
 .activity-list {
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
-  border-radius: 4px;
   overflow: hidden;
+  font-family: var(--mono);
 }
 .row {
   display: grid;
-  grid-template-columns: 120px 1fr 140px;
-  padding: 14px 18px;
-  font-size: 14px;
-  border-bottom: 1px solid var(--line-2);
+  grid-template-columns: 130px 1fr 130px;
+  padding: 13px 18px;
+  font-size: 12px;
+  border-bottom: 1px dashed var(--line);
   align-items: center;
 }
 .row:last-child { border-bottom: none; }
-.row .tag {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+.row .part-name {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.015em;
 }
-.row .part-name { color: #fff; font-weight: 600; }
-.row .part-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
+.row .part-sub {
+  font-size: 10.5px;
+  color: var(--text-mute);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+}
 .row .when {
   text-align: right;
   color: var(--text-mute);
-  font-size: 12px;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
 }
 
 @media (max-width: 1000px) {
-  .settings-grid { grid-template-columns: 1fr; }
+  .settings-grid { grid-template-columns: 1fr; gap: 1px; }
   .profile-actions { margin-left: 0; width: 100%; }
+  .stats-strip { overflow-x: auto; }
 }
 </style>

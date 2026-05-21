@@ -22,9 +22,11 @@ function onSubmit(e: Event) {
   <AppNav :show-avatar="false" :right-cta="{ label: 'Sign Up', to: '/sign-up' }" />
 
   <div class="auth-wrap">
-    <form class="auth-card" @submit="onSubmit">
-      <h2>Welcome Back</h2>
-      <p class="sub">Sign in to continue building.</p>
+    <form class="auth-card spec-frame" @submit="onSubmit">
+      <span class="corner"></span>
+      <span class="kicker">// access · resume</span>
+      <h2>Welcome back.</h2>
+      <p class="sub">Pick up where you left off.</p>
 
       <div class="form-row">
         <label class="field-label" for="email">Email</label>
@@ -44,11 +46,13 @@ function onSubmit(e: Event) {
         <a href="#">Forgot password?</a>
       </div>
 
-      <button type="submit" class="btn-primary auth-btn">Sign In →</button>
+      <button type="submit" class="t-btn primary full">
+        Sign In <span class="arrow">→</span>
+      </button>
 
       <div class="divider">OR</div>
 
-      <button type="button" class="btn-ghost full">Continue with Google</button>
+      <button type="button" class="t-btn full">Continue with Google</button>
 
       <div class="auth-foot">
         Don't have an account?
@@ -64,38 +68,33 @@ function onSubmit(e: Event) {
   align-items: center;
   justify-content: center;
   padding: 80px 24px;
+  font-family: var(--mono);
 }
 
+/* Spec-sheet frame with corner brackets — provided by .spec-frame.
+   No gradient accent strip; the brackets do the framing. */
 .auth-card {
   width: 100%;
   max-width: 440px;
-  padding: 40px;
+  padding: 36px 40px;
   background: rgba(10, 18, 32, 0.75);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  position: relative;
 }
-/* Gradient accent strip on the top edge of the card. */
-.auth-card::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--grad);
-  border-radius: 4px 4px 0 0;
+
+.auth-card .kicker {
+  margin-bottom: 10px;
 }
 
 .auth-card h2 {
-  font-size: 28px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   margin-bottom: 6px;
-  text-transform: uppercase;
+  color: var(--text);
+  line-height: 1.05;
 }
 .auth-card .sub {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-mute);
   margin-bottom: 28px;
 }
@@ -108,9 +107,9 @@ function onSubmit(e: Event) {
   align-items: center;
   font-size: 12px;
   color: var(--text-mute);
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
-.row-between a { color: var(--cyan); font-weight: 700; }
+.row-between a { color: var(--cyan); font-weight: 600; }
 .check-line {
   display: flex;
   gap: 8px;
@@ -119,16 +118,15 @@ function onSubmit(e: Event) {
 }
 .check-line input { accent-color: var(--cyan); }
 
-.auth-btn { width: 100%; margin-top: 8px; }
-
 .divider {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 22px 0;
+  margin: 18px 0;
   color: var(--text-low);
-  font-size: 11px;
-  letter-spacing: 2px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  font-family: var(--mono);
 }
 .divider::before,
 .divider::after {
@@ -138,13 +136,11 @@ function onSubmit(e: Event) {
   background: var(--line);
 }
 
-.btn-ghost.full { width: 100%; }
-
 .auth-foot {
   text-align: center;
   margin-top: 22px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-mute);
 }
-.auth-foot a { color: var(--cyan); font-weight: 700; }
+.auth-foot a { color: var(--cyan); font-weight: 600; }
 </style>
