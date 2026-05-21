@@ -10,25 +10,26 @@ const budget = ref('120,000')
 
 // Preset budget chips under the big input.
 const presets = ['₱40k', '₱80k', '₱120k', '₱200k']
+const activePreset = ref('₱120k')
 
 // Locks — slots where the user said "I already own this, build around
 // it". The GPU one is locked in the design preview to demo the state.
 interface LockSlot {
   key: string
   label: string
-  icon: string
+  code: string
   locked: boolean
   pinnedPart?: string  // shown under the slot label when locked
 }
 const locks = ref<LockSlot[]>([
-  { key: 'cpu',     label: 'CPU',         icon: '🖥', locked: false },
-  { key: 'mobo',    label: 'Motherboard', icon: '🧩', locked: false },
-  { key: 'gpu',     label: 'GPU',         icon: '🎮', locked: true, pinnedPart: 'RTX 4080' },
-  { key: 'ram',     label: 'RAM',         icon: '💾', locked: false },
-  { key: 'psu',     label: 'PSU',         icon: '💡', locked: false },
-  { key: 'storage', label: 'Storage',     icon: '💽', locked: false },
-  { key: 'case',    label: 'Case',        icon: '🗃', locked: false },
-  { key: 'cooler',  label: 'Cooler',      icon: '❄', locked: false },
+  { key: 'cpu',     label: 'CPU',         code: 'CPU', locked: false },
+  { key: 'mobo',    label: 'Motherboard', code: 'MB',  locked: false },
+  { key: 'gpu',     label: 'GPU',         code: 'GPU', locked: true, pinnedPart: 'RTX 4080' },
+  { key: 'ram',     label: 'RAM',         code: 'RAM', locked: false },
+  { key: 'psu',     label: 'PSU',         code: 'PSU', locked: false },
+  { key: 'storage', label: 'Storage',     code: 'SSD', locked: false },
+  { key: 'case',    label: 'Case',        code: 'CSE', locked: false },
+  { key: 'cooler',  label: 'Cooler',      code: 'COO', locked: false },
 ])
 
 function toggleLock(key: string) {
@@ -62,44 +63,39 @@ const summary = {
   <div class="page">
     <div class="page-header">
       <div>
+        <span class="kicker">// auto · optimiser</span>
         <div class="section-title">Budget Auto-Builder</div>
-        <div class="section-sub">
-          Drop your budget. We'll pick a fully compatible build optimized for performance.
-        </div>
+        <div class="section-sub">Drop a budget · we pick the parts</div>
       </div>
-      <RouterLink to="/builder" class="btn-ghost">Switch to Manual →</RouterLink>
+      <RouterLink to="/builder" class="t-btn">Switch to Manual <span class="arrow">→</span></RouterLink>
     </div>
 
-    <!-- ─── Top hero: pitch + budget input ─── -->
-    <div class="budget-hero">
-      <div>
-        <h2>
-          BUILD WITHIN<br>
-          <span class="grad3">YOUR LIMITS.</span>
-        </h2>
-        <p>
-          Tell us how much you want to spend. Our auto-builder picks compatible parts
-          that maximize raw performance per peso — then lets you tune the result before saving.
-        </p>
+    <!-- ─── Command-prompt budget panel ─── -->
+    <div class="budget-prompt">
+      <div class="prompt-ln"><span class="arrow">$</span> bytemepc auto-build --budget</div>
+      <div class="prompt-ln cmt"># optimises raw performance per peso · locks parts you own</div>
+
+      <div class="input-line">
+        <span class="cur">PHP</span>
+        <input type="text" v-model="budget" />
+        <span class="caret"></span>
       </div>
-      <div class="budget-input-wrap">
-        <label class="field-label">Your budget</label>
-        <div class="budget-amount">
-          <span class="budget-currency">PHP</span>
-          <input type="text" v-model="budget" />
-        </div>
-        <div class="budget-presets">
-          <button v-for="p in presets" :key="p" type="button">{{ p }}</button>
-        </div>
+
+      <div class="presets">
+        <button
+          v-for="p in presets"
+          :key="p"
+          type="button"
+          class="t-btn"
+          :class="{ primary: activePreset === p }"
+          @click="activePreset = p"
+        >{{ p }}</button>
       </div>
     </div>
 
-    <!-- ─── Lock-parts grid ─── -->
-    <div class="lock-list">
-      <h4>
-        Lock parts you already own
-        <span class="hint">— optional</span>
-      </h4>
+    <!-- ─── Lock-parts directory grid ─── -->
+    <div class="lock-section">
+      <span class="kicker mute">// lock owned parts <span class="hint">— optional</span></span>
       <div class="lock-grid">
         <button
           v-for="s in locks"
@@ -109,22 +105,22 @@ const summary = {
           type="button"
           @click="toggleLock(s.key)"
         >
-          <span class="ic">{{ s.icon }}</span>
-          {{ s.label }}<br>
-          <span class="sub">{{ s.locked ? s.pinnedPart ?? 'Locked' : 'Any' }}</span>
+          <span class="hex-tile code">{{ s.code }}</span>
+          <span class="lbl">{{ s.label }}</span>
+          <span class="sub">{{ s.locked ? s.pinnedPart ?? 'locked' : 'any' }}</span>
         </button>
       </div>
     </div>
 
     <div class="generate-row">
-      <button class="btn-primary big">⚡ Generate Build</button>
-      <button class="btn-ghost">Advanced Options</button>
+      <button class="t-btn primary big">⚡ Generate Build</button>
+      <button class="t-btn">Advanced Options</button>
     </div>
 
     <!-- ─── Suggested build result ─── -->
     <div class="result-wrap">
       <div class="parts-list">
-        <div class="result-head">Suggested Build · 99% budget utilized</div>
+        <div class="result-head">// suggested build · 99% budget utilized</div>
         <div v-for="row in suggested" :key="row.tag" class="row">
           <span class="tag">{{ row.tag }}</span>
           <div>
@@ -136,20 +132,20 @@ const summary = {
       </div>
 
       <aside class="result-summary">
-        <h4 class="caps-label">Auto Result</h4>
+        <span class="kicker mute side-kicker">// auto result</span>
         <div class="row-sum"><span class="lbl">Budget</span><span class="val">{{ php(summary.budget) }}</span></div>
         <div class="row-sum"><span class="lbl">Total</span><span class="val">{{ php(summary.total) }}</span></div>
         <div class="row-sum"><span class="lbl">Over budget</span><span class="val warn">+ {{ php(summary.overBudget) }}</span></div>
-        <div class="row-sum"><span class="lbl">Est. perf score</span><span class="val">{{ summary.perfScore.toLocaleString() }}</span></div>
+        <div class="row-sum"><span class="lbl">Est. perf</span><span class="val">{{ summary.perfScore.toLocaleString() }}</span></div>
 
         <div class="row-total">
-          <span class="lbl">Status</span>
+          <span class="lbl">STATUS</span>
           <span class="h-tag warn">Over budget</span>
         </div>
 
         <div class="result-actions">
-          <button class="btn-primary full">Tweak Build</button>
-          <button class="btn-ghost full">Re-generate</button>
+          <button class="t-btn primary full">Tweak Build</button>
+          <button class="t-btn full">Re-generate</button>
         </div>
       </aside>
     </div>
@@ -157,234 +153,263 @@ const summary = {
 </template>
 
 <style scoped>
-.grad3 {
-  background: var(--grad-3);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.page { font-family: var(--mono); }
+
+.page-header .kicker { display: block; margin-bottom: 6px; }
+.section-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.section-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-low);
 }
 
-/* ─── Hero block ─── */
-.budget-hero {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(168, 85, 247, 0.04));
+/* ─── Command-prompt budget panel ─── */
+.budget-prompt {
   border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 36px;
-  margin-bottom: 24px;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 36px;
-  align-items: center;
+  background: var(--bg);
+  padding: 22px 26px;
+  margin-bottom: 22px;
+  position: relative;
 }
-.budget-hero h2 {
-  font-size: 32px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  margin-bottom: 10px;
-  color: #fff;
+.budget-prompt::before {
+  content: '';
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  border-top: 2px dashed var(--cyan);
 }
-.budget-hero p {
-  font-size: 14px;
+
+.prompt-ln {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
   color: var(--text-mute);
-  line-height: 1.6;
-  max-width: 480px;
 }
+.prompt-ln + .prompt-ln { margin-top: 4px; }
+.prompt-ln .arrow { color: var(--cyan); margin-right: 6px; }
+.prompt-ln.cmt { color: var(--text-low); }
 
-.budget-input-wrap {
-  background: rgba(0, 0, 0, 0.45);
+.input-line {
+  margin-top: 16px;
+  padding: 12px 16px;
   border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 22px;
-}
-.budget-amount {
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 6px;
+  align-items: center;
+  gap: 12px;
 }
-.budget-currency {
-  font-size: 14px;
+.input-line .cur {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
   color: var(--cyan);
-  letter-spacing: 2px;
   font-weight: 700;
 }
-.budget-amount input {
+.input-line input {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
-  color: #fff;
+  color: var(--text);
+  font-family: var(--display);
   font-size: 36px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   min-width: 0;
+  padding: 0;
 }
-.budget-presets {
+.input-line .caret {
+  width: 10px;
+  height: 28px;
+  background: var(--cyan);
+  animation: caret-blink 1.1s steps(2) infinite;
+}
+@keyframes caret-blink { 50% { opacity: 0; } }
+
+.presets {
   display: flex;
   gap: 8px;
   margin-top: 14px;
 }
-.budget-presets button {
-  flex: 1;
-  padding: 7px 0;
-  background: rgba(0, 212, 255, 0.05);
-  border: 1px solid var(--line);
-  color: var(--cyan);
-  border-radius: 2px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-}
+.presets .t-btn { flex: 1; justify-content: center; padding: 9px 0; font-size: 11px; }
 
-/* ─── Lock grid ─── */
-.lock-list {
-  background: rgba(10, 18, 32, 0.5);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 18px;
-  margin-bottom: 24px;
-}
-.lock-list h4 {
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  margin-bottom: 12px;
-}
-.lock-list .hint {
+/* ─── Lock directory grid ─── */
+.lock-section { margin-bottom: 22px; }
+.lock-section .kicker { display: block; margin-bottom: 12px; }
+.lock-section .hint {
   color: var(--text-low);
-  font-weight: 400;
-  text-transform: none;
   letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
 }
 
 .lock-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
 }
 .lock-cell {
-  padding: 14px;
-  border: 1px dashed var(--line);
-  border-radius: 3px;
+  background: var(--bg);
+  padding: 16px 14px;
   text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
   color: var(--text-mute);
-  font-size: 12px;
   cursor: pointer;
-  background: transparent;
-  font-family: inherit;
-  transition: all 0.2s;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s, color 0.15s;
 }
-.lock-cell:hover { color: #cdd; border-color: var(--cyan); }
+.lock-cell:hover { background: rgba(0, 212, 255, 0.05); color: var(--text); }
+.lock-cell .code {
+  width: 32px;
+  height: 24px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+.lock-cell .lbl {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+.lock-cell .sub {
+  font-size: 10px;
+  color: var(--text-low);
+  letter-spacing: 0.04em;
+}
 .lock-cell.locked {
-  border: 1px solid var(--purple);
+  background: rgba(168, 85, 247, 0.06);
+  color: var(--purple);
+}
+.lock-cell.locked .lbl,
+.lock-cell.locked .sub { color: var(--purple); }
+.lock-cell.locked .code {
+  border-color: var(--purple);
   background: rgba(168, 85, 247, 0.08);
   color: var(--purple);
-  border-style: solid;
 }
-.lock-cell .ic { font-size: 22px; display: block; margin-bottom: 6px; }
-.lock-cell .sub { color: var(--text-low); font-size: 11px; }
-.lock-cell.locked .sub { color: var(--purple); }
 
-.generate-row { display: flex; gap: 12px; margin-bottom: 28px; }
-.btn-primary.big { padding: 14px 42px; font-size: 15px; }
+.generate-row { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+.t-btn.big { padding: 14px 32px; font-size: 13px; }
 
 /* ─── Result: parts list + summary ─── */
 .result-wrap {
   display: grid;
   grid-template-columns: 1fr 320px;
-  gap: 24px;
+  gap: 22px;
 }
 .parts-list {
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
-  border-radius: 4px;
   overflow: hidden;
 }
 .result-head {
-  padding: 18px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--line);
-  background: rgba(0, 212, 255, 0.05);
-  font-size: 11px;
-  letter-spacing: 2px;
+  background: rgba(0, 212, 255, 0.04);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--cyan);
-  font-weight: 800;
+  font-weight: 600;
 }
 .row {
   display: grid;
-  grid-template-columns: 100px 1fr 160px;
-  padding: 14px 18px;
-  font-size: 14px;
-  border-bottom: 1px solid var(--line-2);
+  grid-template-columns: 90px 1fr 140px;
+  padding: 13px 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  border-bottom: 1px dashed var(--line);
   align-items: center;
 }
 .row:last-child { border-bottom: none; }
 .row .tag {
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--cyan);
 }
-.row .part-name { color: #fff; font-weight: 600; }
-.row .part-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
+.row .part-name {
+  font-family: var(--display);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.015em;
+}
+.row .part-sub { font-size: 10.5px; color: var(--text-mute); margin-top: 3px; letter-spacing: 0.04em; }
 .row .pr {
   text-align: right;
-  font-weight: 800;
-  color: var(--cyan);
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--amber);
+  font-size: 14px;
+  letter-spacing: -0.015em;
 }
 
 .result-summary {
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 20px;
+  padding: 18px;
   height: fit-content;
 }
-.caps-label {
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  margin-bottom: 14px;
-}
+.side-kicker { display: block; margin-bottom: 12px; }
 .row-sum {
   display: flex;
   justify-content: space-between;
-  padding: 9px 0;
-  font-size: 13px;
-  border-bottom: 1px solid var(--line-2);
+  padding: 7px 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  border-bottom: 1px dashed var(--line);
 }
-.row-sum .lbl { color: var(--text-mute); }
-.row-sum .val { color: #fff; font-weight: 600; }
+.row-sum:last-of-type { border-bottom: none; }
+.row-sum .lbl { color: var(--text-mute); letter-spacing: 0.04em; }
+.row-sum .val {
+  font-family: var(--display);
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.015em;
+}
 .row-sum .val.warn { color: var(--red); }
 .row-total {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0 0;
-  margin-top: 12px;
-  border-top: 2px solid var(--cyan);
+  padding: 14px 0 0;
+  margin-top: 8px;
+  border-top: 1px solid var(--cyan);
 }
 .row-total .lbl {
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: 10px;
   color: var(--text-mute);
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.18em;
 }
 .result-actions {
-  margin-top: 18px;
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
-.result-actions .full { width: 100%; }
 
 @media (max-width: 1100px) {
-  .budget-hero, .result-wrap { grid-template-columns: 1fr; }
+  .result-wrap { grid-template-columns: 1fr; }
   .lock-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
