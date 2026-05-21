@@ -103,7 +103,9 @@ const ticks: Tick[] = [
           </h1>
 
           <p class="lede">
-            Jesse is <strong> GAY </strong>
+            A bench, not a checkout. Spec the rig, check the compatibility,
+            see the price in <strong>PHP</strong> — then save it, share it,
+            or fork someone else's. No carts, no upsells, no nag.
           </p>
 
           <div class="actions">
