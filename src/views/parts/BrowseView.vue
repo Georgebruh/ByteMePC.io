@@ -42,6 +42,18 @@ function clearFilters() {
   brandAMD.value = true
   sockets.value = { LGA1700: false, AM5: false, LGA1200: false, AM4: false }
 }
+
+// Live parts-price ticker — frozen for the mockup. Once the parts API
+// is wired the deltas can become reactive without changing the view.
+type Tick = { name: string; price: string; delta: string; dir: 'up' | 'dn' }
+const ticks: Tick[] = [
+  { name: '9800X3D',        price: '₱28,900', delta: '2.1%', dir: 'dn' },
+  { name: 'RTX 5080',       price: '₱61,800', delta: '0.4%', dir: 'up' },
+  { name: 'DDR5-6000 32GB', price: '₱7,300',  delta: '4.0%', dir: 'dn' },
+  { name: 'T705 2TB',       price: '₱13,200', delta: '1.2%', dir: 'up' },
+  { name: 'RM850x',         price: '₱8,400',  delta: '0.0%', dir: 'up' },
+  { name: '14700K',         price: '₱21,500', delta: '0.9%', dir: 'dn' },
+]
 </script>
 
 <template>
@@ -50,18 +62,34 @@ function clearFilters() {
   <div class="page">
     <div class="page-header">
       <div>
+        <span class="kicker">// catalog · 3,247 components</span>
         <div class="section-title">Browse Parts</div>
-        <div class="section-sub">3,247 components across 5 categories.</div>
+        <div class="section-sub">5 categories · live market index</div>
       </div>
-      <button class="btn-ghost">⚙ Sort: Most Popular</button>
+      <button class="t-btn">Sort: Popular</button>
     </div>
 
-    <!-- Category tabs — switching swaps the visible grid. -->
-    <div class="tabs">
+    <!-- Live parts-price ticker (mirrors the landing's ticker). -->
+    <div class="ticker" aria-hidden="true">
+      <div class="scroll">
+        <template v-for="pass in 2" :key="pass">
+          <span v-for="t in ticks" :key="`${pass}-${t.name}`" class="tick">
+            <b>{{ t.name }}</b>
+            {{ t.price }}
+            <em :class="`delta-${t.dir}`">
+              {{ t.dir === 'up' ? '↑' : '↓' }} {{ t.delta }}
+            </em>
+          </span>
+        </template>
+      </div>
+    </div>
+
+    <!-- Segmented category tabs — match the AppNav pill style. -->
+    <div class="seg-tabs">
       <button
         v-for="t in tabs"
         :key="t.key"
-        class="tab"
+        class="seg"
         :class="{ active: activeTab === t.key }"
         @click="activeTab = t.key"
       >{{ t.label }} · {{ t.count }}</button>
@@ -69,13 +97,13 @@ function clearFilters() {
 
     <div class="search-bar">
       <input class="input" v-model="search" placeholder="🔍  Search CPUs by name, brand, socket…" />
-      <button class="btn-ghost" @click="clearFilters">Clear filters</button>
+      <button class="t-btn" @click="clearFilters">Clear Filters</button>
     </div>
 
     <div class="catalog">
-      <!-- Left filter sidebar. Sticky on tall pages. -->
+      <!-- Left filter sidebar. -->
       <aside class="filters">
-        <h4>Filters</h4>
+        <span class="kicker mute">// filters</span>
 
         <div class="filter-group">
           <label class="field-label">Brand</label>
@@ -112,7 +140,7 @@ function clearFilters() {
           </div>
         </div>
 
-        <button class="btn-primary full">Apply Filters</button>
+        <button class="t-btn primary full">Apply Filters</button>
       </aside>
 
       <!-- Right grid of part cards. -->
@@ -128,69 +156,150 @@ function clearFilters() {
 </template>
 
 <style scoped>
+.page { font-family: var(--mono); }
+
+.page-header .kicker { display: block; margin-bottom: 6px; }
+.section-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.section-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+
+/* ─── Live ticker ─── */
+.ticker {
+  padding: 8px 16px;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1px solid var(--line);
+  background: rgba(5, 8, 16, 0.5);
+  margin: 18px 0 22px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+}
+.ticker .scroll {
+  display: inline-flex;
+  gap: 40px;
+  white-space: nowrap;
+  animation: t-scroll 45s linear infinite;
+}
+.ticker .tick { display: inline-flex; align-items: baseline; gap: 8px; }
+.ticker b         { color: var(--cyan); font-weight: 500; }
+.ticker .delta-up { color: var(--green); font-style: normal; }
+.ticker .delta-dn { color: var(--red);   font-style: normal; }
+@keyframes t-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker .scroll { animation: none !important; }
+}
+
+/* ─── Segmented tabs ─── */
+.seg-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  margin-bottom: 18px;
+  overflow-x: auto;
+  width: fit-content;
+}
+.seg {
+  padding: 8px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
+}
+.seg:hover:not(.active) { color: var(--text); }
+.seg.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
 .search-bar {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 .search-bar .input { flex: 1; }
 
 .catalog {
   display: grid;
   grid-template-columns: 260px 1fr;
-  gap: 24px;
+  gap: 22px;
 }
 
 .filters {
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 20px;
+  padding: 18px;
   height: fit-content;
 }
-.filters h4 {
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  margin-bottom: 14px;
+.filters .kicker { display: block; margin-bottom: 14px; }
+.filter-group {
+  padding: 14px 0;
+  border-top: 1px dashed var(--line);
 }
-.filter-group { margin-bottom: 22px; }
+.filter-group:first-of-type { border-top: none; padding-top: 0; }
 
 .check-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 0;
-  font-size: 13px;
-  color: #ccd;
+  padding: 5px 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
   cursor: pointer;
 }
 .check-row input { accent-color: var(--cyan); }
 .check-row .count {
   margin-left: auto;
   color: var(--text-low);
-  font-size: 11px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
 }
 
 .range { display: flex; gap: 8px; }
 .range input {
   flex: 1;
   padding: 8px;
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--line);
-  color: #fff;
-  border-radius: 2px;
-  font-family: inherit;
+  color: var(--text);
+  border-radius: 0;
 }
 
-.btn-primary.full { width: 100%; }
+.t-btn.full { margin-top: 8px; }
 
 .parts-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 
 @media (max-width: 1100px) {

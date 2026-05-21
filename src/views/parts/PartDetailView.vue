@@ -46,6 +46,17 @@ const crumbCategory = computed(() => {
     case 'psu': return 'PSUs'
   }
 })
+
+// Mono class label for the hero panel corner.
+const classTag = computed(() => {
+  switch (part.value.category) {
+    case 'cpu':         return 'CPU'
+    case 'motherboard': return 'MB'
+    case 'gpu':         return 'GPU'
+    case 'ram':         return 'RAM'
+    case 'psu':         return 'PSU'
+  }
+})
 </script>
 
 <template>
@@ -61,9 +72,13 @@ const crumbCategory = computed(() => {
     </div>
 
     <div class="part-detail">
-      <!-- Left: hero "image" + thumbnail strip. -->
+      <!-- Left: hero panel (grid-paper + corner brackets) + thumbnails. -->
       <div>
-        <div class="detail-hero">{{ part.icon ?? '🧩' }}</div>
+        <div class="detail-hero spec-frame grid-paper">
+          <span class="corner"></span>
+          <span class="cls">// {{ classTag }} · {{ part.id.toUpperCase() }}</span>
+          <span class="ic">{{ part.icon ?? '🧩' }}</span>
+        </div>
         <div class="thumb-strip">
           <div class="thumb active">{{ part.icon ?? '🧩' }}</div>
           <div class="thumb">📷</div>
@@ -74,7 +89,7 @@ const crumbCategory = computed(() => {
 
       <!-- Right: meta, price, action buttons, specs, compat panel. -->
       <div class="detail-info">
-        <div class="brand">{{ part.brand }}</div>
+        <div class="brand">{{ part.brand }} · {{ classTag }}</div>
         <h1>{{ part.name }}</h1>
 
         <div class="meta-tags">
@@ -84,15 +99,15 @@ const crumbCategory = computed(() => {
           <span class="h-tag ok">In Stock</span>
         </div>
 
-        <span class="price big">{{ php(part.price) }}</span>
+        <span class="price-amber">{{ php(part.price) }}</span>
 
         <div class="detail-actions">
-          <RouterLink to="/builder" class="btn-primary">Add to Build</RouterLink>
-          <button class="btn-ghost">📌 Pin</button>
-          <button class="btn-ghost">♡ Save</button>
+          <RouterLink to="/builder" class="t-btn primary">Add to Build <span class="arrow">→</span></RouterLink>
+          <button class="t-btn">📌 Pin</button>
+          <button class="t-btn">♡ Save</button>
         </div>
 
-        <h3 class="caps-label">Specifications</h3>
+        <span class="kicker mute section-kicker">// specifications</span>
         <dl class="spec-table">
           <div v-for="s in specs" :key="s.dt" class="spec-row">
             <dt>{{ s.dt }}</dt>
@@ -111,7 +126,7 @@ const crumbCategory = computed(() => {
         <!-- "Compatible CPUs" — pulled from the catalog so the IDs link
              through to real detail pages. -->
         <section class="compat-section">
-          <h3 class="caps-label">Compatible CPUs</h3>
+          <span class="kicker mute section-kicker">// compatible cpus</span>
           <div class="compat-grid">
             <RouterLink
               v-for="c in compatibleCpus"
@@ -122,7 +137,7 @@ const crumbCategory = computed(() => {
               <div class="name">{{ c.name }}</div>
               <div class="spec">{{ c.spec }}</div>
               <div class="foot">
-                <span class="price">{{ php(c.price) }}</span>
+                <span class="price-amber sm">{{ php(c.price) }}</span>
                 <span class="h-tag ok">Match</span>
               </div>
             </RouterLink>
@@ -134,23 +149,42 @@ const crumbCategory = computed(() => {
 </template>
 
 <style scoped>
+.page { font-family: var(--mono); }
+
+.breadcrumb {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
 .part-detail {
   display: grid;
   grid-template-columns: 420px 1fr;
   gap: 32px;
 }
 
-/* ─── Left column (hero image + thumbnails) ─── */
+/* ─── Left column (hero panel + thumbnails) ─── */
 .detail-hero {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(168, 85, 247, 0.06));
-  border: 1px solid var(--line);
-  border-radius: 4px;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 120px;
   color: var(--text-mute);
+  position: relative;
+}
+.detail-hero .cls {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+.detail-hero .ic {
+  font-size: 110px;
+  line-height: 1;
 }
 
 .thumb-strip {
@@ -163,85 +197,90 @@ const crumbCategory = computed(() => {
   aspect-ratio: 1;
   background: rgba(10, 18, 32, 0.6);
   border: 1px solid var(--line);
-  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-mute);
   cursor: pointer;
+  font-size: 20px;
 }
 .thumb.active { border-color: var(--cyan); }
 
 /* ─── Right column ─── */
 .detail-info h1 {
-  font-size: 36px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  margin-bottom: 8px;
-  line-height: 1.1;
-  color: #fff;
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+  line-height: 1.05;
+  color: var(--text);
 }
 .brand {
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 10px;
   color: var(--cyan);
-  letter-spacing: 2px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 .meta-tags {
   display: flex;
   gap: 8px;
   margin-bottom: 14px;
+  flex-wrap: wrap;
 }
-.price.big {
-  margin: 18px 0 22px;
+
+.price-amber {
   display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -0.025em;
+  color: var(--amber);
+  margin: 18px 0 22px;
+}
+.price-amber.sm {
+  display: inline-block;
+  margin: 0;
+  font-size: 16px;
 }
 
 .detail-actions {
   display: flex;
   gap: 10px;
   margin-bottom: 28px;
-}
-.detail-actions .btn-primary {
-  text-decoration: none;
-  display: inline-block;
+  flex-wrap: wrap;
 }
 
-/* Section heading helper — short caps label. */
-.caps-label {
-  font-size: 13px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-mute);
+.section-kicker {
+  display: block;
   margin-bottom: 12px;
-  font-weight: 700;
 }
 
-/* Spec table is a series of two-column rows with a tinted left cell. */
 .spec-table {
   border: 1px solid var(--line);
-  border-radius: 4px;
   overflow: hidden;
 }
 .spec-row {
   display: grid;
   grid-template-columns: 180px 1fr;
-  border-bottom: 1px solid var(--line-2);
-  font-size: 13px;
+  border-top: 1px dashed var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
 }
-.spec-row:last-child { border-bottom: none; }
+.spec-row:first-of-type { border-top: none; }
 .spec-row dt {
   background: rgba(0, 212, 255, 0.04);
   padding: 11px 16px;
   color: var(--text-mute);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-size: 10px;
 }
 .spec-row dd {
   padding: 11px 16px;
-  color: #fff;
+  color: var(--text);
 }
 
 .ports {
@@ -252,7 +291,7 @@ const crumbCategory = computed(() => {
 
 .compat-section {
   margin-top: 36px;
-  padding-top: 28px;
+  padding-top: 24px;
   border-top: 1px solid var(--line);
 }
 .compat-grid {
@@ -263,22 +302,31 @@ const crumbCategory = computed(() => {
 
 .comp-card {
   background: rgba(5, 8, 16, 0.7);
-  border: 1.5px solid var(--line);
-  border-radius: 3px;
+  border: 1px solid var(--line);
   padding: 14px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.2s;
   text-decoration: none;
   display: block;
+  font-family: var(--mono);
 }
 .comp-card:hover { border-color: var(--cyan); }
-.comp-card .name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.comp-card .name {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.015em;
+}
 .comp-card .spec { font-size: 11px; color: var(--text-mute); line-height: 1.4; }
 .comp-card .foot {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
 }
 
 @media (max-width: 1100px) {
