@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { Build } from '../data/mock'
 import { php } from '../data/mock'
@@ -6,20 +7,35 @@ import { php } from '../data/mock'
 // Tile used in both the Public Feed and the Favourites screens. Whole
 // card links to the build detail. The heart button is self-contained
 // and emits an event so the parent can update the favourite store.
-defineProps<{ build: Build }>()
+const props = defineProps<{ build: Build }>()
 
 const emit = defineEmits<{ (e: 'toggle-fav', id: string): void }>()
+
+// Short slug used as the mono tag in the corner of the hero panel —
+// gives every card a "blueprint excerpt" identifier.
+const slug = computed(() => `RIG-${props.build.id.slice(0, 6).toUpperCase()}`)
+
+// Two-letter mono initials for the author hex-tile.
+const authorInitials = computed(() =>
+  props.build.user.replace(/^@/, '').slice(0, 2).toUpperCase()
+)
 </script>
 
 <template>
   <RouterLink :to="`/builds/${build.id}`" class="build-card">
-    <!-- Decorative tile background — radial accents like the design preview. -->
-    <div class="build-img">{{ build.icon }}</div>
+    <!-- Grid-paper hero panel with corner brackets — replaces the
+         legacy radial-glow tile. -->
+    <div class="build-img spec-frame grid-paper">
+      <span class="corner"></span>
+      <span class="slug">// {{ slug }}</span>
+      <span class="ic">{{ build.icon }}</span>
+    </div>
 
     <div class="build-body">
-      <div class="build-meta">
-        <span>{{ build.user }}</span>
-        <span>{{ build.views.toLocaleString() }} views</span>
+      <div class="meta-row">
+        <span class="hex-tile ini">{{ authorInitials }}</span>
+        <span class="handle">{{ build.user }}</span>
+        <span class="views">· {{ build.views.toLocaleString() }} VIEWS</span>
       </div>
 
       <h3>{{ build.name }}</h3>
@@ -30,7 +46,7 @@ const emit = defineEmits<{ (e: 'toggle-fav', id: string): void }>()
       </div>
 
       <div class="build-foot">
-        <span class="price">{{ php(build.totalPrice) }}</span>
+        <span class="price-amber">{{ php(build.totalPrice) }}</span>
         <button
           class="heart"
           :class="{ fav: build.favourited }"
@@ -47,54 +63,83 @@ const emit = defineEmits<{ (e: 'toggle-fav', id: string): void }>()
 .build-card {
   background: rgba(10, 18, 32, 0.6);
   border: 1px solid var(--line);
-  border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
+  transition: border-color 0.2s;
   display: block;
   text-decoration: none;
   color: inherit;
+  font-family: var(--mono);
 }
-.build-card:hover {
-  border-color: var(--cyan);
-  transform: translateY(-2px);
-}
+.build-card:hover { border-color: var(--cyan); }
 
+/* Hero panel — grid-paper background, corner brackets, mono slug top
+   left, build icon centred. The corner brackets are provided by the
+   shared .spec-frame utility. */
 .build-img {
-  height: 160px;
-  background:
-    linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(168, 85, 247, 0.10) 60%, transparent),
-    radial-gradient(circle at 70% 40%, rgba(255, 70, 85, 0.2), transparent 50%);
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 60px;
+  font-size: 56px;
   color: var(--text-mute);
+  border: none;
   border-bottom: 1px solid var(--line);
+  position: relative;
 }
+.build-img .slug {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+.build-img .ic {
+  display: inline-block;
+  line-height: 1;
+}
+/* .spec-frame's corner brackets are absolutely positioned on the
+   element itself, so we need to give it position context. The .build-img
+   already has position: relative for the slug above. */
 
 .build-body { padding: 18px; }
-.build-meta {
+
+.meta-row {
   display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-mute);
-  margin-bottom: 8px;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  color: var(--text-low);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
+.meta-row .ini {
+  width: 22px;
+  height: 22px;
+  font-size: 9px;
+}
+.meta-row .handle { color: var(--cyan); font-weight: 500; }
+.meta-row .views  { color: var(--text-low); }
 
 h3 {
+  font-family: var(--display);
+  font-weight: 600;
   font-size: 18px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  margin-bottom: 4px;
-  color: #fff;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.15;
 }
 .desc {
-  font-size: 13px;
-  color: var(--text-mute);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-dim);
   line-height: 1.5;
   margin-bottom: 12px;
 }
@@ -111,14 +156,22 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding-top: 12px;
-  border-top: 1px solid var(--line-2);
+  border-top: 1px dashed var(--line);
 }
 
-/* Heart toggle. Outline-only by default, fills red when favourited. */
+/* Amber price — matches the landing spec-sheet rhythm. */
+.price-amber {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--amber);
+  letter-spacing: -0.02em;
+}
+
+/* Squared hairline heart. Outline-only by default, fills red on fav. */
 .heart {
-  width: 32px;
-  height: 32px;
-  border-radius: 3px;
+  width: 30px;
+  height: 30px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--line);
   display: inline-flex;
@@ -127,8 +180,10 @@ h3 {
   font-size: 14px;
   cursor: pointer;
   color: var(--text-mute);
-  font-family: inherit;
+  font-family: var(--mono);
+  border-radius: 0;
 }
+.heart:hover { border-color: var(--cyan); color: var(--cyan); }
 .heart.fav {
   color: var(--red);
   border-color: rgba(255, 70, 85, 0.4);
