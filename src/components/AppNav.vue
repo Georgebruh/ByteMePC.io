@@ -126,13 +126,18 @@ const showAvatar = computed(() => props.showAvatar !== false)
 }
 
 /* ─── Main nav ───────────────────────────────────────────────────
-   3-column grid (brand / tabs / right) so the tabs pill always sits
-   dead-center on the page regardless of how wide each side gets. */
+   Flex row for brand / right CTAs (space-between), with the tabs
+   pill absolutely positioned at left: 50%. We tried grid with
+   minmax(0, 1fr) side tracks first and the pill still drifted off
+   true centre because the side tracks' intrinsic content nudged
+   them in subpixel ways. Absolute positioning anchors the pill to
+   the exact horizontal centre of the nav (= viewport centre, since
+   padding is symmetric) regardless of side widths. */
 .app-nav {
   position: relative;
   z-index: 2;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 16px 60px;
   border-bottom: 1px solid var(--line);
@@ -165,13 +170,18 @@ const showAvatar = computed(() => props.showAvatar !== false)
 }
 
 /* Tabs sit inside a hairline container so the whole unit reads as
-   one segmented control rather than four floating links. */
+   one segmented control rather than four floating links. Absolutely
+   positioned so the pill is dead-centred on the nav regardless of
+   how wide the brand or right-CTA columns become. */
 .tabs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   gap: 2px;
   padding: 2px;
   border: 1px solid var(--line);
-  justify-self: center;
 }
 .tabs a {
   padding: 7px 16px;
@@ -238,12 +248,16 @@ const showAvatar = computed(() => props.showAvatar !== false)
 @media (max-width: 900px) {
   .status-strip { padding: 6px 20px; gap: 10px; overflow-x: auto; }
   .app-nav {
-    display: flex;
     flex-wrap: wrap;
     padding: 14px 20px;
     gap: 12px;
   }
+  /* Drop the absolute positioning on mobile — the tabs drop to
+     their own full-width row instead so they don't overlap the
+     brand or right CTA on narrow screens. */
   .tabs {
+    position: static;
+    transform: none;
     order: 3;
     width: 100%;
     justify-content: center;

@@ -1,21 +1,142 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import AppNav from '../components/AppNav.vue'
 
 
 type SpecRow = { k: string; v: string; p: string }
-const featured = {
-  slug: 'midnight-foundry',
-  pins: 412,
-  total: '$2,507',
-  rows: [
-    { k: 'CPU',  v: 'Ryzen 7 9800X3D',     p: '$479' },
-    { k: 'GPU',  v: 'RTX 5080 Ventus',     p: '$999' },
-    { k: 'RAM',  v: 'G.Skill 32GB / 6000', p: '$118' },
-    { k: 'SSD',  v: 'Crucial T705 2TB',    p: '$214' },
-    { k: 'PSU',  v: 'Corsair RM850x',      p: '$139' },
-  ] as SpecRow[],
+type FeaturedBuild = {
+  slug: string
+  pins: number
+  total: string
+  parts: number
+  rows: SpecRow[]
 }
+// Three featured builds — the spec card is now a carousel that cycles
+// through these. Only the text inside the card animates between
+// slides; the frame stays put.
+const featured: FeaturedBuild[] = [
+  {
+    slug: 'midnight-foundry',
+    pins: 412,
+    total: '$2,507',
+    parts: 5,
+    rows: [
+      { k: 'CPU',  v: 'Ryzen 7 9800X3D',     p: '$479' },
+      { k: 'GPU',  v: 'RTX 5080 Ventus',     p: '$999' },
+      { k: 'RAM',  v: 'G.Skill 32GB / 6000', p: '$118' },
+      { k: 'SSD',  v: 'Crucial T705 2TB',    p: '$214' },
+      { k: 'PSU',  v: 'Corsair RM850x',      p: '$139' },
+    ],
+  },
+  {
+    slug: 'apex-predator-v2',
+    pins: 287,
+    total: '$3,612',
+    parts: 5,
+    rows: [
+      { k: 'CPU',  v: 'Intel i9-14900K',       p: '$589' },
+      { k: 'GPU',  v: 'RTX 4090 Founders',     p: '$1,719' },
+      { k: 'RAM',  v: 'Corsair 64GB / 6400',   p: '$232' },
+      { k: 'SSD',  v: 'Samsung 990 Pro 2TB',   p: '$178' },
+      { k: 'PSU',  v: 'Corsair HX1000i',       p: '$252' },
+    ],
+  },
+  {
+    slug: 'silent-storm',
+    pins: 198,
+    total: '$2,670',
+    parts: 5,
+    rows: [
+      { k: 'CPU',  v: 'Ryzen 9 7950X3D',       p: '$649' },
+      { k: 'GPU',  v: 'RTX 4080 Noctua',       p: '$1,099' },
+      { k: 'RAM',  v: 'Kingston 32GB / 5600',  p: '$128' },
+      { k: 'SSD',  v: 'WD Black SN850X 2TB',   p: '$184' },
+      { k: 'PSU',  v: 'Seasonic Prime 850',    p: '$210' },
+    ],
+  },
+]
+
+// ─── Carousel state ──────────────────────────────────────────────
+// `activeIdx` is the slide on screen. `progress` (0 → 1) drives the
+// type-in animation: every text field shows the first
+// ceil(len * progress) characters of its real value, so the whole
+// card reveals together like a console teleprinting.
+const activeIdx = ref(0)
+const progress = ref(1)
+const active = computed(() => featured[activeIdx.value])
+
+function typedSlice(s: string): string {
+  return s.slice(0, Math.ceil(s.length * progress.value))
+}
+const typedSlug  = computed(() => typedSlice(active.value.slug))
+const typedTotal = computed(() => typedSlice(active.value.total))
+const typedRows  = computed(() =>
+  active.value.rows.map(r => ({
+    k: r.k,
+    v: typedSlice(r.v),
+    p: typedSlice(r.p),
+  })),
+)
+
+let cycleTimer: ReturnType<typeof setInterval> | null = null
+let animFrame: number | null = null
+function animateIn() {
+  const start = performance.now()
+  const dur = 620
+  const tick = (now: number) => {
+    const t = Math.min(1, (now - start) / dur)
+    progress.value = t
+    if (t < 1) animFrame = requestAnimationFrame(tick)
+    else animFrame = null
+  }
+  animFrame = requestAnimationFrame(tick)
+}
+
+function goTo(i: number) {
+  if (i === activeIdx.value) return
+  if (animFrame) cancelAnimationFrame(animFrame)
+  activeIdx.value = i
+  progress.value = 0
+  animateIn()
+}
+function restartCycle() {
+  if (cycleTimer) clearInterval(cycleTimer)
+  cycleTimer = setInterval(() => {
+    goTo((activeIdx.value + 1) % featured.length)
+  }, 5200)
+}
+function jumpTo(i: number) {
+  goTo(i)
+  restartCycle()
+}
+
+// ─── Cursor-tracked gradient glow ─────────────────────────────────
+// Fixed radial-gradient layer that follows the pointer for the
+// Antigravity / Project IDX-style spotlight. Updates the --mx / --my
+// custom properties on the root element on every pointermove.
+const rootEl = ref<HTMLElement | null>(null)
+function onPointerMove(e: PointerEvent) {
+  if (!rootEl.value) return
+  rootEl.value.style.setProperty('--mx', `${e.clientX}px`)
+  rootEl.value.style.setProperty('--my', `${e.clientY}px`)
+}
+
+onMounted(() => {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduced) {
+    progress.value = 1
+  } else {
+    animateIn()
+    restartCycle()
+  }
+  window.addEventListener('pointermove', onPointerMove, { passive: true })
+})
+onBeforeUnmount(() => {
+  if (cycleTimer) clearInterval(cycleTimer)
+  if (animFrame) cancelAnimationFrame(animFrame)
+  window.removeEventListener('pointermove', onPointerMove)
+})
 
 // Three "modules" — feature cards framed as numbered system entries.
 type Module = {
@@ -76,15 +197,16 @@ const ticks: Tick[] = [
   <!-- The landing page is a single-viewport experience: the outer
        .landing fills exactly 100vh and prevents page scroll so the
        chrome + hero + modules + ticker all sit above the fold. -->
-  <div class="landing">
+  <div ref="rootEl" class="landing">
 
-    <!-- Engineer's-log status strip is opt-in via the prop; only the
-         landing page asks for it. -->
+    <!-- Cursor-tracked radial gradient. pointer-events: none keeps
+         it inert; --mx / --my are set from JS each pointermove. -->
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <!-- Status strip removed — irrelevant ops info, not wired up. -->
     <AppNav
       :show-avatar="false"
-      :status-strip="true"
       :secondary-cta="{ label: 'Sign In', to: '/sign-in' }"
-      :right-cta="{ label: 'Get Bench', to: '/sign-up' }"
     />
 
     <!-- The main column is a 3-row grid: hero takes the remaining
@@ -119,29 +241,52 @@ const ticks: Tick[] = [
           </div>
         </div>
 
-        <!-- Spec sheet card — corner-bracket frame, dashed dividers
-             between part rows, total in display font at the bottom. -->
-        <aside class="specsheet">
-          <span class="corner"></span>
-          <h4>
-            Featured · /builds/{{ featured.slug }}
-            <span>↑ {{ featured.pins }} pins</span>
-          </h4>
+        <!-- Spec sheet card — now a carousel: the frame stays put,
+             only the text fields inside type in on each slide. The
+             carousel indicator (segmented bars) sits below the card. -->
+        <div class="featured-carousel">
+          <aside class="specsheet">
+            <span class="corner"></span>
+            <h4>
+              Featured · /builds/<span class="typed">{{ typedSlug }}</span>
+              <span>↑ {{ active.pins }} pins</span>
+            </h4>
 
-          <div v-for="r in featured.rows" :key="r.k" class="spec-row">
-            <span class="k">{{ r.k }}</span>
-            <span class="v">{{ r.v }}</span>
-            <span class="p">{{ r.p }}</span>
-          </div>
-
-          <div class="spec-foot">
-            <div>
-              <div class="foot-lbl">TOTAL · USD</div>
-              <div class="foot-sub">5 parts · compat ✓</div>
+            <div
+              v-for="(r, i) in typedRows"
+              :key="`${activeIdx}-${r.k}`"
+              class="spec-row"
+              :style="{ animationDelay: `${i * 40}ms` }"
+            >
+              <span class="k">{{ r.k }}</span>
+              <span class="v">{{ r.v }}</span>
+              <span class="p">{{ r.p }}</span>
             </div>
-            <div class="total">{{ featured.total }}</div>
+
+            <div class="spec-foot">
+              <div>
+                <div class="foot-lbl">TOTAL · USD</div>
+                <div class="foot-sub">{{ active.parts }} parts · compat ✓</div>
+              </div>
+              <div class="total typed">{{ typedTotal }}</div>
+            </div>
+          </aside>
+
+          <!-- Carousel indicator — hairline bars, the active one
+               widens and fills cyan. Click to jump to that build. -->
+          <div class="dots" role="tablist" aria-label="Featured build carousel">
+            <button
+              v-for="(b, i) in featured"
+              :key="b.slug"
+              type="button"
+              class="dot"
+              :class="{ active: i === activeIdx }"
+              :aria-label="`Featured build ${i + 1} of ${featured.length}`"
+              :aria-selected="i === activeIdx"
+              @click="jumpTo(i)"
+            ></button>
           </div>
-        </aside>
+        </div>
       </section>
 
       <!-- ─── Modules row ──────────────────────────────────────────
@@ -230,6 +375,23 @@ const ticks: Tick[] = [
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* Cursor-follow radial gradient. Sits above the body grid but below
+   the nav + content. --mx / --my are written from JS on every
+   pointermove; transition: none so it tracks the cursor 1:1. */
+.cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      620px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(0, 212, 255, 0.18) 0%,
+      rgba(168, 85, 247, 0.10) 28%,
+      transparent 62%
+    );
 }
 
 /* Note: the cyan blueprint grid is drawn globally on <body> in
@@ -344,6 +506,14 @@ h1.title .strike::after {
 .t-btn .arrow { transition: transform 0.2s; }
 .t-btn:hover .arrow { transform: translateX(3px); }
 
+/* ─── Featured carousel ────────────────────────────────────────── */
+.featured-carousel {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  gap: 14px;
+}
+
 /* ─── Spec sheet ──────────────────────────────────────────────────
    Corner brackets are 4 pseudo-elements with only two borders each
    — cheap "blueprint excerpt" frame without an SVG overlay. */
@@ -355,7 +525,6 @@ h1.title .strike::after {
   font-family: var(--mono);
   font-size: 12px;
   backdrop-filter: blur(4px);
-  align-self: center;
 }
 .specsheet::before,
 .specsheet::after,
@@ -384,6 +553,11 @@ h1.title .strike::after {
   justify-content: space-between;
 }
 .specsheet h4 span { color: var(--text-low); }
+/* The typed substrings carry a faint cyan glow + visible caret so the
+   "teleprinting" effect reads even after the text settles. */
+.specsheet .typed {
+  position: relative;
+}
 
 .spec-row {
   display: grid;
@@ -418,6 +592,33 @@ h1.title .strike::after {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.02em;
+}
+
+/* ─── Carousel indicator ──────────────────────────────────────────
+   Hairline segmented bars under the card. Active bar widens and
+   fills cyan — reads as a CLI progress strip, matches the theme. */
+.dots {
+  display: inline-flex;
+  gap: 8px;
+  align-self: center;
+}
+.dot {
+  width: 22px;
+  height: 4px;
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0;
+  transition: width 0.25s ease, background 0.2s, border-color 0.2s,
+              box-shadow 0.25s;
+}
+.dot:hover { border-color: rgba(0, 212, 255, 0.45); }
+.dot.active {
+  width: 38px;
+  background: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.45);
 }
 
 /* ─── Modules row ─────────────────────────────────────────────────
@@ -565,9 +766,10 @@ h1.title .strike::after {
   to   { transform: translateX(-50%); }
 }
 
-/* Honour reduced-motion: stop the ticker scroll. */
+/* Honour reduced-motion: stop the ticker scroll + cursor glow. */
 @media (prefers-reduced-motion: reduce) {
   .ticker .scroll { animation: none !important; }
+  .cursor-glow { display: none; }
 }
 
 /* ─── Smaller laptops ─────────────────────────────────────────────
