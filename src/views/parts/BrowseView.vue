@@ -1,28 +1,65 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import AppNav from '../../components/AppNav.vue'
 import PartCard from '../../components/PartCard.vue'
-import { parts, type PartCategory } from '../../data/mock'
+import type { Part, PartCategory } from '../../data/mock'
+import { fetchCategoryCounts, fetchPartsByCategory } from '../../data/catalog'
 
-// The five tabs at the top of the catalog. Numbers are placeholders
-// until real counts come from the DB.
-const tabs: Array<{ key: PartCategory; label: string; count: number }> = [
-  { key: 'cpu',         label: 'CPU',         count: 412 },
-  { key: 'motherboard', label: 'Motherboard', count: 638 },
-  { key: 'gpu',         label: 'GPU',         count: 287 },
-  { key: 'ram',         label: 'RAM',         count: 920 },
-  { key: 'psu',         label: 'PSU',         count: 343 },
+// The five category tabs. Counts populate from the DB on mount.
+const tabs: Array<{ key: PartCategory; label: string }> = [
+  { key: 'cpu',         label: 'CPU' },
+  { key: 'motherboard', label: 'Motherboard' },
+  { key: 'gpu',         label: 'GPU' },
+  { key: 'ram',         label: 'RAM' },
+  { key: 'psu',         label: 'PSU' },
 ]
 
 const activeTab = ref<PartCategory>('cpu')
 const search = ref('')
 
-// Visible parts = current tab + (optional) name search.
+const categoryCounts = ref<Record<PartCategory, number>>({
+  cpu: 0, motherboard: 0, gpu: 0, ram: 0, psu: 0,
+})
+const totalCount = computed(() =>
+  Object.values(categoryCounts.value).reduce((sum, n) => sum + n, 0),
+)
+
+// Parts for the active tab, plus loading / error state for the grid.
+const tabParts = ref<Part[]>([])
+const loading = ref(false)
+const errorMsg = ref<string | null>(null)
+
+async function loadActiveTab() {
+  loading.value = true
+  errorMsg.value = null
+  try {
+    tabParts.value = await fetchPartsByCategory(activeTab.value)
+  } catch (e) {
+    errorMsg.value = e instanceof Error ? e.message : 'Failed to load parts.'
+    tabParts.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(async () => {
+  await loadActiveTab()
+  try {
+    categoryCounts.value = await fetchCategoryCounts()
+  } catch {
+    // Tab counts are cosmetic — leave them at 0 if the count query fails.
+  }
+})
+
+watch(activeTab, loadActiveTab)
+
+// Visible parts = current tab's fetched rows + (optional) name/brand search.
 const visibleParts = computed(() => {
   const q = search.value.trim().toLowerCase()
-  return parts
-    .filter(p => p.category === activeTab.value)
-    .filter(p => !q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q))
+  if (!q) return tabParts.value
+  return tabParts.value.filter(
+    p => p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q),
+  )
 })
 
 // Filter sidebar state — kept simple/visual for now.
@@ -62,7 +99,7 @@ const ticks: Tick[] = [
   <div class="page">
     <div class="page-header">
       <div>
-        <span class="kicker">// catalog · 3,247 components</span>
+        <span class="kicker">// catalog · {{ totalCount.toLocaleString('en-PH') }} components</span>
         <div class="section-title">Browse Parts</div>
         <div class="section-sub">5 categories · live market index</div>
       </div>
@@ -92,7 +129,7 @@ const ticks: Tick[] = [
         class="seg"
         :class="{ active: activeTab === t.key }"
         @click="activeTab = t.key"
-      >{{ t.label }} · {{ t.count }}</button>
+      >{{ t.label }} · {{ categoryCounts[t.key] }}</button>
     </div>
 
     <div class="search-bar">
@@ -145,11 +182,26 @@ const ticks: Tick[] = [
 
       <!-- Right grid of part cards. -->
       <div class="parts-grid">
-        <PartCard v-for="p in visibleParts" :key="p.id" :part="p" />
-        <div v-if="!visibleParts.length" class="empty-state">
-          <div class="ic" style="font-size:40px;margin-bottom:12px">🔍</div>
-          No matching parts. Try clearing the search.
-        </div>
+        <template v-if="loading">
+          <div class="empty-state">
+            <div class="ic" style="font-size:40px;margin-bottom:12px">⏳</div>
+            Loading parts…
+          </div>
+        </template>
+        <template v-else-if="errorMsg">
+          <div class="empty-state error">
+            <div class="ic" style="font-size:40px;margin-bottom:12px">⚠</div>
+            Couldn't load parts.
+            <div class="err-detail">{{ errorMsg }}</div>
+          </div>
+        </template>
+        <template v-else>
+          <PartCard v-for="p in visibleParts" :key="p.id" :part="p" />
+          <div v-if="!visibleParts.length" class="empty-state">
+            <div class="ic" style="font-size:40px;margin-bottom:12px">🔍</div>
+            No matching parts. Try clearing the search.
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -300,6 +352,16 @@ const ticks: Tick[] = [
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+}
+/* Stretch loading/error/empty across the whole grid row. */
+.parts-grid > .empty-state { grid-column: 1 / -1; }
+.empty-state.error { color: var(--red); }
+.empty-state .err-detail {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-low);
+  letter-spacing: 0.04em;
 }
 
 @media (max-width: 1100px) {
