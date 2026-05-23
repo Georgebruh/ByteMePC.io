@@ -307,8 +307,11 @@ CREATE TRIGGER on_auth_user_created
 
 -- -------------------------------------------------------
 -- this is the RLS PART
--- row level security — nobody reads or writes data that isn't theirs
--- parts tables (cpu, gpu, etc.) have no RLS because they are public catalogue data
+-- row level security — nobody reads or writes data that isn't theirs.
+-- catalogue + lookup tables keep RLS on (Supabase advisor flags any public
+-- table without it) and get a permissive SELECT policy below so anyone can
+-- browse parts without signing in. writes to those tables happen via the
+-- service role (seed scripts / admin), never from the SPA.
 -- -------------------------------------------------------
 
 ALTER TABLE profiles            ENABLE ROW LEVEL SECURITY;
@@ -324,6 +327,21 @@ ALTER TABLE pinned_psus         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pinned_storages     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pinned_cases        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pinned_coolers      ENABLE ROW LEVEL SECURITY;
+
+-- catalogue + lookup + junction tables
+ALTER TABLE cpu                 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE motherboard         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gpu                 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ram                 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psu                 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE storage             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pc_case             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE cpu_cooler          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE port                ENABLE ROW LEVEL SECURITY;
+ALTER TABLE case_supported_size ENABLE ROW LEVEL SECURITY;
+ALTER TABLE cooler_socket       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE motherboard_port    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gpu_port            ENABLE ROW LEVEL SECURITY;
 
 -- your profile should be yours alone
 CREATE POLICY "profiles: owner select" ON profiles FOR SELECT USING (auth.uid() = user_id);
@@ -397,3 +415,20 @@ CREATE POLICY "pinned_psus: owner all"         ON pinned_psus         FOR ALL US
 CREATE POLICY "pinned_storages: owner all"     ON pinned_storages     FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "pinned_cases: owner all"        ON pinned_cases        FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "pinned_coolers: owner all"      ON pinned_coolers      FOR ALL USING (auth.uid() = user_id);
+
+-- catalogue + lookup + junction tables: world-readable to anon + authenticated.
+-- no INSERT/UPDATE/DELETE policies exist for these, so any write attempt from
+-- the SPA's anon/auth keys is blocked by default — only the service role bypasses RLS.
+CREATE POLICY "cpu: public read"                 ON cpu                 FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "motherboard: public read"         ON motherboard         FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "gpu: public read"                 ON gpu                 FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "ram: public read"                 ON ram                 FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "psu: public read"                 ON psu                 FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "storage: public read"             ON storage             FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "pc_case: public read"             ON pc_case             FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "cpu_cooler: public read"          ON cpu_cooler          FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "port: public read"                ON port                FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "case_supported_size: public read" ON case_supported_size FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "cooler_socket: public read"       ON cooler_socket       FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "motherboard_port: public read"    ON motherboard_port    FOR SELECT TO anon, authenticated USING (TRUE);
+CREATE POLICY "gpu_port: public read"            ON gpu_port            FOR SELECT TO anon, authenticated USING (TRUE);

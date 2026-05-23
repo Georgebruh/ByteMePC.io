@@ -28,32 +28,40 @@ interface GpuRow { gpu_id: number; name: string; brand: string; memory: number; 
 interface RamRow { ram_id: number; name: string; brand: string; type: string; capacity: number; speed: number; price: number }
 interface PsuRow { psu_id: number; name: string; brand: string; wattage: number; efficiency_rating: string; form_factor: string; price: number }
 
+// `extras` lets us hoist typed columns (socket, cores) onto the Part so the
+// catalog filter sidebar can match on them without re-parsing the spec string.
+interface CategoryConfigExt<Row> extends CategoryConfig<Row> {
+  extras?: (row: Row) => Pick<Part, 'socket' | 'cores'>
+}
+
 const CONFIGS = {
   cpu: {
     table: 'cpu',
     idCol: 'cpu_id',
     toSpec: (r: CpuRow) => `${r.core_numbers} cores · ${r.socket} · ${r.frequency}GHz base`,
-  } satisfies CategoryConfig<CpuRow>,
+    extras: (r: CpuRow) => ({ socket: r.socket, cores: r.core_numbers }),
+  } satisfies CategoryConfigExt<CpuRow>,
   motherboard: {
     table: 'motherboard',
     idCol: 'mb_id',
     toSpec: (r: MbRow) => `${r.size} · ${r.socket} · ${r.ram_type}`,
-  } satisfies CategoryConfig<MbRow>,
+    extras: (r: MbRow) => ({ socket: r.socket }),
+  } satisfies CategoryConfigExt<MbRow>,
   gpu: {
     table: 'gpu',
     idCol: 'gpu_id',
     toSpec: (r: GpuRow) => `${r.memory}GB · ${r.core_clock}MHz · ${r.tdp}W TDP`,
-  } satisfies CategoryConfig<GpuRow>,
+  } satisfies CategoryConfigExt<GpuRow>,
   ram: {
     table: 'ram',
     idCol: 'ram_id',
     toSpec: (r: RamRow) => `${r.capacity}GB · ${r.type} · ${r.speed}MHz`,
-  } satisfies CategoryConfig<RamRow>,
+  } satisfies CategoryConfigExt<RamRow>,
   psu: {
     table: 'psu',
     idCol: 'psu_id',
     toSpec: (r: PsuRow) => `${r.wattage}W · ${r.efficiency_rating} · ${r.form_factor}`,
-  } satisfies CategoryConfig<PsuRow>,
+  } satisfies CategoryConfigExt<PsuRow>,
 }
 
 // Fetch every part in a category and project it onto the Part shape.
@@ -68,6 +76,7 @@ export async function fetchPartsByCategory(category: PartCategory): Promise<Part
   if (error) throw error
   if (!data) return []
 
+  const extras = (cfg as { extras?: (r: any) => Partial<Part> }).extras
   return (data as any[]).map(row => ({
     id: `${category}-${row[cfg.idCol]}`,
     category,
@@ -76,6 +85,7 @@ export async function fetchPartsByCategory(category: PartCategory): Promise<Part
     spec: (cfg.toSpec as (r: any) => string)(row),
     price: Number(row.price),
     icon: ICONS[category],
+    ...(extras ? extras(row) : {}),
   }))
 }
 

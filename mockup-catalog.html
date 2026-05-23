@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catalog mockup — ByteMePC.io</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─── Design tokens from src/style.css ─── */
+  :root {
+    --bg:        #050810;
+    --bg-2:      #0a1020;
+    --line:      rgba(0, 212, 255, 0.15);
+    --line-2:    rgba(0, 212, 255, 0.08);
+    --cyan:      #00d4ff;
+    --purple:    #a855f7;
+    --red:       #ff4655;
+    --green:     #22d3a8;
+    --text:      #ffffff;
+    --text-dim:  #8ea3bd;
+    --text-mute: #5577aa;
+    --text-low:  #445566;
+    --amber:     #ffb547;
+    --mono:      'JetBrains Mono', ui-monospace, Consolas, monospace;
+    --display:   'Space Grotesk', system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 180, 255, 0.10) 0%, transparent 60%),
+      linear-gradient(rgba(0, 212, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.035) 1px, transparent 1px);
+    background-size: auto, 60px 60px, 60px 60px;
+    background-attachment: fixed;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .page { padding: 36px 60px; font-family: var(--mono); }
+
+  /* ─── Top header (kept; ticker + segmented tabs removed) ─── */
+  .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; }
+  .kicker {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 6px;
+  }
+  .kicker.mute { color: var(--text-mute); }
+  .section-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-low);
+  }
+
+  /* ─── Buttons ─── */
+  .t-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 0;
+  }
+  .t-btn:hover { border-color: rgba(0, 212, 255, 0.35); background: rgba(0, 212, 255, 0.05); }
+  .t-btn.primary { background: var(--cyan); color: var(--bg); border-color: var(--cyan); font-weight: 700; }
+  .t-btn.primary:hover { background: #2ddfff; filter: drop-shadow(0 0 18px rgba(0, 212, 255, 0.5)); }
+  .t-btn.small { padding: 6px 12px; font-size: 10px; }
+  .t-btn.full { width: 100%; justify-content: center; }
+  .t-btn.ghost { color: var(--text-mute); }
+  .t-btn.ghost:hover { color: var(--text); }
+
+  /* ─── Two-column body — sidebar dominates the left ─── */
+  .catalog {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  /* ─── Search bar (right column, above results bar) ─── */
+  .search-bar { display: flex; gap: 12px; margin-bottom: 12px; }
+  .input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+  }
+  .input:focus { border-color: var(--cyan); }
+  .search-bar .input { flex: 1; }
+
+  /* ─── Results header ─── */
+  .results-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    background: rgba(5, 8, 16, 0.5);
+    margin-bottom: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+  .results-bar .count-label { text-transform: uppercase; }
+  .results-bar .count-label b { color: var(--text); font-weight: 500; }
+  .results-bar .count-label em { color: var(--cyan); font-style: normal; }
+  .sort-select {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .sort-select .arrow { color: var(--text-mute); font-size: 9px; }
+
+  /* ─── Applied filter chips ─── */
+  .chips {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    background: rgba(5, 8, 16, 0.5);
+    margin-bottom: 22px;
+    min-height: 44px;
+  }
+  .chips-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    margin-right: 4px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px 4px 10px;
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    background: rgba(0, 212, 255, 0.06);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cyan);
+  }
+  .chip button {
+    width: 16px; height: 16px;
+    border: none;
+    background: none;
+    color: var(--cyan);
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.65;
+  }
+  .chip button:hover { opacity: 1; color: var(--red); }
+
+  /* ─── Filter sidebar — OWNS the entire left column ─── */
+  .filters {
+    background: rgba(10, 18, 32, 0.55);
+    border: 1px solid var(--line);
+    padding: 22px 20px;
+    position: sticky;
+    top: 24px;
+    /* dominates the left side */
+  }
+  .filters-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 14px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .filters-head .kicker { margin-bottom: 0; }
+  .filter-group {
+    padding: 16px 0;
+    border-top: 1px dashed var(--line);
+  }
+  .filter-group:first-of-type { border-top: none; }
+  .field-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    margin-bottom: 10px;
+    display: block;
+    font-family: var(--mono);
+  }
+
+  /* Category list — what used to be the segmented tabs row */
+  .cat-list { display: flex; flex-direction: column; gap: 2px; }
+  .cat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cat-row:hover { color: var(--text); border-color: var(--line); }
+  .cat-row.active {
+    color: var(--bg);
+    background: var(--cyan);
+    border-color: var(--cyan);
+    font-weight: 700;
+  }
+  .cat-row .count {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+  .cat-row.active .count { opacity: 1; }
+
+  .check-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+  .check-row input { accent-color: var(--cyan); }
+  .check-row .count {
+    margin-left: auto;
+    color: var(--text-low);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+  .range { display: flex; gap: 8px; }
+  .range input {
+    flex: 1; padding: 8px;
+    font-family: var(--mono); font-size: 11px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--line);
+    color: var(--text);
+  }
+  /* Action row — Clear + Apply both inside the box */
+  .filter-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ─── Parts grid ─── */
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    align-content: start;
+  }
+
+  /* ─── Part Card ─── */
+  .part-card {
+    position: relative;
+    background: rgba(10, 18, 32, 0.6);
+    border: 1px solid var(--line);
+    padding: 16px;
+    font-family: var(--mono);
+    transition: border-color 0.2s;
+  }
+  .part-card:hover { border-color: var(--cyan); }
+
+  .part-img {
+    position: relative;
+    height: 140px;
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin-bottom: 14px;
+    color: var(--text-mute);
+    background:
+      linear-gradient(rgba(0, 212, 255, 0.04), rgba(0, 212, 255, 0.04)),
+      repeating-linear-gradient(0deg,  transparent 0 18px, rgba(0, 212, 255, 0.05) 18px 19px),
+      repeating-linear-gradient(90deg, transparent 0 18px, rgba(0, 212, 255, 0.05) 18px 19px);
+  }
+  .part-img .cls {
+    position: absolute;
+    top: 8px; left: 10px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--cyan);
+    text-transform: uppercase;
+  }
+
+  /* ─── Pin button (custom SVG, two states) ─── */
+  .pin {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 32px; height: 32px;
+    background: rgba(5, 8, 16, 0.85);
+    border: 1px solid var(--line);
+    color: var(--text-mute);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 0;
+  }
+  .pin svg { width: 16px; height: 16px; display: block; transition: transform 0.2s; }
+  .pin:hover { border-color: var(--cyan); color: var(--cyan); }
+  .pin.is-pinned {
+    background: rgba(168, 85, 247, 0.18);
+    border-color: var(--purple);
+    color: var(--purple);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+  }
+  .pin.is-pinned svg { transform: rotate(-12deg); }
+
+  /* ─── Card text hierarchy ─── */
+  .card-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .card-head .brand {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cyan);
+  }
+  .part-card h4 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text);
+    margin: 2px 0 8px;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+  .part-spec {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .part-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+  }
+  .price-amber {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--amber);
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── Pagination ─── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 22px;
+    padding: 14px 0;
+    border-top: 1px dashed var(--line);
+  }
+  .pg-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text-mute);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pg-btn:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); }
+  .pg-btn.active {
+    background: var(--cyan);
+    color: var(--bg);
+    border-color: var(--cyan);
+    font-weight: 700;
+  }
+  .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .pg-ellipsis { color: var(--text-low); padding: 0 4px; }
+  .pg-info {
+    margin-left: 14px;
+    color: var(--text-low);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Top header (no more ticker, no more standalone tabs row) -->
+    <div class="page-header">
+      <div>
+        <span class="kicker">// catalog · 23 components</span>
+        <div class="section-title">Browse Parts</div>
+        <div class="section-sub">5 categories · live market index</div>
+      </div>
+    </div>
+
+    <!-- Two-column: filter sidebar dominates the LEFT, all content on the right -->
+    <div class="catalog">
+
+      <!-- ───── LEFT: Filter sidebar (full height, sticky) ───── -->
+      <aside class="filters">
+        <div class="filters-head">
+          <span class="kicker mute">// filters</span>
+        </div>
+
+        <!-- Category — what used to be the segmented tabs row -->
+        <div class="filter-group">
+          <label class="field-label">Category</label>
+          <div class="cat-list">
+            <button class="cat-row active">
+              <span>CPU</span><span class="count">6</span>
+            </button>
+            <button class="cat-row">
+              <span>Motherboard</span><span class="count">4</span>
+            </button>
+            <button class="cat-row">
+              <span>GPU</span><span class="count">5</span>
+            </button>
+            <button class="cat-row">
+              <span>RAM</span><span class="count">4</span>
+            </button>
+            <button class="cat-row">
+              <span>PSU</span><span class="count">4</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Brand (real counts) -->
+        <div class="filter-group">
+          <label class="field-label">Brand</label>
+          <label class="check-row">
+            <input type="checkbox" checked /> Intel
+            <span class="count">3</span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" checked /> AMD
+            <span class="count">3</span>
+          </label>
+        </div>
+
+        <!-- Socket (real counts) -->
+        <div class="filter-group">
+          <label class="field-label">Socket</label>
+          <label class="check-row">
+            <input type="checkbox" checked /> LGA1700 <span class="count">3</span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" /> AM5 <span class="count">3</span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" /> LGA1200 <span class="count">0</span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" /> AM4 <span class="count">0</span>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <label class="field-label">Cores</label>
+          <div class="range">
+            <input value="6" />
+            <input value="24" />
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="field-label">Price (PHP)</label>
+          <div class="range">
+            <input value="₱5,000" />
+            <input value="₱45,000" />
+          </div>
+        </div>
+
+        <!-- Clear + Apply, INSIDE the box -->
+        <div class="filter-actions">
+          <button class="t-btn ghost">Clear</button>
+          <button class="t-btn primary">Apply</button>
+        </div>
+      </aside>
+
+      <!-- ───── RIGHT: search + results + chips + grid + pagination ───── -->
+      <div>
+        <div class="search-bar">
+          <input class="input" placeholder="🔍  Search CPUs by name, brand, socket…" />
+        </div>
+
+        <div class="results-bar">
+          <div class="count-label">
+            Showing <b>6</b> results from total <em>23</em> for <b>"CPU"</b>
+          </div>
+          <button class="sort-select">
+            Sort: Popular <span class="arrow">▾</span>
+          </button>
+        </div>
+
+        <div class="chips">
+          <span class="chips-label">Applied filters:</span>
+          <span class="chip">Brand · Intel <button title="Remove">×</button></span>
+          <span class="chip">Brand · AMD <button title="Remove">×</button></span>
+          <span class="chip">Socket · LGA1700 <button title="Remove">×</button></span>
+          <span class="chip">Price · ₱5,000 – ₱45,000 <button title="Remove">×</button></span>
+        </div>
+
+        <div class="parts-grid">
+          <!-- Card 1 — pinned -->
+          <article class="part-card">
+            <div class="part-img">
+              <span class="cls">// CPU</span>
+              <button class="pin is-pinned" title="Unpin">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round">
+                  <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+                  <line x1="12" y1="12" x2="12" y2="21" stroke-width="1.6" />
+                </svg>
+              </button>
+              🖥
+            </div>
+            <div class="card-head"><span class="brand">Intel</span></div>
+            <h4>Core i9-13900K</h4>
+            <div class="part-spec">24 cores · LGA1700 · 5.8GHz boost</div>
+            <div class="part-foot">
+              <span class="price-amber">₱32,500</span>
+              <a class="t-btn small">Details →</a>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="part-card">
+            <div class="part-img">
+              <span class="cls">// CPU</span>
+              <button class="pin" title="Pin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                </svg>
+              </button>
+              🖥
+            </div>
+            <div class="card-head"><span class="brand">AMD</span></div>
+            <h4>Ryzen 9 7950X</h4>
+            <div class="part-spec">16 cores · AM5 · 5.7GHz boost</div>
+            <div class="part-foot">
+              <span class="price-amber">₱34,900</span>
+              <a class="t-btn small">Details →</a>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="part-card">
+            <div class="part-img">
+              <span class="cls">// CPU</span>
+              <button class="pin" title="Pin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                </svg>
+              </button>
+              🖥
+            </div>
+            <div class="card-head"><span class="brand">Intel</span></div>
+            <h4>Core i7-13700K</h4>
+            <div class="part-spec">16 cores · LGA1700 · 5.4GHz boost</div>
+            <div class="part-foot">
+              <span class="price-amber">₱22,800</span>
+              <a class="t-btn small">Details →</a>
+            </div>
+          </article>
+
+          <!-- Card 4 — pinned -->
+          <article class="part-card">
+            <div class="part-img">
+              <span class="cls">// CPU</span>
+              <button class="pin is-pinned" title="Unpin">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round">
+                  <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+                  <line x1="12" y1="12" x2="12" y2="21" stroke-width="1.6" />
+                </svg>
+              </button>
+              🖥
+            </div>
+            <div class="card-head"><span class="brand">AMD</span></div>
+            <h4>Ryzen 7 7800X3D</h4>
+            <div class="part-spec">8 cores · AM5 · 5.0GHz · 3D V-Cache</div>
+            <div class="part-foot">
+              <span class="price-amber">₱26,500</span>
+              <a class="t-btn small">Details →</a>
+            </div>
+          </article>
+
+          <!-- Card 5 -->
+          <article class="part-card">
+            <div class="part-img">
+              <span class="cls">// CPU</span>
+              <button class="pin" title="Pin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                </svg>
+              </button>
+              🖥
+            </div>
+            <div class="card-head"><span class="brand">Intel</span></div>
+            <h4>Core i5-13600K</h4>
+            <div class="part-spec">14 cores · LGA1700 · 5.1GHz boost</div>
+            <div class="part-foot">
+              <span class="price-amber">₱17,200</span>
+              <a class="t-btn small">Details →</a>
+            </div>
+          </article>
+
+          <!-- Card 6 -->
+          <article class="part-card">
+            <div class="part-img">
+              <span class="cls">// CPU</span>
+              <button class="pin" title="Pin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                </svg>
+              </button>
+              🖥
+            </div>
+            <div class="card-head"><span class="brand">AMD</span></div>
+            <h4>Ryzen 5 7600X</h4>
+            <div class="part-spec">6 cores · AM5 · 5.3GHz boost</div>
+            <div class="part-foot">
+              <span class="price-amber">₱14,800</span>
+              <a class="t-btn small">Details →</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="pagination">
+          <button class="pg-btn" disabled>‹ Prev</button>
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <span class="pg-ellipsis">…</span>
+          <button class="pg-btn">4</button>
+          <button class="pg-btn">Next ›</button>
+          <span class="pg-info">Page 1 of 4 · 6 per page</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

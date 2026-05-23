@@ -31,22 +31,60 @@ const classTag = computed(() => {
 
 <template>
   <div class="part-card" :class="{ pinned: part.pinned }">
-    <button
-      class="pin"
-      type="button"
-      :title="part.pinned ? 'Unpin' : 'Pin'"
-      @click.stop="emit('toggle-pin', part.id)"
-    >📌</button>
-
-    <!-- Grid-paper hero panel. Class label in mono top-left, part icon
-         centred — replaces the legacy gradient placeholder. -->
+    <!-- Grid-paper hero panel. Class label top-left; pin button now lives
+         INSIDE this panel (top-right) instead of floating over the text. -->
     <RouterLink :to="`/parts/${part.id}`" class="part-img grid-paper">
       <span class="cls">// {{ classTag }}</span>
-      {{ part.icon ?? '🖥' }}
+
+      <button
+        class="pin"
+        :class="{ 'is-pinned': part.pinned }"
+        type="button"
+        :title="part.pinned ? 'Unpin' : 'Pin'"
+        :aria-pressed="!!part.pinned"
+        @click.stop.prevent="emit('toggle-pin', part.id)"
+      >
+        <!-- Filled pushpin when pinned; outline pushpin when not.
+             Two distinct SVGs so the silhouettes read clearly at 16px. -->
+        <svg
+          v-if="part.pinned"
+          class="pin-icon"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+          <line x1="12" y1="12" x2="12" y2="21" stroke-width="1.6" />
+        </svg>
+        <svg
+          v-else
+          class="pin-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M9 3 H15 L14 9 L17.5 12 H6.5 L10 9 Z" />
+          <line x1="12" y1="12" x2="12" y2="21" />
+        </svg>
+      </button>
+
+      <span class="hero-icon">{{ part.icon ?? '🖥' }}</span>
     </RouterLink>
 
-    <span class="brand-mono">{{ part.brand }}</span>
-    <h4>{{ part.name }}</h4>
+    <!-- Brand small + name big — clean hierarchy under the hero. -->
+    <div class="card-head">
+      <span class="brand-mono">{{ part.brand }}</span>
+    </div>
+    <RouterLink :to="`/parts/${part.id}`" class="title-link">
+      <h4>{{ part.name }}</h4>
+    </RouterLink>
     <div class="part-spec">{{ part.spec }}</div>
 
     <div class="part-foot">
@@ -63,85 +101,103 @@ const classTag = computed(() => {
   background: rgba(10, 18, 32, 0.6);
   border: 1px solid var(--line);
   padding: 16px;
-  cursor: pointer;
   transition: border-color 0.2s;
   font-family: var(--mono);
 }
 .part-card:hover { border-color: var(--cyan); }
 
-/* Pin button — squared hairline. Glows purple when the part is pinned. */
-.pin {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--line);
-  color: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: var(--mono);
-  border-radius: 0;
-  z-index: 1;
-}
-.pin:hover { border-color: var(--cyan); color: var(--cyan); }
-.part-card.pinned .pin {
-  background: rgba(168, 85, 247, 0.15);
-  border-color: var(--purple);
-  color: var(--purple);
-}
-
+/* ─── Hero panel ─── */
 .part-img {
   position: relative;
-  height: 120px;
+  height: 140px;
   border: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
   margin-bottom: 14px;
   color: var(--text-mute);
   text-decoration: none;
 }
 .part-img .cls {
   position: absolute;
-  top: 6px;
-  left: 8px;
+  top: 8px;
+  left: 10px;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.18em;
   color: var(--cyan);
   text-transform: uppercase;
 }
+.hero-icon { font-size: 40px; line-height: 1; }
 
+/* ─── Pin button (custom SVG, two states) ───
+   Lives inside the hero panel, top-right. Outlined / muted when not
+   pinned; filled / purple / slightly rotated when pinned (so the
+   silhouette reads "stuck in" at a glance). */
+.pin {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: rgba(5, 8, 16, 0.85);
+  border: 1px solid var(--line);
+  color: var(--text-mute);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  border-radius: 0;
+  z-index: 2;
+}
+.pin:hover { border-color: var(--cyan); color: var(--cyan); }
+.pin .pin-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  transition: transform 0.2s ease;
+}
+.pin.is-pinned {
+  background: rgba(168, 85, 247, 0.18);
+  border-color: var(--purple);
+  color: var(--purple);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+}
+.pin.is-pinned .pin-icon { transform: rotate(-12deg); }
+.pin:focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; }
+
+/* ─── Text hierarchy ─── */
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
 .brand-mono {
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--cyan);
-  display: inline-block;
-  margin-bottom: 6px;
 }
-
+.title-link { text-decoration: none; color: inherit; }
 h4 {
   font-family: var(--display);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
-  margin: 4px 0 6px;
+  margin: 2px 0 8px;
   letter-spacing: -0.015em;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 .part-spec {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--text-dim);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   line-height: 1.5;
 }
 
@@ -155,7 +211,7 @@ h4 {
 .price-amber {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--amber);
   letter-spacing: -0.02em;
 }
