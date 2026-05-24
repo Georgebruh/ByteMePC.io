@@ -102,7 +102,7 @@ const classTag = computed(() => {
         <span class="price-amber">{{ php(part.price) }}</span>
 
         <div class="detail-actions">
-          <RouterLink to="/builder" class="t-btn primary">Add to Build <span class="arrow">→</span></RouterLink>
+          <RouterLink to="/builder/manual" class="t-btn primary">Add to Build <span class="arrow">→</span></RouterLink>
           <button class="t-btn">📌 Pin</button>
         </div>
 

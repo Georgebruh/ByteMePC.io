@@ -155,7 +155,7 @@ const modules: Module[] = [
     title: 'Compatibility, on every click.',
     desc: 'Socket, TDP, RAM, PCIe, GPU clearance — checked before you commit.',
     cta: 'Open Builder',
-    to: '/builder',
+    to: '/builder/manual',
     tone: 'cyan',
   },
   {
@@ -164,7 +164,7 @@ const modules: Module[] = [
     title: 'Spend the budget, not the weekend.',
     desc: 'Type a number. Get a curated, in-stock, fully compatible build.',
     cta: 'Auto-Build',
-    to: '/builder/budget',
+    to: '/builder/auto',
     tone: 'amber',
   },
   {

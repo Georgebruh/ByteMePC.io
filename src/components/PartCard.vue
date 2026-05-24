@@ -67,7 +67,7 @@ function onPin() {
 function onNewBuild() {
   emit('add-to-build', { partId: props.part.id, buildId: null })
   closeMenu()
-  router.push('/builder')
+  router.push('/builder/manual')
 }
 
 function onExistingBuild(buildId: string) {

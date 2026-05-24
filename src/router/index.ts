@@ -12,9 +12,11 @@ const routes: RouteRecordRaw[] = [
   { path: '/parts/:id',       name: 'part-detail', component: () => import('../views/parts/PartDetailView.vue') },
   { path: '/pinned',          name: 'pinned',      component: () => import('../views/parts/PinnedView.vue') },
 
-  // Builder flow
-  { path: '/builder',         name: 'builder',        component: () => import('../views/builder/BuilderView.vue') },
-  { path: '/builder/budget',  name: 'budget-builder', component: () => import('../views/builder/BudgetBuilderView.vue') },
+  // Builder flow — /builder is the mode-chooser hub, the two builders
+  // live under /builder/manual and /builder/auto.
+  { path: '/builder',         name: 'builder',        component: () => import('../views/builder/BuildHubView.vue') },
+  { path: '/builder/manual',  name: 'manual-builder', component: () => import('../views/builder/BuilderView.vue') },
+  { path: '/builder/auto',    name: 'auto-builder',   component: () => import('../views/builder/BudgetBuilderView.vue') },
 
   // Builds — owned + community
   { path: '/builds',          name: 'my-builds',    component: () => import('../views/builds/MyBuildsView.vue') },

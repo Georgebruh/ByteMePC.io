@@ -163,7 +163,7 @@ const subtotal = 128300
         </div>
 
         <!-- Quick link to the budget auto-builder. -->
-        <RouterLink to="/builder/budget" class="switch-link">
+        <RouterLink to="/builder/auto" class="switch-link">
           ⚡ Try the budget auto-builder →
         </RouterLink>
       </aside>
