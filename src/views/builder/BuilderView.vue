@@ -47,6 +47,9 @@ const pickerParts = ref<Part[]>([])
 const pickerLoading = ref(false)
 const pickerError = ref<string | null>(null)
 
+// Search query — clears when switching slots so the new category starts clean.
+const search = ref('')
+
 async function loadActivePicker() {
   pickerLoading.value = true
   pickerError.value = null
@@ -61,7 +64,19 @@ async function loadActivePicker() {
 }
 
 onMounted(loadActivePicker)
-watch(activeSlot, loadActivePicker)
+watch(activeSlot, () => {
+  search.value = ''
+  loadActivePicker()
+})
+
+// Parts after the search filter — matches on name + brand, case-insensitive.
+const visibleParts = computed(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return pickerParts.value
+  return pickerParts.value.filter(p =>
+    p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q),
+  )
+})
 
 function pickPart(part: Part) {
   // Clicking the already-selected card deselects (lets the user empty a slot).
@@ -192,11 +207,13 @@ const compatChecks = computed<CompatCheck[]>(() => {
 // Build name — editable so the page chrome reflects what the user is working on.
 const buildName = ref('Untitled Build')
 
-// Picker header line: how many compatible parts vs total in the loaded set.
+// Picker header line: how many compatible parts vs total in the visible
+// (post-search) set, plus the raw catalog total for context.
 const pickerCounts = computed(() => {
   const total = pickerParts.value.length
-  const compatible = pickerParts.value.filter(p => !partWarning(p)).length
-  return { total, compatible }
+  const visible = visibleParts.value.length
+  const compatible = visibleParts.value.filter(p => !partWarning(p)).length
+  return { total, visible, compatible }
 })
 
 // Friendly title for the picker header.
@@ -252,18 +269,36 @@ const pickerHeading = computed(() => {
             <span class="kicker mute">// pick · {{ activeSlot }}</span>
             <h2>{{ pickerHeading }}</h2>
             <div class="section-sub head-sub">
-              {{ pickerCounts.total }} LISTED · {{ pickerCounts.compatible }} COMPATIBLE
+              {{ pickerCounts.visible }} / {{ pickerCounts.total }} LISTED · {{ pickerCounts.compatible }} COMPATIBLE
             </div>
           </div>
+        </div>
+
+        <div class="picker-search">
+          <input
+            v-model="search"
+            type="text"
+            class="picker-search-input"
+            :placeholder="`Search ${activeSlot}…`"
+            spellcheck="false"
+          />
+          <button
+            v-if="search"
+            type="button"
+            class="picker-search-clear"
+            @click="search = ''"
+            aria-label="Clear search"
+          >×</button>
         </div>
 
         <div v-if="pickerLoading" class="picker-status">Loading parts…</div>
         <div v-else-if="pickerError" class="picker-status err">{{ pickerError }}</div>
         <div v-else-if="!pickerParts.length" class="picker-status">No parts available in this category.</div>
+        <div v-else-if="!visibleParts.length" class="picker-status">No matches for "{{ search }}".</div>
 
         <div v-else class="builder-grid">
           <button
-            v-for="opt in pickerParts"
+            v-for="opt in visibleParts"
             :key="opt.id"
             type="button"
             class="comp-card"
@@ -372,6 +407,48 @@ const pickerHeading = computed(() => {
   border: 1px dashed var(--line);
 }
 .picker-status.err { color: var(--red); border-color: rgba(255, 70, 85, 0.35); }
+
+/* Picker search input — full-width, sits above the grid. */
+.picker-search {
+  position: relative;
+  margin-bottom: 14px;
+}
+.picker-search-input {
+  width: 100%;
+  padding: 11px 36px 11px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.picker-search-input::placeholder {
+  color: var(--text-low);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+}
+.picker-search-input:focus { border-color: var(--cyan); }
+.picker-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  color: var(--text-mute);
+  font-family: var(--mono);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.picker-search-clear:hover { color: var(--red); }
 
 .builder {
   display: grid;
