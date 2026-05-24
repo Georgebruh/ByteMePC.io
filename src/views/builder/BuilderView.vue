@@ -50,6 +50,10 @@ const pickerError = ref<string | null>(null)
 // Search query — clears when switching slots so the new category starts clean.
 const search = ref('')
 
+// ─── Pagination (fixed page size; same shape as BrowseView) ───
+const PAGE_SIZE = 6
+const currentPage = ref(1)
+
 async function loadActivePicker() {
   pickerLoading.value = true
   pickerError.value = null
@@ -66,6 +70,7 @@ async function loadActivePicker() {
 onMounted(loadActivePicker)
 watch(activeSlot, () => {
   search.value = ''
+  currentPage.value = 1
   loadActivePicker()
 })
 
@@ -76,6 +81,36 @@ const visibleParts = computed(() => {
   return pickerParts.value.filter(p =>
     p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q),
   )
+})
+
+const totalPages = computed(() => Math.max(1, Math.ceil(visibleParts.value.length / PAGE_SIZE)))
+const pagedParts = computed(() => {
+  const start = (currentPage.value - 1) * PAGE_SIZE
+  return visibleParts.value.slice(start, start + PAGE_SIZE)
+})
+
+// Snap back to page 1 whenever the visible set shrinks below the current
+// page, or whenever the user types in the search box.
+watch([visibleParts], () => {
+  if (currentPage.value > totalPages.value) currentPage.value = 1
+})
+watch(search, () => { currentPage.value = 1 })
+
+// Compact 1 … cur-1 cur cur+1 … last list with ellipses.
+const pageItems = computed<Array<number | 'ellipsis'>>(() => {
+  const last = totalPages.value
+  const cur = currentPage.value
+  if (last <= 6) return Array.from({ length: last }, (_, i) => i + 1)
+  const set = new Set<number>([1, last, cur - 1, cur, cur + 1])
+  const sorted = [...set].filter(n => n >= 1 && n <= last).sort((a, b) => a - b)
+  const out: Array<number | 'ellipsis'> = []
+  let prev = 0
+  for (const n of sorted) {
+    if (n - prev > 1) out.push('ellipsis')
+    out.push(n)
+    prev = n
+  }
+  return out
 })
 
 function pickPart(part: Part) {
@@ -134,10 +169,6 @@ const slotStatuses = computed<Record<PartCategory, SlotStatus>>(() => {
   return out
 })
 
-function statusBracket(s: SlotStatus): string {
-  return s === 'filled' ? '[OK]' : s === 'warn' ? '[!!]' : '[--]'
-}
-
 // Short label shown under each slot's label in the rail.
 function pickedLabel(cat: PartCategory): string {
   const p = selections.value[cat]
@@ -166,7 +197,7 @@ const subtotal = computed(() =>
 
 // ─── Compatibility rules (sidebar list) ──────────────────
 type CompatKind = 'ok' | 'warn' | 'pending'
-interface CompatCheck { kind: CompatKind; bracket: string; text: string }
+interface CompatCheck { kind: CompatKind; text: string }
 
 const compatChecks = computed<CompatCheck[]>(() => {
   const out: CompatCheck[] = []
@@ -174,31 +205,31 @@ const compatChecks = computed<CompatCheck[]>(() => {
 
   // CPU ↔ MB socket
   if (!cpu || !motherboard) {
-    out.push({ kind: 'pending', bracket: '[??]', text: 'Pick a CPU + Motherboard to check socket' })
+    out.push({ kind: 'pending', text: 'Pick a CPU + Motherboard to check socket' })
   } else if (cpu.socket && motherboard.socket && cpu.socket === motherboard.socket) {
-    out.push({ kind: 'ok', bracket: '[OK]', text: `CPU socket matches MB (${cpu.socket})` })
+    out.push({ kind: 'ok', text: `CPU socket matches MB (${cpu.socket})` })
   } else {
-    out.push({ kind: 'warn', bracket: '[!!]', text: `Socket mismatch: CPU ${cpu.socket} vs MB ${motherboard.socket}` })
+    out.push({ kind: 'warn', text: `Socket mismatch: CPU ${cpu.socket} vs MB ${motherboard.socket}` })
   }
 
   // RAM type ↔ MB
   if (!ram || !motherboard) {
-    out.push({ kind: 'pending', bracket: '[??]', text: 'Pick a Motherboard + RAM to check memory type' })
+    out.push({ kind: 'pending', text: 'Pick a Motherboard + RAM to check memory type' })
   } else if (ram.ramType && motherboard.ramType && ram.ramType === motherboard.ramType) {
-    out.push({ kind: 'ok', bracket: '[OK]', text: `RAM type ${ram.ramType} matches MB` })
+    out.push({ kind: 'ok', text: `RAM type ${ram.ramType} matches MB` })
   } else {
-    out.push({ kind: 'warn', bracket: '[!!]', text: `RAM ${ram.ramType} doesn't match MB ${motherboard.ramType}` })
+    out.push({ kind: 'warn', text: `RAM ${ram.ramType} doesn't match MB ${motherboard.ramType}` })
   }
 
   // PSU wattage vs estimated draw
   if (!gpu) {
-    out.push({ kind: 'pending', bracket: '[??]', text: 'Pick a GPU to estimate power draw' })
+    out.push({ kind: 'pending', text: 'Pick a GPU to estimate power draw' })
   } else if (!psu) {
-    out.push({ kind: 'pending', bracket: '[??]', text: 'Pick a PSU' })
+    out.push({ kind: 'pending', text: 'Pick a PSU' })
   } else if (psu.wattage && psu.wattage >= estimatedDraw.value) {
-    out.push({ kind: 'ok', bracket: '[OK]', text: `PSU ${psu.wattage}W ≥ estimated ${estimatedDraw.value}W` })
+    out.push({ kind: 'ok', text: `PSU ${psu.wattage}W ≥ estimated ${estimatedDraw.value}W` })
   } else {
-    out.push({ kind: 'warn', bracket: '[!!]', text: `PSU ${psu.wattage}W < estimated ${estimatedDraw.value}W` })
+    out.push({ kind: 'warn', text: `PSU ${psu.wattage}W < estimated ${estimatedDraw.value}W` })
   }
 
   return out
@@ -247,7 +278,7 @@ const pickerHeading = computed(() => {
           v-for="(s, i) in slots"
           :key="s.key"
           class="slot-log"
-          :class="{ active: activeSlot === s.key }"
+          :class="[slotStatuses[s.key], { active: activeSlot === s.key }]"
           @click="activeSlot = s.key"
         >
           <span class="hex-tile code">{{ s.code }}</span>
@@ -255,9 +286,6 @@ const pickerHeading = computed(() => {
             {{ s.label }}
             <small>{{ pickedLabel(s.key) }}</small>
           </div>
-          <span class="st" :class="slotStatuses[s.key]">
-            {{ statusBracket(slotStatuses[s.key]) }}
-          </span>
           <span class="idx">{{ String(i + 1).padStart(2, '0') }}</span>
         </button>
       </aside>
@@ -298,7 +326,7 @@ const pickerHeading = computed(() => {
 
         <div v-else class="builder-grid">
           <button
-            v-for="opt in visibleParts"
+            v-for="opt in pagedParts"
             :key="opt.id"
             type="button"
             class="comp-card"
@@ -314,6 +342,38 @@ const pickerHeading = computed(() => {
               <span v-else class="h-tag ok">Compatible</span>
             </div>
           </button>
+        </div>
+
+        <!-- Pagination — kept visible (even at 1 page) so the controls
+             don't pop in/out as the user searches. -->
+        <div v-if="!pickerLoading && !pickerError && pickerParts.length" class="pagination">
+          <div class="pg-controls">
+            <button
+              type="button"
+              class="pg-btn"
+              :disabled="currentPage === 1 || totalPages === 1"
+              @click="currentPage--"
+            >‹ Prev</button>
+
+            <template v-for="(item, i) in pageItems" :key="i">
+              <span v-if="item === 'ellipsis'" class="pg-ellipsis">…</span>
+              <button
+                v-else
+                type="button"
+                class="pg-btn"
+                :class="{ active: item === currentPage }"
+                :disabled="totalPages === 1"
+                @click="currentPage = item"
+              >{{ item }}</button>
+            </template>
+
+            <button
+              type="button"
+              class="pg-btn"
+              :disabled="currentPage === totalPages"
+              @click="currentPage++"
+            >Next ›</button>
+          </div>
         </div>
       </main>
 
@@ -332,11 +392,11 @@ const pickerHeading = computed(() => {
           <span class="total-val">{{ php(subtotal) }}</span>
         </div>
 
-        <!-- Validation strip — one row per rule. -->
+        <!-- Validation strip — one row per rule. Warn rows are red-shaded;
+             OK / pending stay quiet so warnings really stand out. -->
         <span class="kicker mute side-kicker compat-kicker">// compatibility</span>
         <div class="compat-list">
           <div v-for="c in compatChecks" :key="c.text" class="compat-row" :class="c.kind">
-            <span class="bracket">{{ c.bracket }}</span>
             <span>{{ c.text }}</span>
           </div>
         </div>
@@ -450,6 +510,49 @@ const pickerHeading = computed(() => {
 }
 .picker-search-clear:hover { color: var(--red); }
 
+/* ─── Pagination (mirrors BrowseView) ─── */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 22px;
+  padding: 14px 0 0;
+  border-top: 1px dashed var(--line);
+}
+.pg-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.pg-btn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-mute);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.pg-btn:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); }
+.pg-btn.active {
+  background: var(--cyan);
+  color: var(--bg);
+  border-color: var(--cyan);
+  font-weight: 700;
+}
+.pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.pg-ellipsis {
+  color: var(--text-low);
+  padding: 0 4px;
+  font-family: var(--mono);
+}
+
 .builder {
   display: grid;
   grid-template-columns: 290px 1fr 320px;
@@ -467,7 +570,7 @@ const pickerHeading = computed(() => {
 
 .slot-log {
   display: grid;
-  grid-template-columns: 32px 1fr auto 26px;
+  grid-template-columns: 32px 1fr 26px;
   gap: 10px;
   align-items: center;
   width: 100%;
@@ -488,6 +591,18 @@ const pickerHeading = computed(() => {
   border-left: 2px solid var(--cyan);
   padding-left: 8px;
 }
+/* Whole row goes red when the picked part is incompatible — no badge,
+   just a clear visual flag. Active state still wins on the left border. */
+.slot-log.warn {
+  background: rgba(255, 70, 85, 0.06);
+}
+.slot-log.warn:hover { background: rgba(255, 70, 85, 0.1); }
+.slot-log.warn.active {
+  background: rgba(255, 70, 85, 0.1);
+  border-left-color: var(--red);
+}
+.slot-log.warn .nm,
+.slot-log.warn .nm small { color: var(--red); }
 
 .slot-log .code {
   width: 30px;
@@ -509,15 +624,6 @@ const pickerHeading = computed(() => {
   margin-top: 2px;
   letter-spacing: 0.06em;
 }
-.slot-log .st {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-align: right;
-  font-weight: 700;
-}
-.slot-log .st.filled { color: var(--green); }
-.slot-log .st.warn   { color: var(--red); }
-.slot-log .st.empty  { color: var(--text-low); }
 .slot-log .idx {
   font-size: 9.5px;
   color: var(--text-low);
@@ -671,24 +777,25 @@ const pickerHeading = computed(() => {
 }
 
 .compat-kicker { margin-top: 18px; margin-bottom: 8px; }
-.compat-list {}
 .compat-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 0;
+  padding: 7px 10px;
   font-size: 11px;
   color: var(--text-dim);
+  letter-spacing: 0.02em;
+  margin-bottom: 4px;
+  border-left: 2px solid transparent;
 }
-.compat-row .bracket {
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  font-size: 10px;
-  flex-shrink: 0;
+.compat-row.pending { color: var(--text-low); }
+/* Only warn rows get the red shade — ok / pending stay neutral so the eye
+   gets pulled to actual problems instead of skimming a wall of brackets. */
+.compat-row.warn {
+  background: rgba(255, 70, 85, 0.08);
+  border-left-color: var(--red);
+  color: var(--red);
 }
-.compat-row.ok      .bracket { color: var(--green); }
-.compat-row.warn    .bracket { color: var(--red); }
-.compat-row.pending .bracket { color: var(--text-low); }
 
 .builder-actions {
   margin-top: 16px;
