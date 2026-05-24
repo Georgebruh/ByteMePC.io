@@ -143,7 +143,7 @@ const sortedParts = computed(() => {
   }
 })
 
-// ─── Pagination (6 cards per page) ───
+// ─── Pagination (6 cards per page, fixed) ───
 const PAGE_SIZE = 6
 const currentPage = ref(1)
 const totalPages = computed(() => Math.max(1, Math.ceil(sortedParts.value.length / PAGE_SIZE)))
@@ -151,9 +151,26 @@ const pagedParts = computed(() => {
   const start = (currentPage.value - 1) * PAGE_SIZE
   return sortedParts.value.slice(start, start + PAGE_SIZE)
 })
+// 1-indexed bounds of the current page, clamped to the result count
+// so the "Showing X–Y of Z" label never lies (e.g. last page being short).
+const pageStartIndex = computed(() =>
+  sortedParts.value.length === 0 ? 0 : (currentPage.value - 1) * PAGE_SIZE + 1,
+)
+const pageEndIndex = computed(() =>
+  Math.min(currentPage.value * PAGE_SIZE, sortedParts.value.length),
+)
+
 // Any time the result set shrinks, snap the page back into range.
 watch([filteredParts, sortMode], () => {
   if (currentPage.value > totalPages.value) currentPage.value = 1
+})
+
+// Scroll the grid into view on page change so the user isn't left
+// staring at row 3 after clicking "next". Skip on initial mount.
+const gridEl = ref<HTMLElement | null>(null)
+watch(currentPage, (_, prev) => {
+  if (prev === undefined) return
+  gridEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 })
 
 // Compact page-number list with ellipses (1 … current-1, current, current+1 … last).
@@ -343,7 +360,7 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
           </span>
         </div>
 
-        <div class="parts-grid">
+        <div class="parts-grid" ref="gridEl">
           <template v-if="loading">
             <div class="empty-state">
               <div class="ic" style="font-size:40px;margin-bottom:12px">⏳</div>
@@ -371,33 +388,41 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
           </template>
         </div>
 
-        <!-- Pagination (6 cards / page) -->
-        <div v-if="!loading && !errorMsg && sortedParts.length > PAGE_SIZE" class="pagination">
-          <button
-            class="pg-btn"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >‹ Prev</button>
-
-          <template v-for="(item, i) in pageItems" :key="i">
-            <span v-if="item === 'ellipsis'" class="pg-ellipsis">…</span>
-            <button
-              v-else
-              class="pg-btn"
-              :class="{ active: item === currentPage }"
-              @click="currentPage = item"
-            >{{ item }}</button>
-          </template>
-
-          <button
-            class="pg-btn"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >Next ›</button>
-
-          <span class="pg-info">
-            Page {{ currentPage }} of {{ totalPages }} · {{ PAGE_SIZE }} per page
+        <!-- Pagination — always visible (so the page-size selector and
+             range label stay reachable even when there's only one page). -->
+        <div v-if="!loading && !errorMsg" class="pagination">
+          <span class="pg-range">
+            <template v-if="sortedParts.length">
+              Showing <b>{{ pageStartIndex }}</b>–<b>{{ pageEndIndex }}</b>
+              of <b>{{ sortedParts.length }}</b>
+            </template>
+            <template v-else>No results</template>
           </span>
+
+          <div class="pg-controls">
+            <button
+              class="pg-btn"
+              :disabled="currentPage === 1 || totalPages === 1"
+              @click="currentPage--"
+            >‹ Prev</button>
+
+            <template v-for="(item, i) in pageItems" :key="i">
+              <span v-if="item === 'ellipsis'" class="pg-ellipsis">…</span>
+              <button
+                v-else
+                class="pg-btn"
+                :class="{ active: item === currentPage }"
+                :disabled="totalPages === 1"
+                @click="currentPage = item"
+              >{{ item }}</button>
+            </template>
+
+            <button
+              class="pg-btn"
+              :disabled="currentPage === totalPages"
+              @click="currentPage++"
+            >Next ›</button>
+          </div>
         </div>
       </div>
     </div>
@@ -501,9 +526,17 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
   letter-spacing: 0.1em;
 }
 
-.range { display: flex; gap: 8px; }
+/* Grid (not flex) so each input is exactly 1fr — flex inputs refuse
+   to shrink below their intrinsic width and spill outside the sidebar. */
+.range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
 .range input {
-  flex: 1;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 8px;
   font-family: var(--mono);
   font-size: 11px;
@@ -511,6 +544,18 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
   border: 1px solid var(--line);
   color: var(--text);
   border-radius: 0;
+  /* Hide the number-input spinner buttons that eat horizontal space. */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.range input::-webkit-outer-spin-button,
+.range input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.range input:focus {
+  outline: none;
+  border-color: var(--cyan);
 }
 
 .filter-actions {
@@ -633,16 +678,35 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
   letter-spacing: 0.04em;
 }
 
-/* Pagination */
+/* Pagination — three-zone bar: range label · page buttons · size selector */
+.parts-grid { scroll-margin-top: 24px; }
 .pagination {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px;
+  gap: 12px;
   margin-top: 22px;
   padding: 14px 0;
   border-top: 1px dashed var(--line);
+}
+/* Empty trailing column keeps the page buttons centered now that the
+   "6 per page" label is gone. */
+.pagination::after { content: ''; }
+.pg-range {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-low);
+  justify-self: start;
+}
+.pg-range b { color: var(--text); font-weight: 500; }
+.pg-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
 }
 .pg-btn {
   min-width: 36px;
@@ -670,19 +734,17 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
   padding: 0 4px;
   font-family: var(--mono);
 }
-.pg-info {
-  margin-left: 14px;
-  color: var(--text-low);
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
 
 @media (max-width: 1100px) {
   .catalog { grid-template-columns: 1fr; }
   .filters { position: static; }
   .parts-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  /* Stack the pagination bar so the range, controls, and selector each
+     get their own row instead of fighting for horizontal space. */
+  .pagination { grid-template-columns: 1fr; }
+  .pg-range { justify-self: center; }
 }
 @media (max-width: 600px) {
   .parts-grid { grid-template-columns: 1fr; }
