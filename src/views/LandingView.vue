@@ -301,16 +301,16 @@ const ticks: Tick[] = [
           :class="`tone-${m.tone}`"
         >
           <!-- Per-module inline SVG. currentColor lets the tone class
-               on the parent recolour both the icon and the CTA. -->
+               on the parent recolour both the icon and the CTA.
+               Manual ('smart') uses the wrench and Auto ('budget') uses
+               the zap — matched to the icons on the Builder hub. -->
           <svg
             v-if="m.id === 'smart'"
             class="ic" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="1.6"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
           >
-            <rect x="6" y="6" width="12" height="12" rx="1" />
-            <rect x="9.5" y="9.5" width="5" height="5" />
-            <path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3" />
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
           </svg>
           <svg
             v-else-if="m.id === 'budget'"
@@ -318,9 +318,7 @@ const ticks: Tick[] = [
             fill="none" stroke="currentColor" stroke-width="1.6"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
           >
-            <path d="M3 7l9-4 9 4-9 4-9-4z" />
-            <path d="M3 12l9 4 9-4" />
-            <path d="M3 17l9 4 9-4" />
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
           </svg>
           <svg
             v-else
