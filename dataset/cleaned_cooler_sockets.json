@@ -1,0 +1,2242 @@
+[
+    {
+        "cooler_id": 1,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 1,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 2,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "sTR4"
+    },
+    {
+        "cooler_id": 3,
+        "socket": "sTRX4"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 4,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 5,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 6,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 7,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 8,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 9,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 9,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 9,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 9,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 9,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 9,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 10,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 11,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 12,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1151v2"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 13,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 14,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "AM3+"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "AM2+"
+    },
+    {
+        "cooler_id": 15,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 16,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 17,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 18,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 19,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 20,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "sTR4"
+    },
+    {
+        "cooler_id": 21,
+        "socket": "sTRX4"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "sTR4"
+    },
+    {
+        "cooler_id": 22,
+        "socket": "sTRX4"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 23,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 24,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 25,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 26,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 26,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 26,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 26,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 27,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 28,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 29,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 30,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 31,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 32,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 32,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 32,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 32,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 32,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 32,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 33,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 34,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 34,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 34,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 34,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 35,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 36,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 37,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 38,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 39,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 39,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 39,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 39,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 40,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 41,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "sTR4"
+    },
+    {
+        "cooler_id": 42,
+        "socket": "sTRX4"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "sTR4"
+    },
+    {
+        "cooler_id": 43,
+        "socket": "sTRX4"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 44,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 45,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 46,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 46,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 46,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 46,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 46,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 46,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 47,
+        "socket": "LGA 775"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 48,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "AM2"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "AM3"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "FM1"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "FM2"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1366"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 1851"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 2011"
+    },
+    {
+        "cooler_id": 49,
+        "socket": "LGA 2066"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "AM4"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "AM5"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "LGA 1150"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "LGA 1151"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "LGA 1155"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "LGA 1156"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "LGA 1200"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "LGA 1700"
+    },
+    {
+        "cooler_id": 50,
+        "socket": "LGA 1851"
+    }
+]

@@ -1,0 +1,550 @@
+[
+    {
+        "case_id": 1,
+        "size": "ATX"
+    },
+    {
+        "case_id": 1,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 1,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 2,
+        "size": "ATX"
+    },
+    {
+        "case_id": 2,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 2,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 3,
+        "size": "ATX"
+    },
+    {
+        "case_id": 3,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 3,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 4,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 4,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 5,
+        "size": "EATX"
+    },
+    {
+        "case_id": 5,
+        "size": "ATX"
+    },
+    {
+        "case_id": 5,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 5,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 6,
+        "size": "ATX"
+    },
+    {
+        "case_id": 6,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 6,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 7,
+        "size": "ATX"
+    },
+    {
+        "case_id": 7,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 7,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 8,
+        "size": "ATX"
+    },
+    {
+        "case_id": 8,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 8,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 9,
+        "size": "ATX"
+    },
+    {
+        "case_id": 9,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 9,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 10,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 10,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 11,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 11,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 12,
+        "size": "ATX"
+    },
+    {
+        "case_id": 12,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 12,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 12,
+        "size": "EATX"
+    },
+    {
+        "case_id": 13,
+        "size": "ATX"
+    },
+    {
+        "case_id": 13,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 13,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 14,
+        "size": "ATX"
+    },
+    {
+        "case_id": 14,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 14,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 15,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 15,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 16,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 16,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 17,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 18,
+        "size": "ATX"
+    },
+    {
+        "case_id": 18,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 18,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 19,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 20,
+        "size": "ATX"
+    },
+    {
+        "case_id": 20,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 20,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 21,
+        "size": "ATX"
+    },
+    {
+        "case_id": 21,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 21,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 22,
+        "size": "ATX"
+    },
+    {
+        "case_id": 22,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 22,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 22,
+        "size": "EATX"
+    },
+    {
+        "case_id": 23,
+        "size": "ATX"
+    },
+    {
+        "case_id": 23,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 23,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 24,
+        "size": "ATX"
+    },
+    {
+        "case_id": 24,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 24,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 25,
+        "size": "ATX"
+    },
+    {
+        "case_id": 25,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 25,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 26,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 26,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 27,
+        "size": "ATX"
+    },
+    {
+        "case_id": 27,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 27,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 28,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 29,
+        "size": "ATX"
+    },
+    {
+        "case_id": 29,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 29,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 30,
+        "size": "ATX"
+    },
+    {
+        "case_id": 30,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 30,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 30,
+        "size": "EATX"
+    },
+    {
+        "case_id": 31,
+        "size": "ATX"
+    },
+    {
+        "case_id": 31,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 31,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 32,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 33,
+        "size": "ATX"
+    },
+    {
+        "case_id": 33,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 33,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 34,
+        "size": "ATX"
+    },
+    {
+        "case_id": 34,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 34,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 35,
+        "size": "ATX"
+    },
+    {
+        "case_id": 35,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 35,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 36,
+        "size": "ATX"
+    },
+    {
+        "case_id": 36,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 36,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 37,
+        "size": "ATX"
+    },
+    {
+        "case_id": 37,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 37,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 38,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 38,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 39,
+        "size": "ATX"
+    },
+    {
+        "case_id": 39,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 39,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 40,
+        "size": "ATX"
+    },
+    {
+        "case_id": 40,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 40,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 40,
+        "size": "EATX"
+    },
+    {
+        "case_id": 41,
+        "size": "ATX"
+    },
+    {
+        "case_id": 41,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 41,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 42,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 42,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 43,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 44,
+        "size": "ATX"
+    },
+    {
+        "case_id": 44,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 44,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 45,
+        "size": "ATX"
+    },
+    {
+        "case_id": 45,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 45,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 46,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 46,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 47,
+        "size": "ATX"
+    },
+    {
+        "case_id": 47,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 47,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 48,
+        "size": "ATX"
+    },
+    {
+        "case_id": 48,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 48,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 49,
+        "size": "ATX"
+    },
+    {
+        "case_id": 49,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 49,
+        "size": "Mini-ITX"
+    },
+    {
+        "case_id": 49,
+        "size": "EATX"
+    },
+    {
+        "case_id": 50,
+        "size": "ATX"
+    },
+    {
+        "case_id": 50,
+        "size": "Micro ATX"
+    },
+    {
+        "case_id": 50,
+        "size": "Mini-ITX"
+    }
+]
