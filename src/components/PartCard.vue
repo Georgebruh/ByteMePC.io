@@ -111,9 +111,11 @@ onBeforeUnmount(closeMenu)
     @contextmenu.prevent="openMenu"
   >
     <!-- Grid-paper hero panel. Class label in mono top-left, part icon
-         centred. Pin button removed — pin lives in the right-click menu. -->
+         centred. Pin button removed — pin lives in the right-click menu;
+         a passive badge in the top-right marks the pinned state. -->
     <RouterLink :to="`/parts/${part.id}`" class="part-img grid-paper">
       <span class="cls">// {{ classTag }}</span>
+      <span v-if="part.pinned" class="pin-badge">◉ PINNED</span>
       {{ part.icon ?? '🖥' }}
     </RouterLink>
 
@@ -219,6 +221,19 @@ onBeforeUnmount(closeMenu)
   letter-spacing: 0.18em;
   color: var(--cyan);
   text-transform: uppercase;
+}
+.part-img .pin-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--purple, #a855f7);
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  background: rgba(168, 85, 247, 0.08);
 }
 
 .brand-mono {

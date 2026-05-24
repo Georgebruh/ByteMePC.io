@@ -262,6 +262,25 @@ const catLabel = computed(() =>
     ? categories.find(c => c.key === activeCat.value)?.label ?? 'parts'
     : 'parts',
 )
+
+// ─── Price-change ticker (whole-catalog only) ───
+// Deltas aren't tracked in the DB yet — derive a stable pseudo-delta from
+// each part's id so the bar doesn't jitter on re-render. Swap to a real
+// price-history feed when one lands.
+type Tick = { name: string; price: string; delta: string; dir: 'up' | 'dn' }
+const tickerParts = computed<Tick[]>(() => {
+  if (activeCat.value || !tabParts.value.length) return []
+  const sample = tabParts.value.slice(0, 16)
+  return sample.map(p => {
+    const seed = [...p.id].reduce((s, c) => s + c.charCodeAt(0), 0)
+    return {
+      name: p.name,
+      price: php(p.price),
+      delta: ((seed % 50) / 10).toFixed(1) + '%',
+      dir: seed % 2 === 0 ? 'up' : 'dn',
+    }
+  })
+})
 </script>
 
 <template>
@@ -435,6 +454,25 @@ const catLabel = computed(() =>
             >Next ›</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Price-change ticker — pinned at the bottom of the catalog in the
+         whole-catalog view. Sits OUTSIDE .catalog so it spans the full
+         page width (sidebar + content) instead of just the right column.
+         Items are duplicated so the -50% loop seam lands on an identical
+         tick. -->
+    <div v-if="tickerParts.length" class="ticker" aria-hidden="true">
+      <div class="scroll">
+        <template v-for="pass in 2" :key="pass">
+          <span v-for="t in tickerParts" :key="`${pass}-${t.name}`" class="tick">
+            <b>{{ t.name }}</b>
+            {{ t.price }}
+            <em :class="`delta-${t.dir}`">
+              {{ t.dir === 'up' ? '↑' : '↓' }} {{ t.delta }}
+            </em>
+          </span>
+        </template>
       </div>
     </div>
   </div>
@@ -731,6 +769,39 @@ const catLabel = computed(() =>
   color: var(--text-low);
   padding: 0 4px;
   font-family: var(--mono);
+}
+
+/* ─── Price-change ticker ───
+   Same vocabulary as the landing page's marquee; items are doubled in the
+   template so the -50% loop wraps without a visible snap. */
+.ticker {
+  padding: 10px 14px;
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(5, 8, 16, 0.5);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-mute);
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+}
+.ticker .scroll {
+  display: inline-flex;
+  gap: 40px;
+  white-space: nowrap;
+  animation: browse-ticker-scroll 50s linear infinite;
+}
+.ticker .tick { display: inline-flex; align-items: baseline; gap: 8px; }
+.ticker b         { color: var(--cyan);  font-weight: 500; }
+.ticker .delta-up { color: var(--green); font-style: normal; }
+.ticker .delta-dn { color: var(--red);   font-style: normal; }
+@keyframes browse-ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker .scroll { animation: none !important; }
 }
 
 @media (max-width: 1100px) {
