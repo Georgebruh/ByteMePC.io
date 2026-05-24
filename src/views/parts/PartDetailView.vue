@@ -104,7 +104,6 @@ const classTag = computed(() => {
         <div class="detail-actions">
           <RouterLink to="/builder" class="t-btn primary">Add to Build <span class="arrow">→</span></RouterLink>
           <button class="t-btn">📌 Pin</button>
-          <button class="t-btn">♡ Save</button>
         </div>
 
         <span class="kicker mute section-kicker">// specifications</span>
