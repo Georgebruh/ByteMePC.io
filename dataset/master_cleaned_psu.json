@@ -1,0 +1,503 @@
+[
+    {
+        "psu_id": 1,
+        "name": "Antec Earthwatts 550W 80+ Bronze Certified Non-Modular",
+        "brand": "Antec",
+        "image_link": "placeholder",
+        "wattage": 550,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+
+    {
+        "psu_id": 2,
+        "name": "Cougar GEX X2 Black 1000W Fully Modular 80+ Gold Certified",
+        "brand": "Cougar",
+        "image_link": "placeholder",
+        "wattage": 1000,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 3,
+        "name": "SeaSonic ATX3-FOCUS-GX White 850W Fully Modular 80+ Gold",
+        "brand": "SeaSonic",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 4,
+        "name": "Deepcool PF650 Black 230V ATX 650W Non-Modular 80+ Certified",
+        "brand": "Deepcool",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+",
+        "price": 0.0
+    },
+    {
+        "psu_id": 5,
+        "name": "Enermax REVOLUTION X't II 650W Semi-Modular 80+ Gold",
+        "brand": "Enermax",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 6,
+        "name": "Zalman TeraMax II ATX 1200W Fully Modular 80+ Gold Certified",
+        "brand": "Zalman",
+        "image_link": "placeholder",
+        "wattage": 1200,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 7,
+        "name": "Corsair RM650e (2025) Black 650W Fully Modular",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": null,
+        "price": 0.0
+    },
+    {
+        "psu_id": 8,
+        "name": "Silverstone Triton 750Rx Black 750W Non-Modular",
+        "brand": "Silverstone",
+        "image_link": "placeholder",
+        "wattage": 750,
+        "form_factor": "ATX",
+        "efficiency_rating": null,
+        "price": 0.0
+    },
+    {
+        "psu_id": 9,
+        "name": "CoolMax NW-650B ATX 650W Non-Modular",
+        "brand": "CoolMax",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": null,
+        "price": 0.0
+    },
+    {
+        "psu_id": 10,
+        "name": "Super Flower Leadex Platinum Black 750W Fully Modular 80+ Platinum",
+        "brand": "Super Flower",
+        "image_link": "placeholder",
+        "wattage": 750,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Platinum",
+        "price": 0.0
+    },
+    {
+        "psu_id": 11,
+        "name": "Cooler Master New GX 450W Non-Modular 80+ Bronze",
+        "brand": "Cooler Master",
+        "image_link": "placeholder",
+        "wattage": 450,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+    {
+        "psu_id": 12,
+        "name": "Corsair VS600 ATX 600W Non-Modular 80+ Certified",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "wattage": 600,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+",
+        "price": 0.0
+    },
+    {
+        "psu_id": 13,
+        "name": "PowerSpec PSX Black 850W Fully Modular 80+ Gold Certified",
+        "brand": "PowerSpec",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 14,
+        "name": "SeaSonic PRIME TX-1600 Noctua Edition Brown / Black 1600W Fully Modular 80+ Titanium Certified",
+        "brand": "SeaSonic",
+        "image_link": "placeholder",
+        "wattage": 1600,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Titanium",
+        "price": 0.0
+    },
+    {
+        "psu_id": 15,
+        "name": "Rosewill SMG850 Black ATX 850W Fully Modular 80+ Gold Certified",
+        "brand": "Rosewill",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 16,
+        "name": "Enermax Revolution D.F. X Black 1650W Fully Modular 80+ Gold Certified",
+        "brand": "Enermax",
+        "image_link": "placeholder",
+        "wattage": 1650,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 17,
+        "name": "Corsair SF1000L Black SFX 1000W Fully Modular 80+ Gold",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "wattage": 1000,
+        "form_factor": "SFX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 18,
+        "name": "Thermaltake Toughpower DPS G 450W Fully Modular 80+ Gold Certified",
+        "brand": "Thermaltake",
+        "image_link": "placeholder",
+        "wattage": 450,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 19,
+        "name": "GAMDIAS ASTRAPE M1 Black Multicolor 550W Non-Modular 80+ Certified",
+        "brand": "GAMDIAS",
+        "image_link": "placeholder",
+        "wattage": 550,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+",
+        "price": 0.0
+    },
+    {
+        "psu_id": 20,
+        "name": "Silverstone DA700 ATX 700W Fully Modular",
+        "brand": "Silverstone",
+        "image_link": "placeholder",
+        "wattage": 700,
+        "form_factor": "ATX",
+        "efficiency_rating": null,
+        "price": 0.0
+    },
+    {
+        "psu_id": 21,
+        "name": "CoolMax ZX-600 ATX 600W Non-Modular 80+ Certified",
+        "brand": "CoolMax",
+        "image_link": "placeholder",
+        "wattage": 600,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+",
+        "price": 0.0
+    },
+    {
+        "psu_id": 22,
+        "name": "NZXT C850 (2024) Black 850W Fully Modular 80+ Gold Certified",
+        "brand": "NZXT",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 23,
+        "name": "Thermaltake Toughpower GX2 Black 600W Non-Modular 80+ Gold",
+        "brand": "Thermaltake",
+        "image_link": "placeholder",
+        "wattage": 600,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 24,
+        "name": "EVGA 600 W3, 80+ WHITE 600W, 3 Year Warranty, Power Supply",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "wattage": 600,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+",
+        "price": 0.0
+    },
+    {
+        "psu_id": 25,
+        "name": "SeaSonic M12II EVO ATX 520W Fully Modular 80+ Bronze Certified",
+        "brand": "SeaSonic",
+        "image_link": "placeholder",
+        "wattage": 520,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+    {
+        "psu_id": 26,
+        "name": "EVGA SuperNOVA 1200 P3 1200W 80+ Platinum Certified Fully Modular",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "wattage": 1200,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Platinum",
+        "price": 0.0
+    },
+    {
+        "psu_id": 27,
+        "name": "be quiet! System Power 9 500 CM Black 500W Semi-Modular 80+ Bronze Certified",
+        "brand": "be quiet!",
+        "image_link": "placeholder",
+        "wattage": 500,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+    {
+        "psu_id": 28,
+        "name": "be quiet! Straight Power 11 550W Fully Modular 80+ Gold",
+        "brand": "be quiet!",
+        "image_link": "placeholder",
+        "wattage": 550,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 29,
+        "name": "be quiet! Straight Power 11 Black 850W Fully Modular 80+ Platinum Certified",
+        "brand": "be quiet!",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Platinum",
+        "price": 0.0
+    },
+    {
+        "psu_id": 30,
+        "name": "Cooler Master V White SFX ATX 3.0 850W Fully Modular 80+ Gold Certified",
+        "brand": "Cooler Master",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 31,
+        "name": "Thermalright AG-650 ATX 650W Fully Modular 80+ Gold Certified",
+        "brand": "Thermalright",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 32,
+        "name": "Lian Li EDGE White 850W Fully Modular 80+ Gold",
+        "brand": "Lian Li",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 33,
+        "name": "PowerSpec PSX Black 850W Fully Modular 80+ Gold Certified",
+        "brand": "PowerSpec",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 34,
+        "name": "be quiet! Pure Power 11 600W Non-Modular 80+ Gold Certified",
+        "brand": "be quiet!",
+        "image_link": "placeholder",
+        "wattage": 600,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 35,
+        "name": "EVGA SuperNOVA 750 G5 ATX 750W Fully Modular 80+ Gold Certified",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "wattage": 750,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 36,
+        "name": "FSP Group Dagger Black SFX 600W Fully Modular 80+ Gold Certified",
+        "brand": "FSP Group",
+        "image_link": "placeholder",
+        "wattage": 600,
+        "form_factor": "SFX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 37,
+        "name": "Thermaltake TOUGHPOWER PF1 ARGB 1050W 80+ Platinum Fully Modular",
+        "brand": "Thermaltake",
+        "image_link": "placeholder",
+        "wattage": 1050,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Platinum",
+        "price": 0.0
+    },
+    {
+        "psu_id": 38,
+        "name": "Antec EARTHWATTS GOLD PRO 750W Semi-Modular 80+ Gold",
+        "brand": "Antec",
+        "image_link": "placeholder",
+        "wattage": 750,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 39,
+        "name": "Corsair CX450M (2015) 450W Semi-Modular 80+ Bronze Certified ATX",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "wattage": 450,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+    {
+        "psu_id": 40,
+        "name": "SeaSonic S12G 650W Non-Modular 80+ Gold",
+        "brand": "SeaSonic",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 41,
+        "name": "Cooler Master XG650 Black 650W Fully Modular 80+ Platinum Certified",
+        "brand": "Cooler Master",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Platinum",
+        "price": 0.0
+    },
+    {
+        "psu_id": 42,
+        "name": "StarTech ATX2POWER450 ATX 450W Non-Modular",
+        "brand": "StarTech",
+        "image_link": "placeholder",
+        "wattage": 450,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 43,
+        "name": "Corsair TX950 Certified ATX 950W 80+ Bronze Non-Modular",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "wattage": 950,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+    {
+        "psu_id": 44,
+        "name": "HEC XPOWER780 ATX 600W Non-Modular",
+        "brand": "HEC",
+        "image_link": "placeholder",
+        "wattage": 600,
+        "form_factor": "ATX",
+        "efficiency_rating": null,
+        "price": 0.0
+    },
+    {
+        "psu_id": 45,
+        "name": "Fractal Design Anode Black 750W Semi-Modular 80+ Bronze Certified",
+        "brand": "Fractal Design",
+        "image_link": "placeholder",
+        "wattage": 750,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+    {
+        "psu_id": 46,
+        "name": "Antec Signature Black 1000W Fully Modular 80+ Platinum Certified",
+        "brand": "Antec",
+        "image_link": "placeholder",
+        "wattage": 1000,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Platinum",
+        "price": 0.0
+    },
+    {
+        "psu_id": 47,
+        "name": "Asus ROG THOR 850P Black / Red 850W Fully Modular 80+ Platinum",
+        "brand": "Asus",
+        "image_link": "placeholder",
+        "wattage": 850,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Platinum",
+        "price": 0.0
+    },
+    {
+        "psu_id": 48,
+        "name": "Enermax REVOLUTION III Black / Gold 650W 80+ Gold Fully Modular",
+        "brand": "Enermax",
+        "image_link": "placeholder",
+        "wattage": 650,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    },
+    {
+        "psu_id": 49,
+        "name": "KOLINK Classic Black/Red 400W Non-Modular 80+ Bronze Certified",
+        "brand": "KOLINK",
+        "image_link": "placeholder",
+        "wattage": 400,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Bronze",
+        "price": 0.0
+    },
+    {
+        "psu_id": 50,
+        "name": "Cougar COUGAR-GX700 ATX 700W Fully Modular 80+ Gold Certified",
+        "brand": "Cougar",
+        "image_link": "placeholder",
+        "wattage": 700,
+        "form_factor": "ATX",
+        "efficiency_rating": "80+ Gold",
+        "price": 0.0
+    }
+]

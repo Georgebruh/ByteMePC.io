@@ -1,0 +1,502 @@
+[
+    {
+        "cpu_id": 1,
+        "name": "AMD Ryzen Threadripper 9980X",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 64,
+        "frequency": 3.2,
+        "socket": "sTR5",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 2,
+        "name": "Intel Xeon E5 1650 V3 OEM/Tray 3.5 GHz 6-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 3.5,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 3,
+        "name": "Intel Xeon E3 1245 V5 OEM/Tray 3.5 GHz 4-Core LGA1151",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.5,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 4,
+        "name": "Intel Xeon E5 2660 V4 2 GHz 14-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 14,
+        "frequency": 2.0,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 5,
+        "name": "Intel Core i5 6400T 2.2 GHz 4-Core LGA1151 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 2.2,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 6,
+        "name": "Intel Core i9 13900T 1.1 GHz 24-Core LGA1700 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 24,
+        "frequency": 0.8,
+        "socket": "LGA 1700",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 7,
+        "name": "Intel Core i5 7600T 2.8 GHz 4-Core LGA1151",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 2.8,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 8,
+        "name": "Intel Core i7 7700K 4.2 GHz 4-Core LGA1151",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 4.2,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 9,
+        "name": "Intel Core i5 14400F 2.5 GHz 10-Core LGA1700",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 10,
+        "frequency": 2.5,
+        "socket": "LGA 1700",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 10,
+        "name": "AMD Threadripper 1900X 3.8 GHz 8-Core sTR4",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 3.8,
+        "socket": "TR4",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 11,
+        "name": "Intel Core i7 Extreme 6950X 3 GHz 10-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 10,
+        "frequency": 3.0,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 12,
+        "name": "Intel Xeon E 2136 3.3 GHz 6-Core LGA1151",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 3.3,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 13,
+        "name": "AMD A6 7470K 3.7 GHz 2-Core FM2+ OEM/Tray",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 2,
+        "frequency": 3.7,
+        "socket": "FM2+",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 14,
+        "name": "AMD Opteron 6344 2.6 GHz 12-Core G34 OEM/Tray",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 12,
+        "frequency": 2.6,
+        "socket": "G34",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 15,
+        "name": "AMD A8 7670K 3.6 GHz 4-Core FM2+",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.6,
+        "socket": "FM2+",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 16,
+        "name": "Intel Core i5 4460S 2.9 GHz 4-Core LGA1150",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 2.9,
+        "socket": "LGA 1150",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 17,
+        "name": "Intel Core i9 13900K 3.0 GHz 24-Core LGA1700",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 24,
+        "frequency": 3.0,
+        "socket": "LGA 1700",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 18,
+        "name": "Intel Core i5 3570S 3.1 GHz 4-Core LGA1155 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.1,
+        "socket": "LGA 1155",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 19,
+        "name": "AMD Ryzen 5 5600 3.5 GHz 6-Core AM4",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 3.5,
+        "socket": "AM4",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 20,
+        "name": "Intel Core i5 8400 2.8 GHz 6-Core LGA1151",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 2.8,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 21,
+        "name": "Intel Core i7 4930K 3.4 GHz 6-Core LGA2011",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 3.4,
+        "socket": "LGA 2011",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 22,
+        "name": "Intel Core i7 Extreme 6950X 3 GHz 10-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 10,
+        "frequency": 3.0,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 23,
+        "name": "Intel Xeon E3 1275 V5 3.6 GHz 4-Core LGA1151",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.6,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 24,
+        "name": "Intel Xeon E5 2623 V3 3 GHz 4-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.0,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 25,
+        "name": "AMD Ryzen 5 3400G 3.7 GHz 4-Core AM4",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.7,
+        "socket": "AM4",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 26,
+        "name": "Intel Xeon E5 2630 V3 2.4 GHz 8-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 2.4,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 27,
+        "name": "Intel Xeon E3 1220 V5 3 GHz 4-Core LGA1151 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 28,
+        "name": "Intel Core i5 12600KF 3.7 GHz 10-Core LGA1700",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 10,
+        "frequency": 3.7,
+        "socket": "LGA 1700",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 29,
+        "name": "AMD A4 6300 3.7 GHz 2-Core FM2 OEM/Tray",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 2,
+        "frequency": 3.7,
+        "socket": "FM2",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 30,
+        "name": "Intel Xeon E3 1271 V3 3.6 GHz 4-Core LGA1150",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.6,
+        "socket": "LGA 1150",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 31,
+        "name": "Intel Core i7 5930K 3.5 GHz 6-Core LGA2011-3 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 3.5,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 32,
+        "name": "Intel Core i3 9100 3.6 GHz 4-Core LGA1151",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.6,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 33,
+        "name": "AMD Threadripper 2920X 3.5 GHz 12-Core sTR4",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 12,
+        "frequency": 3.5,
+        "socket": "TR4",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 34,
+        "name": "Intel Xeon E5 2683 V4 2.1 GHz 16-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 16,
+        "frequency": 2.1,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 35,
+        "name": "Intel Core i3 9320 3.7 GHz 4-Core LGA1151 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.7,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 36,
+        "name": "AMD Ryzen 7 9700X 3.8 GHz 8-Core AM5",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 3.8,
+        "socket": "AM5",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 37,
+        "name": "AMD Ryzen Threadripper PRO 9985WX",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 64,
+        "frequency": 3.2,
+        "socket": "sTR5",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 38,
+        "name": "Intel Xeon E5 2660 2.2 GHz 8-Core LGA2011 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 2.2,
+        "socket": "LGA 2011",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 39,
+        "name": "Intel Core i7 7820X 3.6 GHz 8-Core LGA2066",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 3.6,
+        "socket": "LGA 2066",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 40,
+        "name": "Intel Core i7 4790K 4 GHz 4-Core LGA1150 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 4.0,
+        "socket": "LGA 1150",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 41,
+        "name": "AMD EPYC EPYC 4344P 3.8 GHz 8-Core AM5",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 3.8,
+        "socket": "AM5",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 42,
+        "name": "Intel Xeon E 2126G 3.3 GHz 6-Core LGA1151 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 3.3,
+        "socket": "LGA 1151",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 43,
+        "name": "Intel Core i7 6850K 3.6 GHz 6-Core LGA2011-3 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 3.6,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 44,
+        "name": "Intel Xeon E5 2620 V3 2.4 GHz 6-Core LGA2011-3 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 6,
+        "frequency": 2.4,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 45,
+        "name": "Intel Xeon E5 2680 2.7 GHz 8-Core LGA2011",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 2.7,
+        "socket": "LGA 2011",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 46,
+        "name": "AMD A-Series A12 9800E 3.1 GHz 4-Core AM4",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.1,
+        "socket": "AM4",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 47,
+        "name": "Intel Core i7 Extreme 5960X 3 GHz 8-Core LGA2011-3",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 32,
+        "frequency": 3.5,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 48,
+        "name": "Intel Xeon E5 2637 V4 3.5 GHz 4-Core LGA2011-3 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 8,
+        "frequency": 3.0,
+        "socket": "LGA 2011-3",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 49,
+        "name": "AMD A10 A10-7700K 3.4 GHz 4-Core FM2+",
+        "brand": "AMD",
+        "img_link": "placeholder",
+        "core_members": 4,
+        "frequency": 3.4,
+        "socket": "FM2+",
+        "price": 0.0
+    },
+    {
+        "cpu_id": 50,
+        "name": "Intel Core i5 14500T 1.7 GHz 14-Core LGA1700 OEM/Tray",
+        "brand": "Intel",
+        "img_link": "placeholder",
+        "core_members": 14,
+        "frequency": 1.7,
+        "socket": "LGA 1700",
+        "price": 0.0
+    }
+]

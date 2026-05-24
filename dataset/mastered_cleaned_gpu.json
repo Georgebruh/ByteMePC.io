@@ -1,0 +1,502 @@
+[
+    {
+        "gpu_id": 1,
+        "name": "Asus ROG STRIX Radeon RX 570 4GB GDDR5 Black",
+        "brand": "ASUS",
+        "image_link": "placeholder",
+        "core-clock": 1168,
+        "memory": 4,
+        "tdp": 150,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 2,
+        "name": "Radeon RX 570 ARMOR MK2 8G OC",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1244,
+        "memory": 8,
+        "tdp": 150,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 3,
+        "name": "MSI GeForce RTX 4070 VENTUS 2X 12G OC GDDR6X",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1920,
+        "memory": 12,
+        "tdp": 200,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 4,
+        "name": "MSI GeForce RTX 5060 8G VENTUS 2X OC WHITE GDDR7",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 3840,
+        "memory": 8,
+        "tdp": 145,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 5,
+        "name": "EVGA XC ULTRA GAMING GeForce RTX 2070 SUPER 8 GB",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "core-clock": 1605,
+        "memory": 8,
+        "tdp": 215,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 6,
+        "name": "Sapphire 21291-01-40G Radeon VII 16GB HBM2 Silver",
+        "brand": "Sapphire",
+        "image_link": "placeholder",
+        "core-clock": 1400,
+        "memory": 16,
+        "tdp": 300,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 7,
+        "name": "Asus STRIX GAMING Advanced GeForce RTX 2070 8GB GDDR6 Black",
+        "brand": "ASUS",
+        "image_link": "placeholder",
+        "core-clock": 1410,
+        "memory": 8,
+        "tdp": 185,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 8,
+        "name": "EVGA GeForce GTX 1060 GAMING 6GB GDDR5 Black / Silver",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "core-clock": 1506,
+        "memory": 6,
+        "tdp": 120,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 9,
+        "name": "XFX Quicksilver AMD Radeon RX 9070 XT White Magnetic Air Edition 16GB GDDR6",
+        "brand": "XFX",
+        "image_link": "placeholder",
+        "core-clock": 1660,
+        "memory": 16,
+        "tdp": 304,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 10,
+        "name": "MSI GeForce RTX 5070 12G SHADOW 2X OC GDDR7",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 2325,
+        "memory": 12,
+        "tdp": 250,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 11,
+        "name": "Gigabyte GAMING OC Radeon RX 9060 XT 16GB GDDR6",
+        "brand": "Gigabyte",
+        "image_link": "placeholder",
+        "core-clock": 1900,
+        "memory": 16,
+        "tdp": 160,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 12,
+        "name": "EVGA K|NGP|N ACX 2.0+ GeForce GTX 980 Ti 6GB GDDR5 Black",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "core-clock": 1203,
+        "memory": 6,
+        "tdp": 250,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 13,
+        "name": "MSI GeForce RTX 4070 Ti VENTUS 3X E OC 12GB GDDR6X Silver / Black",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 2310,
+        "memory": 12,
+        "tdp": 285,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 14,
+        "name": "Sapphire NITRO+ Radeon RX 480 8GB GDDR5 Black",
+        "brand": "Sapphire",
+        "image_link": "placeholder",
+        "core-clock": 1208,
+        "memory": 8,
+        "tdp": 225,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 15,
+        "name": "XFX Speedster QICK 319 Core Radeon RX 6750 XT 12GB GDDR6 Black",
+        "brand": "XFX",
+        "image_link": "placeholder",
+        "core-clock": 2150,
+        "memory": 12,
+        "tdp": 250,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 16,
+        "name": "PNY NVIDIA RTX 6000 Ada Generation 48GB GDDR6",
+        "brand": "PNY",
+        "image_link": "placeholder",
+        "core-clock": 815,
+        "memory": 48,
+        "tdp": 300,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 17,
+        "name": "Sapphire Radeon RX 7600 PULSE 8GB GDDR6 Black / Red",
+        "brand": "Sapphire",
+        "image_link": "placeholder",
+        "core-clock": 1720,
+        "memory": 8,
+        "tdp": 185,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 18,
+        "name": "Gigabyte GAMING OC PRO Radeon RX 6600 XT 8GB GDDR6 Black / Silver",
+        "brand": "Gigabyte",
+        "image_link": "placeholder",
+        "core-clock": 1968,
+        "memory": 8,
+        "tdp": 160,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 19,
+        "name": "EVGA GeForce GTX 1660 XC Ultra Gaming, 6GB GDDR5, HDB Fan, 06G-P4-1167-KR",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "core-clock": 0,
+        "memory": 6,
+        "tdp": 0,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 20,
+        "name": "AMD 100-300000006 Radeon PRO W7700 16GB GDDR6",
+        "brand": "AMD",
+        "image_link": "placeholder",
+        "core-clock": 1900,
+        "memory": 16,
+        "tdp": 190,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 21,
+        "name": "EVGA GeForce GTX 960 FTW ACX 2.0+ 4GB GDDR5 Black / Silver",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "core-clock": 1304,
+        "memory": 4,
+        "tdp": 120,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 22,
+        "name": "Inno3D iChill X3 GeForce RTX 4070 SUPER 12GB GDDR6X Black",
+        "brand": "Inno3D",
+        "image_link": "placeholder",
+        "core-clock": 1980,
+        "memory": 12,
+        "tdp": 220,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 23,
+        "name": "PowerColor AXR7 240 4GBD5-HLEV2 Radeon R7 240 4GB GDDR5 Black",
+        "brand": "PowerColor",
+        "image_link": "placeholder",
+        "core-clock": 780,
+        "memory": 4,
+        "tdp": 30,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 24,
+        "name": "Sapphire PULSE Radeon RX 5700 8GB GDDR6 Black / Red",
+        "brand": "Sapphire",
+        "image_link": "placeholder",
+        "core-clock": 1540,
+        "memory": 8,
+        "tdp": 187,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 25,
+        "name": "Gigabyte GAMING OC GeForce RTX 3060 8GB GDDR6 Black / Silver",
+        "brand": "Gigabyte",
+        "image_link": "placeholder",
+        "core-clock": 1320,
+        "memory": 8,
+        "tdp": 170,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 26,
+        "name": "NVIDIA Quadro RTX 8000 48GB GDDR6",
+        "brand": "NVIDIA",
+        "image_link": "placeholder",
+        "core-clock": 1395,
+        "memory": 48,
+        "tdp": 295,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 27,
+        "name": "MSI GAMING OC GeForce RTX 5060 Ti 8GB GDDR7",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 2407,
+        "memory": 8,
+        "tdp": 180,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 28,
+        "name": "MSI Radeon R7 250 OC 2GB DDR3 Black / Blue",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1050,
+        "memory": 2,
+        "tdp": 65,
+        "price": 0.0
+    },
+    {
+       "gpu_id": 29,
+        "name": "PowerColor Radeon AI PRO R9700S",
+        "brand": "PowerColor",
+        "image_link": "placeholder",
+        "core-clock": 1600,
+        "memory": 32,
+        "tdp": 304,
+        "price": 0.0 
+    },
+    {
+        "gpu_id": 30,
+        "name": "PowerColor Fighter AMD Radeon RX 6800 16GB OC GDDR6",
+        "brand": "PowerColor",
+        "image_link": "placeholder",
+        "core-clock": 1775,
+        "memory": 16,
+        "tdp": 250,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 31,
+        "name": "MSI SUPRIM X GeForce RTX 4080 16GB GDDR6X Black",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 2205,
+        "memory": 16,
+        "tdp": 320,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 32,
+        "name": "AMD Radeon RX 6800 XT Black / Silver 16GB GDDR6",
+        "brand": "AMD",
+        "image_link": "placeholder",
+        "core-clock": 1825,
+        "memory": 16,
+        "tdp": 300,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 33,
+        "name": "EVGA 03G-P3-1595-AR GeForce GTX 580 3 GB",
+        "brand": "EVGA",
+        "image_link": "placeholder",
+        "core-clock": 900,
+        "memory": 3,
+        "tdp": 244,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 34,
+        "name": "MSI GeForce GTX 1050 2GB GDDR5 Black / White",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1404,
+        "memory": 2,
+        "tdp": 75,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 35,
+        "name": "GALAX EX GeForce RTX 5060 Ti 8GB GDDR7 Black",
+        "brand": "GALAX",
+        "image_link": "placeholder",
+        "core-clock": 2410,
+        "memory": 8,
+        "tdp": 180,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 36,
+        "name": "ASUS Dual GeForce RTX 5070 12GB GDDR7",
+        "brand": "ASUS",
+        "image_link": "placeholder",
+        "core-clock": 2325,
+        "memory": 12,
+        "tdp": 250,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 37,
+        "name": "Gigabyte GAMING OC GeForce RTX 2070 SUPER 8GB GDDR6 White",
+        "brand": "Gigabyte",
+        "image_link": "placeholder",
+        "core-clock": 1605,
+        "memory": 8,
+        "tdp": 215,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 38,
+        "name": "Sapphire PULSE Radeon RX 580 4GB GDDR5 Black",
+        "brand": "Sapphire",
+        "image_link": "placeholder",
+        "core-clock": 1257,
+        "memory": 4,
+        "tdp": 225,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 39,
+        "name": "PNY XLR8 Gaming VERTO EPIC-X RGB GeForce RTX 4070 Ti 12GB GDDR6X Black",
+        "brand": "PNY",
+        "image_link": "placeholder",
+        "core-clock": 2310,
+        "memory": 12,
+        "tdp": 285,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 40,
+        "name": "XFX FATBOY Radeon RX 590 8GB GDDR5 Black / Red",
+        "brand": "XFX",
+        "image_link": "placeholder",
+        "core-clock": 1469,
+        "memory": 8,
+        "tdp": 225,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 41,
+        "name": "Gigabyte GAMING GeForce GTX 1050 Ti 4GB GDDR5 Black",
+        "brand": "Gigabyte",
+        "image_link": "placeholder",
+        "core-clock": 1366,
+        "memory": 4,
+        "tdp": 75,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 42,
+        "name": "MSI GeForce RTX 3050 AERO ITX 8GB OC",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1550,
+        "memory": 8,
+        "tdp": 130,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 43,
+        "name": "Zotac GAMING Trinity GeForce RTX 3090 24GB GDDR6X Black",
+        "brand": "Zotac",
+        "image_link": "placeholder",
+        "core-clock": 1395,
+        "memory": 24,
+        "tdp": 350,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 44,
+        "name": "MSI OC Radeon RX 460 4GB GDDR5 Black / White",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1090,
+        "memory": 4,
+        "tdp": 84,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 45,
+        "name": "Sapphire PULSE Radeon RX 5700 8GB GDDR6 Black / Red",
+        "brand": "Sapphire",
+        "image_link": "placeholder",
+        "core-clock": 1540,
+        "memory": 8,
+        "tdp": 187,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 46,
+        "name": "XFX Swift AMD Radeon RX 9060 XT OC White Triple Fan Gaming Edition 8GB GDDR6",
+        "brand": "XFX",
+        "image_link": "placeholder",
+        "core-clock": 1900,
+        "memory": 8,
+        "tdp": 182,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 47,
+        "name": "Inno3D GeForce RTX 4070 SUPER X3 OC 12GB GDDR6X Black / Silver",
+        "brand": "Inno3D",
+        "image_link": "placeholder",
+        "core-clock": 1980,
+        "memory": 12,
+        "tdp": 220,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 48,
+        "name": "XFX Speedster MERC 319 Radeon RX 6900 XT 16GB GDDR6 Black",
+        "brand": "XFX",
+        "image_link": "placeholder",
+        "core-clock": 1825,
+        "memory": 16,
+        "tdp": 300,
+        "price": 0.0
+    },
+    {
+        "gpu_id": 49,
+        "name": "MSI GT 1030 LP OC Black GeForce GT 1030 2GB GDDR5 Black",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1265,
+        "memory": 2,
+        "tdp": 30,
+        "price": 0.0
+    },
+    {
+       "gpu_id": 50,
+        "name": "MSI GeForce RTX 3060 GAMING X TRIO 12GB",
+        "brand": "MSI",
+        "image_link": "placeholder",
+        "core-clock": 1320,
+        "memory": 12,
+        "tdp": 170,
+        "price": 0.0 
+    }
+]
