@@ -5,6 +5,11 @@
 import { supabase } from '../lib/supabase'
 import type { Part, PartCategory } from './mock'
 
+// DB stores prices in USD; the UI is PHP throughout. Convert once at the
+// boundary so downstream code (filters, sort, formatter) only ever sees PHP.
+// Adjust this when the working exchange rate moves materially.
+const USD_TO_PHP = 57
+
 // Emoji placeholder shown on PartCard when image_link is null.
 const ICONS: Record<PartCategory, string> = {
   cpu: '🖥',
@@ -83,10 +88,18 @@ export async function fetchPartsByCategory(category: PartCategory): Promise<Part
     brand: row.brand,
     name: row.name,
     spec: (cfg.toSpec as (r: any) => string)(row),
-    price: Number(row.price),
+    price: Math.round(Number(row.price) * USD_TO_PHP),
     icon: ICONS[category],
     ...(extras ? extras(row) : {}),
   }))
+}
+
+// Pull every category in parallel and concatenate. Used by the catalog
+// when no category filter is active — the grid shows the full inventory.
+export async function fetchAllParts(): Promise<Part[]> {
+  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'psu']
+  const results = await Promise.all(cats.map(fetchPartsByCategory))
+  return results.flat()
 }
 
 // Counts shown on the segmented category tabs.

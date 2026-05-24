@@ -4,7 +4,7 @@ import AppNav from '../../components/AppNav.vue'
 import PartCard from '../../components/PartCard.vue'
 import type { Part, PartCategory } from '../../data/mock'
 import { php } from '../../data/mock'
-import { fetchCategoryCounts, fetchPartsByCategory } from '../../data/catalog'
+import { fetchAllParts, fetchCategoryCounts, fetchPartsByCategory } from '../../data/catalog'
 
 // Categories shown in the sidebar — the old segmented tabs row was folded
 // into the filter sidebar so the left column owns the entire chrome.
@@ -16,8 +16,17 @@ const categories: Array<{ key: PartCategory; label: string }> = [
   { key: 'psu',         label: 'PSU' },
 ]
 
-const activeCat = ref<PartCategory>('cpu')
+// Nullable so the user can fully deselect a category (toggle the active one
+// off) and land on a neutral "pick a category" state. Spec-only filters
+// (cores, socket, price) live underneath this and disappear with it.
+const activeCat = ref<PartCategory | null>(null)
 const search = ref('')
+
+// Click handler: switching to a different category selects it; clicking the
+// already-active one deselects so the chrome reverts to the empty state.
+function toggleCat(key: PartCategory) {
+  activeCat.value = activeCat.value === key ? null : key
+}
 
 const categoryCounts = ref<Record<PartCategory, number>>({
   cpu: 0, motherboard: 0, gpu: 0, ram: 0, psu: 0,
@@ -35,7 +44,9 @@ async function loadActiveCat() {
   loading.value = true
   errorMsg.value = null
   try {
-    tabParts.value = await fetchPartsByCategory(activeCat.value)
+    tabParts.value = activeCat.value
+      ? await fetchPartsByCategory(activeCat.value)
+      : await fetchAllParts()
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Failed to load parts.'
     tabParts.value = []
@@ -151,15 +162,6 @@ const pagedParts = computed(() => {
   const start = (currentPage.value - 1) * PAGE_SIZE
   return sortedParts.value.slice(start, start + PAGE_SIZE)
 })
-// 1-indexed bounds of the current page, clamped to the result count
-// so the "Showing X–Y of Z" label never lies (e.g. last page being short).
-const pageStartIndex = computed(() =>
-  sortedParts.value.length === 0 ? 0 : (currentPage.value - 1) * PAGE_SIZE + 1,
-)
-const pageEndIndex = computed(() =>
-  Math.min(currentPage.value * PAGE_SIZE, sortedParts.value.length),
-)
-
 // Any time the result set shrinks, snap the page back into range.
 watch([filteredParts, sortMode], () => {
   if (currentPage.value > totalPages.value) currentPage.value = 1
@@ -194,6 +196,14 @@ const pageItems = computed<Array<number | 'ellipsis'>>(() => {
 interface Chip { key: string; label: string; clear: () => void }
 const appliedChips = computed<Chip[]>(() => {
   const chips: Chip[] = []
+  if (activeCat.value) {
+    const label = categories.find(c => c.key === activeCat.value)?.label ?? activeCat.value
+    chips.push({
+      key: `category:${activeCat.value}`,
+      label: `Category · ${label}`,
+      clear: () => { activeCat.value = null },
+    })
+  }
   for (const [brand, on] of Object.entries(selectedBrands.value)) {
     if (on) chips.push({
       key: `brand:${brand}`,
@@ -227,8 +237,11 @@ const appliedChips = computed<Chip[]>(() => {
 
 function clearFilters() {
   search.value = ''
-  selectedBrands.value = {}
-  selectedSockets.value = {}
+  // Mutate keys in place: each checkbox's v-model is bound to a specific
+  // key (`selectedBrands[brand]`), and reassigning the whole object can
+  // leave the previously-ticked DOM inputs visually checked.
+  for (const k of Object.keys(selectedBrands.value)) selectedBrands.value[k] = false
+  for (const k of Object.keys(selectedSockets.value)) selectedSockets.value[k] = false
   coresMin.value = null
   coresMax.value = null
   priceMin.value = null
@@ -243,7 +256,12 @@ function togglePin(id: string) {
 }
 
 // Singular label used in the search placeholder + results count.
-const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?.label ?? '')
+// Falls back to "parts" when no category is selected (whole-catalog view).
+const catLabel = computed(() =>
+  activeCat.value
+    ? categories.find(c => c.key === activeCat.value)?.label ?? 'parts'
+    : 'parts',
+)
 </script>
 
 <template>
@@ -255,7 +273,6 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
       <div>
         <span class="kicker">// catalog · {{ totalCount.toLocaleString('en-PH') }} components</span>
         <div class="section-title">Browse Parts</div>
-        <div class="section-sub">5 categories · live database</div>
       </div>
     </div>
 
@@ -277,7 +294,7 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
               :key="c.key"
               class="cat-row"
               :class="{ active: activeCat === c.key }"
-              @click="activeCat = c.key"
+              @click="toggleCat(c.key)"
             >
               <span>{{ c.label }}</span>
               <span class="count">{{ categoryCounts[c.key] }}</span>
@@ -285,8 +302,10 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
           </div>
         </div>
 
-        <!-- Brand (dynamic, real counts derived from the loaded data) -->
-        <div v-if="brandOptions.length" class="filter-group">
+        <!-- Brand (dynamic, real counts derived from the loaded data).
+             Hidden in the all-categories view since brands span unrelated
+             part types and the list becomes meaningless. -->
+        <div v-if="activeCat && brandOptions.length" class="filter-group">
           <label class="field-label">Brand</label>
           <label v-for="b in brandOptions" :key="b.brand" class="check-row">
             <input type="checkbox" v-model="selectedBrands[b.brand]" />
@@ -334,7 +353,7 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
           <input
             v-model="search"
             class="input"
-            :placeholder="`🔍  Search ${catLabel}s by name, brand…`"
+            :placeholder="`🔍  Search ${catLabel} by name, brand…`"
           />
         </div>
 
@@ -342,7 +361,7 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
           <div class="count-label">
             Showing <b>{{ filteredParts.length }}</b>
             results from total <em>{{ tabParts.length }}</em>
-            for <b>&quot;{{ catLabel }}&quot;</b>
+            <template v-if="activeCat">for <b>&quot;{{ catLabel }}&quot;</b></template>
           </div>
           <label class="sort-select">
             Sort:
@@ -388,17 +407,9 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
           </template>
         </div>
 
-        <!-- Pagination — always visible (so the page-size selector and
-             range label stay reachable even when there's only one page). -->
+        <!-- Pagination — always visible so the page buttons stay reachable
+             even when there's only one page. -->
         <div v-if="!loading && !errorMsg" class="pagination">
-          <span class="pg-range">
-            <template v-if="sortedParts.length">
-              Showing <b>{{ pageStartIndex }}</b>–<b>{{ pageEndIndex }}</b>
-              of <b>{{ sortedParts.length }}</b>
-            </template>
-            <template v-else>No results</template>
-          </span>
-
           <div class="pg-controls">
             <button
               class="pg-btn"
@@ -678,29 +689,16 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
   letter-spacing: 0.04em;
 }
 
-/* Pagination — three-zone bar: range label · page buttons · size selector */
+/* Pagination — centered row of page buttons. */
 .parts-grid { scroll-margin-top: 24px; }
 .pagination {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
   margin-top: 22px;
   padding: 14px 0;
   border-top: 1px dashed var(--line);
 }
-/* Empty trailing column keeps the page buttons centered now that the
-   "6 per page" label is gone. */
-.pagination::after { content: ''; }
-.pg-range {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-low);
-  justify-self: start;
-}
-.pg-range b { color: var(--text); font-weight: 500; }
 .pg-controls {
   display: flex;
   align-items: center;
@@ -741,10 +739,8 @@ const catLabel = computed(() => categories.find(c => c.key === activeCat.value)?
   .parts-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 700px) {
-  /* Stack the pagination bar so the range, controls, and selector each
-     get their own row instead of fighting for horizontal space. */
-  .pagination { grid-template-columns: 1fr; }
-  .pg-range { justify-self: center; }
+  /* Allow page buttons to wrap onto multiple rows on narrow screens. */
+  .pagination { flex-wrap: wrap; }
 }
 @media (max-width: 600px) {
   .parts-grid { grid-template-columns: 1fr; }
