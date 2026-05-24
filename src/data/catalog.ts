@@ -33,10 +33,11 @@ interface GpuRow { gpu_id: number; name: string; brand: string; memory: number; 
 interface RamRow { ram_id: number; name: string; brand: string; type: string; capacity: number; speed: number; price: number }
 interface PsuRow { psu_id: number; name: string; brand: string; wattage: number; efficiency_rating: string; form_factor: string; price: number }
 
-// `extras` lets us hoist typed columns (socket, cores) onto the Part so the
-// catalog filter sidebar can match on them without re-parsing the spec string.
+// `extras` lets us hoist typed columns (socket, cores, ramType, tdp, wattage)
+// onto the Part so the catalog filter sidebar + the manual builder's compat
+// engine can match on them without re-parsing the spec string.
 interface CategoryConfigExt<Row> extends CategoryConfig<Row> {
-  extras?: (row: Row) => Pick<Part, 'socket' | 'cores'>
+  extras?: (row: Row) => Pick<Part, 'socket' | 'cores' | 'ramType' | 'tdp' | 'wattage'>
 }
 
 const CONFIGS = {
@@ -50,22 +51,25 @@ const CONFIGS = {
     table: 'motherboard',
     idCol: 'mb_id',
     toSpec: (r: MbRow) => `${r.size} · ${r.socket} · ${r.ram_type}`,
-    extras: (r: MbRow) => ({ socket: r.socket }),
+    extras: (r: MbRow) => ({ socket: r.socket, ramType: r.ram_type as 'DDR4' | 'DDR5' }),
   } satisfies CategoryConfigExt<MbRow>,
   gpu: {
     table: 'gpu',
     idCol: 'gpu_id',
     toSpec: (r: GpuRow) => `${r.memory}GB · ${r.core_clock}MHz · ${r.tdp}W TDP`,
+    extras: (r: GpuRow) => ({ tdp: r.tdp }),
   } satisfies CategoryConfigExt<GpuRow>,
   ram: {
     table: 'ram',
     idCol: 'ram_id',
     toSpec: (r: RamRow) => `${r.capacity}GB · ${r.type} · ${r.speed}MHz`,
+    extras: (r: RamRow) => ({ ramType: r.type as 'DDR4' | 'DDR5' }),
   } satisfies CategoryConfigExt<RamRow>,
   psu: {
     table: 'psu',
     idCol: 'psu_id',
     toSpec: (r: PsuRow) => `${r.wattage}W · ${r.efficiency_rating} · ${r.form_factor}`,
+    extras: (r: PsuRow) => ({ wattage: r.wattage }),
   } satisfies CategoryConfigExt<PsuRow>,
 }
 

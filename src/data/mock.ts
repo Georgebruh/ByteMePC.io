@@ -22,6 +22,11 @@ export interface Part {
   // CPU for cores) so the chips + counts can be real.
   socket?: string
   cores?: number
+  // Extra compat fields used by the manual builder.
+  // ramType: motherboard + ram. tdp: gpu. wattage: psu.
+  ramType?: 'DDR4' | 'DDR5'
+  tdp?: number
+  wattage?: number
 }
 
 export interface BuildPartRef {
