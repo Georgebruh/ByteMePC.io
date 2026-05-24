@@ -1,0 +1,502 @@
+[
+    {
+        "ram_id": 1,
+        "name": "TEAMGROUP Xtreem White DDR5-7200 CL34 32GB (2x16GB)",
+        "brand": "TEAMGROUP",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 7200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 2,
+        "name": "Corsair Dominator Platinum RGB Black DDR4-4800 CL18 16GB (2x8GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 4800.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 3,
+        "name": "Corsair Vengeance LPX Black / Yellow DDR4-3600 CL18 16GB (2x8GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 4,
+        "name": "Kingston FURY Beast RGB Black DDR5-5600 CL40 32GB (2x16GB)",
+        "brand": "Kingston",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 5600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 5,
+        "name": "Patriot Viper RGB White DDR4-4133 C19",
+        "brand": "Patriot",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 4133.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 6,
+        "name": "G.Skill NT Black DDR4-2133 CL15 4GB (1x4GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 4,
+        "speed": 2133.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 7,
+        "name": "Kingston FURY Beast RGB DDR5-6400 CL32 16GB (1x16GB)",
+        "brand": "Kingston",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 16,
+        "speed": 6400.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 8,
+        "name": "G.Skill Ripjaws M5 RGB Black DDR5-6000 CL32 64GB (2x32GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 64,
+        "speed": 6000.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 9,
+        "name": "Klevv CRAS V RGB White DDR5-6400 CL32 64GB (2x32GB)",
+        "brand": "Klevv",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 64,
+        "speed": 6400.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 10,
+        "name": "Corsair Vengeance RGB Black DDR4-3200 CL16 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 32,
+        "speed": 3200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 11,
+        "name": "Kingston FURY Beast Black DDR5-5200 CL40 8GB (1x8GB)",
+        "brand": "Kingston",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 8,
+        "speed": 5200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 12,
+        "name": "Kingston FURY Beast Black DDR4-2666 CL16 4GB (1x4GB)",
+        "brand": "Kingston",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 4,
+        "speed": 2666.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 13,
+        "name": "G.Skill Trident Z RGB Black DDR4-3200 CL16 32GB (2x16GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 32,
+        "speed": 3200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 14,
+        "name": "Corsair Vengeance RGB Black DDR5-6800 CL40 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 6800.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 15,
+        "name": "TEAMGROUP T-Force Vulcan Z Red DDR4-3600 CL18 16GB (2x8GB)",
+        "brand": "TEAMGROUP",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 16,
+        "name": "Timetec PINNACLE Konduit Black DDR4-3600 CL18 16GB (1x16GB)",
+        "brand": "Timetec",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 17,
+        "name": "Corsair CMT32GX5M2X7800C36 Black DDR5-7800 CL36 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 7800.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 18,
+        "name": "Crucial Ballistix Black DDR4-3600 CL16 16GB (2x8GB)",
+        "brand": "Crucial",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 19,
+        "name": "G.Skill Ripjaws M5 RGB Black DDR5-6400 CL36 32GB (2x16GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 6400.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 20,
+        "name": "TEAMGROUP T-Force Xtreem ARGB DDR4-3600 CL18 32GB (2x16GB)",
+        "brand": "TEAMGROUP",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 32,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 21,
+        "name": "Corsair Vengeance RGB Pro SL Black DDR4-3600 CL18 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 32,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 22,
+        "name": "Kingston FURY Beast Black DDR4-3600 CL17 8GB (1x8GB)",
+        "brand": "Kingston",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 8,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 23,
+        "name": "Corsair Dominator Titanium First Edition White DDR5-7200 CL34 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 7200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 24,
+        "name": "Corsair Vengeance LPX White DDR4-2666 CL16 16GB (2x8GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 2666.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 25,
+        "name": "Silicon Power SP016GBSVU480F02 SODIMM DDR5-4800 CL40 16GB (1x16GB)",
+        "brand": "Silicon Power",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 16,
+        "speed": 4800.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 26,
+        "name": "G.Skill Flare X5 Black DDR5-5600 CL46 32GB (2x16GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 5600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 27,
+        "name": "Kingston FURY Beast Black DDR5-5200 CL40 16GB (2x8GB)",
+        "brand": "Kingston",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 16,
+        "speed": 5200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 28,
+        "name": "GeIL ORION V RGB AMD Black DDR5-5200 CL42 16GB (1x16GB)",
+        "brand": "GeIL",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 16,
+        "speed": 5200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 29,
+        "name": "Corsair Vengeance RGB RT DDR4-3200 CL16 16GB (2x8GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 3200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 30,
+        "name": "Corsair Vengeance LPX 32GB (2x16GB) DDR4 3200 CL16 Black",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 32,
+        "speed": 3200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 31,
+        "name": "Silicon Power SP032GBLVU560F02 Black DDR5-5600 CL46 32GB (1x32GB)",
+        "brand": "Silicon Power",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 5600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 32,
+        "name": "TEAMGROUP T-Force Delta RGB Black / Silver DDR5-6800 CL34 32GB (2x16GB)",
+        "brand": "TEAMGROUP",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 6800.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 33,
+        "name": "Patriot Viper Venom Black / White DDR5-5200 CL36 32GB (1x32GB)",
+        "brand": "Patriot",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 5200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 34,
+        "name": "ADATA XPG SPECTRIX D60G Gray DDR4-3600 CL18 16GB (2x8GB)",
+        "brand": "ADATA",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 35,
+        "name": "PNY Anarchy Black/Blue DDR4-2133 CL15 16GB (2x8GB)",
+        "brand": "PNY",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 16,
+        "speed": 2133.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 36,
+        "name": "Klevv CRAS V RGB White DDR5-6000 CL30 32GB (2x16GB)",
+        "brand": "Klevv",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 6000.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 37,
+        "name": "TEAMGROUP T-Force Delta RGB White DDR5-6000 CL38 16GB (1x16GB)",
+        "brand": "TEAMGROUP",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 16,
+        "speed": 6000.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 38,
+        "name": "OLOy Blade RGB Black DDR5-5600 CL36 64GB (2x32GB)",
+        "brand": "OLOy",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 64,
+        "speed": 5600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 39,
+        "name": "Kingston FURY Renegade White / Silver DDR5-6800 CL36 16GB (1x16GB)",
+        "brand": "Kingston",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 16,
+        "speed": 6800.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 40,
+        "name": "Corsair Vengeance Black DDR5-5600 CL36 64GB (4x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 64,
+        "speed": 5600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 41,
+        "name": "G.Skill Ripjaws Black / Red DDR3-1066 CL7 8GB (2x4GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR3",
+        "capacity": 8,
+        "speed": 1066.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 42,
+        "name": "G.Skill Trident Z Royal Silver DDR4-3600 CL16 128GB (4x32GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 128,
+        "speed": 3600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 43,
+        "name": "G.Skill Trident Z5 RGB Silver / Black DDR5-7200 CL36 48GB (2x24GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 48,
+        "speed": 7200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 44,
+        "name": "Corsair Vengeance Black DDR5-6600 CL30 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 6600.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 45,
+        "name": "Corsair Dominator Platinum RGB Black DDR4-3466 CL16 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 32,
+        "speed": 3466.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 46,
+        "name": "Corsair Vengeance RGB Pro SL DDR4-3200 CL16 128GB (4x32GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 128,
+        "speed": 3200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 47,
+        "name": "TEAMGROUP T-Force Delta RGB White DDR5-6000 CL34 64GB (2x32GB)",
+        "brand": "TEAMGROUP",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 64,
+        "speed": 6000.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 48,
+        "name": "G.Skill Trident Z5 RGB White / Black DDR5-5200 CL36 32GB (2x16GB)",
+        "brand": "G.SKILL",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 5200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 49,
+        "name": "Corsair Dominator Platinum RGB White DDR5-6200 CL36 32GB (2x16GB)",
+        "brand": "Corsair",
+        "image_link": "placeholder",
+        "type": "DDR5",
+        "capacity": 32,
+        "speed": 6200.0,
+        "price": 0.0
+    },
+    {
+        "ram_id": 50,
+        "name": "Mushkin Enhanced Redline Stiletto Black DDR4-3200 CL16 64GB (2x32GB)",
+        "brand": "Mushkin",
+        "image_link": "placeholder",
+        "type": "DDR4",
+        "capacity": 64,
+        "speed": 3200.0,
+        "price": 0.0
+    }
+]
