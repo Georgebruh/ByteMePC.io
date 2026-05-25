@@ -1,40 +1,38 @@
 <script setup lang="ts">
+import { onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
-import { php } from '../../data/mock'
+import { php, type Build } from '../../data/mock'
+import { fetchMyBuilds } from '../../data/builds'
+import { useSession } from '../../lib/session'
+
+const { userId, isSignedIn } = useSession()
 
 // ─── Recent / continue building ─────────────────────────────
-// Hardcoded for now — eventually fetched from Supabase by user id.
-interface RecentBuild {
-  id: string
-  name: string
-  mode: 'manual' | 'auto'
-  percent: number
-  over: boolean
-  total: number
+// Loaded from Supabase — three most recently updated builds owned by
+// the current user. Empty when the user isn't signed in.
+const recent = ref<Build[]>([])
+const recentLoading = ref(true)
+
+async function loadRecent() {
+  if (!userId.value) {
+    recent.value = []
+    recentLoading.value = false
+    return
+  }
+  recentLoading.value = true
+  try {
+    const all = await fetchMyBuilds(userId.value)
+    recent.value = all.slice(0, 3)
+  } catch {
+    recent.value = []
+  } finally {
+    recentLoading.value = false
+  }
 }
 
-const recent: RecentBuild[] = [
-  { id: 'apex-v2',         name: 'Apex Predator V2', mode: 'manual', percent: 75,  over: false, total: 128300 },
-  { id: 'budget-streamer', name: 'Budget Streamer',  mode: 'auto',   percent: 100, over: true,  total: 146800 },
-  { id: 'office-mule',     name: 'Office Workhorse', mode: 'manual', percent: 37,  over: false, total: 42100 },
-]
-
-// ─── Quick-start presets ────────────────────────────────────
-// Tapping a preset jumps to the auto-builder with the budget pre-filled.
-// Wiring that pre-fill happens once the auto-builder reads a query param.
-interface Preset {
-  num: string
-  name: string
-  budget: number
-}
-
-const presets: Preset[] = [
-  { num: '01', name: 'Esports 1080p', budget: 40000 },
-  { num: '02', name: 'Streamer',      budget: 80000 },
-  { num: '03', name: 'Creator',       budget: 120000 },
-  { num: '04', name: 'Apex Halo',     budget: 200000 },
-]
+onMounted(loadRecent)
+watch(userId, loadRecent)
 </script>
 
 <template>
@@ -106,49 +104,38 @@ const presets: Preset[] = [
     <!-- ─── Continue building ─── -->
     <div class="sec-head">
       <div class="ttl"><span class="kicker">// recent</span>Continue</div>
+      <RouterLink v-if="isSignedIn" to="/builds" class="see-all">View All →</RouterLink>
     </div>
 
-    <div class="recent-list">
+    <div v-if="!isSignedIn" class="recent-empty">
+      <RouterLink to="/sign-in">Sign in</RouterLink> to see your saved builds here.
+    </div>
+    <div v-else-if="recentLoading" class="recent-empty">Loading…</div>
+    <div v-else-if="!recent.length" class="recent-empty">
+      No saved builds yet — start one above.
+    </div>
+    <div v-else class="recent-list">
       <RouterLink
         v-for="b in recent"
         :key="b.id"
-        :to="`/builds/${b.id}`"
+        :to="`/builder/manual/${b.id}`"
         class="recent-row"
       >
-        <span class="mode-tag" :class="b.mode === 'manual' ? 'man' : 'aut'">// {{ b.mode }}</span>
+        <span class="mode-tag" :class="b.isPublic ? 'aut' : 'man'">
+          // {{ b.isPublic ? 'public' : 'private' }}
+        </span>
         <div class="nm">{{ b.name }}</div>
         <div class="pct">
-          {{ b.percent }}%
-          <span
-            class="bar"
-            :class="{ over: b.over }"
-            :style="{ '--w': `${b.percent}%` }"
-          ></span>
+          {{ b.parts.length }} part{{ b.parts.length === 1 ? '' : 's' }}
+          <span class="bar" :style="{ '--w': `${Math.min(100, b.parts.length * 14)}%` }"></span>
         </div>
-        <div class="pr">{{ php(b.total) }}</div>
+        <div class="pr">{{ php(b.totalPrice) }}</div>
         <div class="act">
           <span class="t-btn">Resume</span>
         </div>
       </RouterLink>
     </div>
 
-    <!-- ─── Quick-start presets ─── -->
-    <div class="sec-head">
-      <div class="ttl"><span class="kicker">// presets</span>Quick Start</div>
-    </div>
-
-    <div class="preset-grid">
-      <RouterLink
-        v-for="p in presets"
-        :key="p.num"
-        :to="`/builder/auto?budget=${p.budget}`"
-        class="preset-card"
-      >
-        <div class="pk">// {{ p.num }}</div>
-        <div class="pn">{{ p.name }}</div>
-        <div class="pb">{{ php(p.budget) }}</div>
-      </RouterLink>
-    </div>
   </div>
 </template>
 
@@ -319,6 +306,26 @@ const presets: Preset[] = [
 .sec-head .ttl .kicker { margin-right: 10px; display: inline-block; }
 
 /* ─── Recent / continue list ─── */
+.sec-head .see-all {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.recent-empty {
+  padding: 24px 18px;
+  margin-bottom: 36px;
+  border: 1px dashed var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  text-align: center;
+}
+.recent-empty a { color: var(--cyan); }
+
 .recent-list {
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
@@ -389,57 +396,10 @@ const presets: Preset[] = [
 }
 .recent-row .act { display: flex; gap: 6px; }
 
-/* ─── Quick-start presets ─── */
-.preset-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-.preset-card {
-  background: rgba(10, 18, 32, 0.5);
-  border: 1px solid var(--line);
-  padding: 18px 16px 16px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  font-family: var(--mono);
-  color: inherit;
-  text-decoration: none;
-  display: block;
-}
-.preset-card:hover {
-  border-color: rgba(255, 181, 71, 0.45);
-  background: rgba(255, 181, 71, 0.03);
-}
-.preset-card .pk {
-  font-size: 9.5px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--amber);
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-.preset-card .pn {
-  font-family: var(--display);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
-}
-.preset-card .pb {
-  font-family: var(--display);
-  font-weight: 700;
-  color: var(--amber);
-  font-size: 18px;
-  letter-spacing: -0.02em;
-  margin-top: 8px;
-}
-
 /* ─── Responsive ─── */
 @media (max-width: 1100px) {
   .mode-grid { grid-template-columns: 1fr; }
   .or-divider { display: none; }
   .recent-row { grid-template-columns: 1fr; gap: 8px; }
-  .preset-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
