@@ -2,7 +2,7 @@
 // Keeps screens deterministic and lets us cross-link by ID (e.g. clicking
 // a part card on /browse opens the same part on /parts/:id).
 
-export type PartCategory = 'cpu' | 'motherboard' | 'gpu' | 'ram' | 'psu'
+export type PartCategory = 'cpu' | 'motherboard' | 'gpu' | 'ram' | 'psu' | 'case' | 'cooler'
 
 export interface Part {
   id: string
@@ -24,9 +24,16 @@ export interface Part {
   cores?: number
   // Extra compat fields used by the manual builder.
   // ramType: motherboard + ram. tdp: gpu. wattage: psu.
+  // size: motherboard form factor (ATX/mATX/ITX).
+  // caseSizes: MB form factors the case accepts.
+  // coolerSockets: CPU sockets the cooler mounts on. tdpRating: cooler dissipation ceiling.
   ramType?: 'DDR4' | 'DDR5'
   tdp?: number
   wattage?: number
+  size?: string
+  caseSizes?: string[]
+  coolerSockets?: string[]
+  tdpRating?: number
 }
 
 export interface BuildPartRef {

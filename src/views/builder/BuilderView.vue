@@ -6,9 +6,9 @@ import { php, type Part, type PartCategory } from '../../data/mock'
 import { fetchPartsByCategory } from '../../data/catalog'
 
 // ─── Slot definitions ─────────────────────────────────────
-// Each slot maps 1:1 to a PartCategory in the catalog. Storage / case /
-// cooler are not in the catalog yet — they'll get added here once their
-// tables are queryable.
+// Each slot maps 1:1 to a PartCategory in the catalog. Storage is
+// not in the catalog yet — it'll get added here once its tables are
+// queryable.
 interface BuilderSlot {
   key: PartCategory
   label: string
@@ -21,19 +21,21 @@ const slots: BuilderSlot[] = [
   { key: 'gpu',         label: 'GPU',         code: 'GPU' },
   { key: 'ram',         label: 'RAM',         code: 'RAM' },
   { key: 'psu',         label: 'PSU',         code: 'PSU' },
+  { key: 'case',        label: 'Case',        code: 'CSE' },
+  { key: 'cooler',      label: 'CPU Cooler',  code: 'CLR' },
 ]
 
 // Short summary label (e.g. "MB" → row tag in the summary panel) keyed
 // by category so we don't restate it in the template.
 const SUMMARY_TAGS: Record<PartCategory, string> = {
-  cpu: 'CPU', motherboard: 'MB', gpu: 'GPU', ram: 'RAM', psu: 'PSU',
+  cpu: 'CPU', motherboard: 'MB', gpu: 'GPU', ram: 'RAM', psu: 'PSU', case: 'CSE', cooler: 'CLR',
 }
 
 // ─── Selections ───────────────────────────────────────────
 // One part (or null) per slot. Keyed by category, mutated when the user
 // clicks a card in the picker.
 const selections = ref<Record<PartCategory, Part | null>>({
-  cpu: null, motherboard: null, gpu: null, ram: null, psu: null,
+  cpu: null, motherboard: null, gpu: null, ram: null, psu: null, case: null, cooler: null,
 })
 
 // Currently active slot — drives which catalog category the picker shows.
@@ -127,10 +129,18 @@ function partWarning(p: Part): string | null {
     if (cpu?.socket && p.socket && cpu.socket !== p.socket) return `Socket ≠ ${cpu.socket}`
     const ram = selections.value.ram
     if (ram?.ramType && p.ramType && ram.ramType !== p.ramType) return `RAM ${ram.ramType}`
+    const pcCase = selections.value.case
+    if (pcCase?.caseSizes?.length && p.size && !pcCase.caseSizes.includes(p.size)) {
+      return `${p.size} won't fit case`
+    }
   }
   if (p.category === 'cpu') {
     const mb = selections.value.motherboard
     if (mb?.socket && p.socket && mb.socket !== p.socket) return `Socket ≠ ${mb.socket}`
+    const cooler = selections.value.cooler
+    if (cooler?.coolerSockets?.length && p.socket && !cooler.coolerSockets.includes(p.socket)) {
+      return `Cooler ≠ ${p.socket}`
+    }
   }
   if (p.category === 'ram') {
     const mb = selections.value.motherboard
@@ -139,6 +149,18 @@ function partWarning(p: Part): string | null {
   if (p.category === 'psu') {
     const need = estimatedDraw.value
     if (need && p.wattage && p.wattage < need) return `${p.wattage}W < ${need}W est.`
+  }
+  if (p.category === 'case') {
+    const mb = selections.value.motherboard
+    if (mb?.size && p.caseSizes?.length && !p.caseSizes.includes(mb.size)) {
+      return `No ${mb.size} support`
+    }
+  }
+  if (p.category === 'cooler') {
+    const cpu = selections.value.cpu
+    if (cpu?.socket && p.coolerSockets?.length && !p.coolerSockets.includes(cpu.socket)) {
+      return `No ${cpu.socket} mount`
+    }
   }
   return null
 }
@@ -159,7 +181,7 @@ type SlotStatus = 'filled' | 'empty' | 'warn'
 
 const slotStatuses = computed<Record<PartCategory, SlotStatus>>(() => {
   const out: Record<PartCategory, SlotStatus> = {
-    cpu: 'empty', motherboard: 'empty', gpu: 'empty', ram: 'empty', psu: 'empty',
+    cpu: 'empty', motherboard: 'empty', gpu: 'empty', ram: 'empty', psu: 'empty', case: 'empty', cooler: 'empty',
   }
   for (const slot of slots) {
     const part = selections.value[slot.key]
@@ -196,44 +218,85 @@ const subtotal = computed(() =>
 )
 
 // ─── Compatibility rules (sidebar list) ──────────────────
+// Each row has a consistent shape: a short label (left, like a column tag)
+// and a detail string (right, the actual result). This lets the rail render
+// as a real two-column list instead of a wall of variable-length prose.
 type CompatKind = 'ok' | 'warn' | 'pending'
-interface CompatCheck { kind: CompatKind; text: string }
+interface CompatCheck { kind: CompatKind; label: string; detail: string }
 
 const compatChecks = computed<CompatCheck[]>(() => {
   const out: CompatCheck[] = []
-  const { cpu, motherboard, gpu, ram, psu } = selections.value
+  const { cpu, motherboard, gpu, ram, psu, case: pcCase, cooler } = selections.value
 
   // CPU ↔ MB socket
   if (!cpu || !motherboard) {
-    out.push({ kind: 'pending', text: 'Pick a CPU + Motherboard to check socket' })
+    out.push({ kind: 'pending', label: 'Socket', detail: 'pick CPU + MB' })
   } else if (cpu.socket && motherboard.socket && cpu.socket === motherboard.socket) {
-    out.push({ kind: 'ok', text: `CPU socket matches MB (${cpu.socket})` })
+    out.push({ kind: 'ok', label: 'Socket', detail: `${cpu.socket} matched` })
   } else {
-    out.push({ kind: 'warn', text: `Socket mismatch: CPU ${cpu.socket} vs MB ${motherboard.socket}` })
+    out.push({ kind: 'warn', label: 'Socket', detail: `CPU ${cpu.socket} ≠ MB ${motherboard.socket}` })
   }
 
   // RAM type ↔ MB
   if (!ram || !motherboard) {
-    out.push({ kind: 'pending', text: 'Pick a Motherboard + RAM to check memory type' })
+    out.push({ kind: 'pending', label: 'Memory', detail: 'pick MB + RAM' })
   } else if (ram.ramType && motherboard.ramType && ram.ramType === motherboard.ramType) {
-    out.push({ kind: 'ok', text: `RAM type ${ram.ramType} matches MB` })
+    out.push({ kind: 'ok', label: 'Memory', detail: `${ram.ramType} matched` })
   } else {
-    out.push({ kind: 'warn', text: `RAM ${ram.ramType} doesn't match MB ${motherboard.ramType}` })
+    out.push({ kind: 'warn', label: 'Memory', detail: `RAM ${ram.ramType} ≠ MB ${motherboard.ramType}` })
   }
 
-  // PSU wattage vs estimated draw
-  if (!gpu) {
-    out.push({ kind: 'pending', text: 'Pick a GPU to estimate power draw' })
-  } else if (!psu) {
-    out.push({ kind: 'pending', text: 'Pick a PSU' })
-  } else if (psu.wattage && psu.wattage >= estimatedDraw.value) {
-    out.push({ kind: 'ok', text: `PSU ${psu.wattage}W ≥ estimated ${estimatedDraw.value}W` })
+  // Form factor: MB ↔ Case
+  if (!motherboard || !pcCase) {
+    out.push({ kind: 'pending', label: 'Form factor', detail: 'pick MB + case' })
+  } else if (motherboard.size && pcCase.caseSizes?.length && pcCase.caseSizes.includes(motherboard.size)) {
+    out.push({ kind: 'ok', label: 'Form factor', detail: `${motherboard.size} fits case` })
   } else {
-    out.push({ kind: 'warn', text: `PSU ${psu.wattage}W < estimated ${estimatedDraw.value}W` })
+    out.push({ kind: 'warn', label: 'Form factor', detail: `case won't fit ${motherboard.size}` })
+  }
+
+  // Cooler ↔ CPU socket
+  if (!cpu || !cooler) {
+    out.push({ kind: 'pending', label: 'Cooler', detail: 'pick CPU + cooler' })
+  } else if (cpu.socket && cooler.coolerSockets?.length && cooler.coolerSockets.includes(cpu.socket)) {
+    out.push({ kind: 'ok', label: 'Cooler', detail: `mounts on ${cpu.socket}` })
+  } else {
+    out.push({ kind: 'warn', label: 'Cooler', detail: `no ${cpu.socket} mount` })
+  }
+
+  // PSU wattage vs estimated draw. Wattages get <strong> so the load-bearing
+  // number pops out of the rail — see v-html note on .compat-detail below.
+  if (!gpu) {
+    out.push({ kind: 'pending', label: 'Power', detail: 'pick GPU to estimate' })
+  } else if (!psu) {
+    out.push({ kind: 'pending', label: 'Power', detail: `pick PSU (need <strong>~${estimatedDraw.value}W</strong>)` })
+  } else if (psu.wattage && psu.wattage >= estimatedDraw.value) {
+    out.push({ kind: 'ok', label: 'Power', detail: `<strong>${psu.wattage}W</strong> ≥ <strong>~${estimatedDraw.value}W</strong>` })
+  } else {
+    out.push({ kind: 'warn', label: 'Power', detail: `<strong>${psu.wattage}W</strong> &lt; <strong>~${estimatedDraw.value}W</strong>` })
   }
 
   return out
 })
+
+// One-line verdict above the list — what the user reads first.
+interface CompatSummary { kind: CompatKind; glyph: string; text: string; ok: number; warn: number; pending: number }
+const compatSummary = computed<CompatSummary>(() => {
+  const counts = { ok: 0, warn: 0, pending: 0 }
+  for (const c of compatChecks.value) counts[c.kind]++
+  const total = compatChecks.value.length
+  if (counts.warn > 0) {
+    return { kind: 'warn', glyph: '✗', text: `${counts.warn} issue${counts.warn === 1 ? '' : 's'} — fix to validate`, ...counts }
+  }
+  if (counts.pending > 0) {
+    return { kind: 'pending', glyph: '○', text: `${counts.ok}/${total} checks · ${counts.pending} pending`, ...counts }
+  }
+  return { kind: 'ok', glyph: '✓', text: 'All checks pass — build is compatible', ...counts }
+})
+
+function glyphFor(kind: CompatKind): string {
+  return kind === 'ok' ? '✓' : kind === 'warn' ? '✗' : '○'
+}
 
 // Build name — editable so the page chrome reflects what the user is working on.
 const buildName = ref('Untitled Build')
@@ -388,12 +451,29 @@ const pickerHeading = computed(() => {
           <span class="total-val">{{ php(subtotal) }}</span>
         </div>
 
-        <!-- Validation strip — one row per rule. Warn rows are red-shaded;
-             OK / pending stay quiet so warnings really stand out. -->
+        <!-- Validation strip — one row per rule. Each row leads with a
+             status glyph + a short label so the rail scans top-to-bottom
+             without needing to read full sentences. Verdict band above the
+             list is the at-a-glance answer. -->
         <span class="kicker mute side-kicker compat-kicker">// compatibility</span>
+
+        <div class="compat-summary" :class="compatSummary.kind">
+          <span class="compat-summary-glyph">{{ compatSummary.glyph }}</span>
+          <span class="compat-summary-text">{{ compatSummary.text }}</span>
+        </div>
+
         <div class="compat-list">
-          <div v-for="c in compatChecks" :key="c.text" class="compat-row" :class="c.kind">
-            <span>{{ c.text }}</span>
+          <div
+            v-for="c in compatChecks"
+            :key="c.label"
+            class="compat-row"
+            :class="c.kind"
+          >
+            <span class="compat-glyph">{{ glyphFor(c.kind) }}</span>
+            <span class="compat-label">{{ c.label }}</span>
+            <!-- Detail strings are author-controlled (built from local
+                 numeric data), so <strong> in the source is safe. -->
+            <span class="compat-detail" v-html="c.detail"></span>
           </div>
         </div>
 
@@ -771,25 +851,95 @@ const pickerHeading = computed(() => {
 }
 
 .compat-kicker { margin-top: 18px; margin-bottom: 8px; }
-.compat-row {
+
+/* Verdict band — colored block that announces the overall state before the
+   user scans the rule list. Worst-state-wins (warn > pending > ok). */
+.compat-summary {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.25);
+  font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-dim);
-  letter-spacing: 0.02em;
-  margin-bottom: 4px;
-  border-left: 2px solid transparent;
+  letter-spacing: 0.04em;
 }
-.compat-row.pending { color: var(--text-low); }
-/* Only warn rows get the red shade — ok / pending stay neutral so the eye
-   gets pulled to actual problems instead of skimming a wall of brackets. */
+.compat-summary-glyph {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+.compat-summary-text { color: var(--text-dim); }
+.compat-summary.ok {
+  border-color: rgba(110, 231, 183, 0.4);
+  background: rgba(110, 231, 183, 0.08);
+}
+.compat-summary.ok .compat-summary-glyph,
+.compat-summary.ok .compat-summary-text { color: var(--green); }
+.compat-summary.warn {
+  border-color: rgba(255, 70, 85, 0.45);
+  background: rgba(255, 70, 85, 0.1);
+}
+.compat-summary.warn .compat-summary-glyph,
+.compat-summary.warn .compat-summary-text { color: var(--red); }
+.compat-summary.pending {
+  border-color: var(--line);
+}
+.compat-summary.pending .compat-summary-glyph { color: var(--text-mute); }
+
+/* Rows render as glyph · LABEL · detail — a three-column grid keeps labels
+   left-aligned so the eye can vertically scan the rule names. */
+.compat-row {
+  display: grid;
+  grid-template-columns: 16px 70px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  border-left: 2px solid transparent;
+  margin-bottom: 2px;
+}
+.compat-glyph {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+}
+.compat-label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  color: var(--text-low);
+}
+.compat-detail { color: var(--text-dim); }
+/* Bold numerals inside a detail (e.g. power wattages) — amber so the
+   load-bearing number is the first thing the eye lands on. Warn rows
+   override the colour below so it stays inside the red palette. */
+.compat-detail strong {
+  color: var(--amber);
+  font-weight: 700;
+  font-family: var(--display);
+  letter-spacing: -0.01em;
+}
+
+.compat-row.ok .compat-glyph { color: var(--green); }
+.compat-row.pending .compat-glyph { color: var(--text-mute); }
+.compat-row.pending .compat-detail { color: var(--text-low); }
+
+/* Warn rows keep the red shade so actual problems jump out. */
 .compat-row.warn {
   background: rgba(255, 70, 85, 0.08);
   border-left-color: var(--red);
-  color: var(--red);
 }
+.compat-row.warn .compat-glyph,
+.compat-row.warn .compat-label,
+.compat-row.warn .compat-detail { color: var(--red); }
+.compat-row.warn .compat-detail strong { color: var(--red); }
 
 .builder-actions {
   margin-top: 16px;

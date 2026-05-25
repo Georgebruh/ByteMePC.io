@@ -14,6 +14,8 @@ const categories: Array<{ key: PartCategory; label: string }> = [
   { key: 'gpu',         label: 'GPU' },
   { key: 'ram',         label: 'RAM' },
   { key: 'psu',         label: 'PSU' },
+  { key: 'case',        label: 'Case' },
+  { key: 'cooler',      label: 'Cooler' },
 ]
 
 // Nullable so the user can fully deselect a category (toggle the active one
@@ -29,7 +31,7 @@ function toggleCat(key: PartCategory) {
 }
 
 const categoryCounts = ref<Record<PartCategory, number>>({
-  cpu: 0, motherboard: 0, gpu: 0, ram: 0, psu: 0,
+  cpu: 0, motherboard: 0, gpu: 0, ram: 0, psu: 0, case: 0, cooler: 0,
 })
 const totalCount = computed(() =>
   Object.values(categoryCounts.value).reduce((sum, n) => sum + n, 0),

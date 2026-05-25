@@ -17,6 +17,8 @@ const ICONS: Record<PartCategory, string> = {
   gpu: '🎮',
   ram: '💾',
   psu: '💡',
+  case: '📦',
+  cooler: '❄',
 }
 
 // DB table + spec-builder for each category. Centralising this here
@@ -27,17 +29,20 @@ interface CategoryConfig<Row> {
   toSpec: (row: Row) => string
 }
 
-interface CpuRow { cpu_id: number; name: string; brand: string; core_numbers: number; frequency: number; socket: string; price: number }
-interface MbRow  { mb_id: number;  name: string; brand: string; socket: string; size: string; ram_type: string; price: number }
-interface GpuRow { gpu_id: number; name: string; brand: string; memory: number; core_clock: number; tdp: number; price: number }
-interface RamRow { ram_id: number; name: string; brand: string; type: string; capacity: number; speed: number; price: number }
-interface PsuRow { psu_id: number; name: string; brand: string; wattage: number; efficiency_rating: string; form_factor: string; price: number }
+interface CpuRow    { cpu_id: number;    name: string; brand: string; core_numbers: number; frequency: number; socket: string; price: number }
+interface MbRow     { mb_id: number;     name: string; brand: string; socket: string; size: string; ram_type: string; price: number }
+interface GpuRow    { gpu_id: number;    name: string; brand: string; memory: number; core_clock: number; tdp: number; price: number }
+interface RamRow    { ram_id: number;    name: string; brand: string; type: string; capacity: number; speed: number; price: number }
+interface PsuRow    { psu_id: number;    name: string; brand: string; wattage: number; efficiency_rating: string; form_factor: string; price: number }
+interface CaseRow   { case_id: number;   name: string; brand: string; price: number; case_supported_size: { size: string }[] }
+interface CoolerRow { cooler_id: number; name: string; brand: string; type: string; tdp_rating: number; price: number; cooler_socket: { socket: string }[] }
 
-// `extras` lets us hoist typed columns (socket, cores, ramType, tdp, wattage)
-// onto the Part so the catalog filter sidebar + the manual builder's compat
-// engine can match on them without re-parsing the spec string.
+// `extras` lets us hoist typed columns (socket, cores, ramType, tdp, wattage,
+// size, caseSizes, coolerSockets, tdpRating) onto the Part so the catalog
+// filter sidebar + the manual builder's compat engine can match on them
+// without re-parsing the spec string.
 interface CategoryConfigExt<Row> extends CategoryConfig<Row> {
-  extras?: (row: Row) => Pick<Part, 'socket' | 'cores' | 'ramType' | 'tdp' | 'wattage'>
+  extras?: (row: Row) => Partial<Pick<Part, 'socket' | 'cores' | 'ramType' | 'tdp' | 'wattage' | 'size' | 'caseSizes' | 'coolerSockets' | 'tdpRating'>>
 }
 
 const CONFIGS = {
@@ -51,7 +56,7 @@ const CONFIGS = {
     table: 'motherboard',
     idCol: 'mb_id',
     toSpec: (r: MbRow) => `${r.size} · ${r.socket} · ${r.ram_type}`,
-    extras: (r: MbRow) => ({ socket: r.socket, ramType: r.ram_type as 'DDR4' | 'DDR5' }),
+    extras: (r: MbRow) => ({ socket: r.socket, ramType: r.ram_type as 'DDR4' | 'DDR5', size: r.size }),
   } satisfies CategoryConfigExt<MbRow>,
   gpu: {
     table: 'gpu',
@@ -71,6 +76,26 @@ const CONFIGS = {
     toSpec: (r: PsuRow) => `${r.wattage}W · ${r.efficiency_rating} · ${r.form_factor}`,
     extras: (r: PsuRow) => ({ wattage: r.wattage }),
   } satisfies CategoryConfigExt<PsuRow>,
+  case: {
+    table: 'pc_case',
+    idCol: 'case_id',
+    toSpec: (r: CaseRow) => {
+      const sizes = r.case_supported_size?.map(s => s.size).join(' / ')
+      return sizes ? `Fits ${sizes}` : 'Case'
+    },
+    extras: (r: CaseRow) => ({
+      caseSizes: r.case_supported_size?.map(s => s.size) ?? [],
+    }),
+  } satisfies CategoryConfigExt<CaseRow>,
+  cooler: {
+    table: 'cpu_cooler',
+    idCol: 'cooler_id',
+    toSpec: (r: CoolerRow) => `${r.type} · ${r.tdp_rating}W TDP`,
+    extras: (r: CoolerRow) => ({
+      tdpRating: r.tdp_rating,
+      coolerSockets: r.cooler_socket?.map(s => s.socket) ?? [],
+    }),
+  } satisfies CategoryConfigExt<CoolerRow>,
 }
 
 // Fetch every part in a category and project it onto the Part shape.
@@ -101,14 +126,14 @@ export async function fetchPartsByCategory(category: PartCategory): Promise<Part
 // Pull every category in parallel and concatenate. Used by the catalog
 // when no category filter is active — the grid shows the full inventory.
 export async function fetchAllParts(): Promise<Part[]> {
-  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'psu']
+  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'psu', 'case', 'cooler']
   const results = await Promise.all(cats.map(fetchPartsByCategory))
   return results.flat()
 }
 
 // Counts shown on the segmented category tabs.
 export async function fetchCategoryCounts(): Promise<Record<PartCategory, number>> {
-  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'psu']
+  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'psu', 'case', 'cooler']
   const results = await Promise.all(
     cats.map(c =>
       supabase.from(CONFIGS[c].table).select('*', { count: 'exact', head: true }),
@@ -128,5 +153,7 @@ function specColumns(category: PartCategory): string {
     case 'gpu':         return 'memory, core_clock, tdp'
     case 'ram':         return 'type, capacity, speed'
     case 'psu':         return 'wattage, efficiency_rating, form_factor'
+    case 'case':        return 'case_supported_size(size)'
+    case 'cooler':      return 'type, tdp_rating, cooler_socket(socket)'
   }
 }
