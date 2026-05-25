@@ -263,10 +263,6 @@ const pickerHeading = computed(() => {
         <span class="kicker">// builder · editing</span>
         <input v-model="buildName" class="title-input" spellcheck="false" />
       </div>
-      <div class="header-actions">
-        <button class="t-btn">Build Settings</button>
-        <button class="t-btn primary">Save Build</button>
-      </div>
     </div>
 
     <div class="builder">
@@ -388,7 +384,7 @@ const pickerHeading = computed(() => {
         </div>
 
         <div class="summary-total">
-          <span class="lbl">SUBTOTAL · PHP</span>
+          <span class="lbl">SUBTOTAL</span>
           <span class="total-val">{{ php(subtotal) }}</span>
         </div>
 
@@ -452,8 +448,6 @@ const pickerHeading = computed(() => {
 }
 .title-input:hover  { border-bottom-color: var(--line); }
 .title-input:focus  { border-bottom-color: var(--cyan); }
-
-.header-actions { display: flex; gap: 10px; }
 
 /* Picker placeholder row (loading / error / empty). */
 .picker-status {
