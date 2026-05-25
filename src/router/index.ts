@@ -15,8 +15,9 @@ const routes: RouteRecordRaw[] = [
   // Builder flow — /builder is the mode-chooser hub, the two builders
   // live under /builder/manual and /builder/auto.
   { path: '/builder',         name: 'builder',        component: () => import('../views/builder/BuildHubView.vue') },
-  { path: '/builder/manual',  name: 'manual-builder', component: () => import('../views/builder/BuilderView.vue') },
-  { path: '/builder/auto',    name: 'auto-builder',   component: () => import('../views/builder/BudgetBuilderView.vue') },
+  { path: '/builder/manual',     name: 'manual-builder',     component: () => import('../views/builder/BuilderView.vue') },
+  { path: '/builder/manual/:id', name: 'manual-builder-edit', component: () => import('../views/builder/BuilderView.vue') },
+  { path: '/builder/auto',       name: 'auto-builder',       component: () => import('../views/builder/BudgetBuilderView.vue') },
 
   // Builds — owned + community
   { path: '/builds',          name: 'my-builds',    component: () => import('../views/builds/MyBuildsView.vue') },

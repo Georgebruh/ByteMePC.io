@@ -264,3 +264,105 @@ export async function deleteBuild(buildId: string): Promise<void> {
     .eq('build_id', buildId)
   if (error) throw error
 }
+
+// ─── Create / update builds ─────────────────────────────
+
+// Inputs the builder passes in — one Part per slot, name + visibility.
+// Shared between create and update.
+export interface BuildInput {
+  name: string
+  description?: string | null
+  isPublic: boolean
+  cpu?: { id: string } | null
+  motherboard?: { id: string } | null
+  gpu?: { id: string } | null
+  psu?: { id: string } | null
+  case?: { id: string } | null
+  cooler?: { id: string } | null
+  ram?: { id: string } | null
+}
+
+export interface CreateBuildInput extends BuildInput {
+  userId: string
+}
+
+// Parts in the catalog have stringy ids shaped like "cpu-13" — strip the
+// category prefix to recover the numeric DB key.
+function partIdToDbId(stringId: string | undefined | null): number | null {
+  if (!stringId) return null
+  const m = stringId.match(/-(\d+)$/)
+  return m ? Number(m[1]) : null
+}
+
+// Build a column-level payload for the `builds` table from the shared
+// BuildInput shape. Used by both create and update so the field mapping
+// only lives in one place.
+function buildRowPayload(input: BuildInput) {
+  return {
+    name: input.name,
+    description: input.description ?? null,
+    is_public: input.isPublic,
+    cpu_id:    partIdToDbId(input.cpu?.id),
+    mb_id:     partIdToDbId(input.motherboard?.id),
+    gpu_id:    partIdToDbId(input.gpu?.id),
+    psu_id:    partIdToDbId(input.psu?.id),
+    case_id:   partIdToDbId(input.case?.id),
+    cooler_id: partIdToDbId(input.cooler?.id),
+  }
+}
+
+// Replace the build's RAM junction rows with whatever's in the input
+// (currently a single ram entry). Called by both create and update so
+// the "RAM slot now empty" edit case actually removes the existing row.
+async function replaceBuildRam(buildId: string, ramId: string | null | undefined): Promise<void> {
+  // Drop any existing rows for this build first.
+  const { error: delErr } = await supabase
+    .from('build_ram')
+    .delete()
+    .eq('build_id', buildId)
+  if (delErr) throw delErr
+
+  const ramDbId = partIdToDbId(ramId)
+  if (ramDbId === null) return
+
+  const { error: insErr } = await supabase
+    .from('build_ram')
+    .insert({ build_id: buildId, ram_id: ramDbId, quantity: 1 })
+  if (insErr) throw insErr
+}
+
+// Insert the build row + (optionally) one ram junction row. Returns the
+// new build_id so the caller can navigate to /builds/:id.
+export async function createBuild(input: CreateBuildInput): Promise<string> {
+  const { data, error } = await supabase
+    .from('builds')
+    .insert({ ...buildRowPayload(input), user_id: input.userId })
+    .select('build_id')
+    .single()
+
+  if (error) throw error
+  const buildId = data.build_id as string
+
+  try {
+    await replaceBuildRam(buildId, input.ram?.id)
+  } catch (e) {
+    // Roll back the build so we don't leave an orphan row that the
+    // user thinks was saved successfully.
+    await supabase.from('builds').delete().eq('build_id', buildId)
+    throw e
+  }
+
+  return buildId
+}
+
+// Update an existing build owned by the current user. RLS enforces
+// ownership — non-owners just get 0 rows updated.
+export async function updateBuild(buildId: string, input: BuildInput): Promise<void> {
+  const { error } = await supabase
+    .from('builds')
+    .update(buildRowPayload(input))
+    .eq('build_id', buildId)
+  if (error) throw error
+
+  await replaceBuildRam(buildId, input.ram?.id)
+}

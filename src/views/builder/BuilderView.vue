@@ -1,9 +1,22 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
 import { php, type Part, type PartCategory } from '../../data/mock'
 import { fetchPartsByCategory } from '../../data/catalog'
+import { createBuild, updateBuild, fetchBuildById } from '../../data/builds'
+import { useSession } from '../../lib/session'
+
+const router = useRouter()
+const route = useRoute()
+const { userId, isSignedIn } = useSession()
+
+// Edit mode = a build_id is in the URL. When present, we pre-populate
+// every slot, name, and visibility from the DB and persist via updateBuild.
+const editingId = computed<string | null>(() => {
+  const id = route.params.id
+  return typeof id === 'string' && id ? id : null
+})
 
 // ─── Slot definitions ─────────────────────────────────────
 // Each slot maps 1:1 to a PartCategory in the catalog. Storage is
@@ -69,7 +82,81 @@ async function loadActivePicker() {
   }
 }
 
-onMounted(loadActivePicker)
+// ─── Load existing build (edit mode) ──────────────────────
+// Pre-populate every slot from the saved build. Maps each part row in
+// the loaded Build back onto the catalog Part shape by tag, fetching
+// the catalog for each category we have a part in. Once selections are
+// set, the rest of the builder (compat checks, picker selection
+// highlighting) works identically to the create flow.
+const editLoading = ref(false)
+
+const TAG_TO_CATEGORY: Record<string, PartCategory> = {
+  CPU: 'cpu', MOBO: 'motherboard', GPU: 'gpu',
+  RAM: 'ram', PSU: 'psu', CASE: 'case', COOLER: 'cooler',
+}
+
+async function loadExistingBuild(id: string) {
+  editLoading.value = true
+  try {
+    const b = await fetchBuildById(id, userId.value)
+    if (!b) return
+
+    buildName.value = b.name
+    isPublic.value = b.isPublic
+
+    // For each part on the build, find its matching catalog row so we
+    // get a full Part object (with compat-checkable fields like socket,
+    // ramType, etc.) rather than just the display strings on BuildPartRef.
+    const cats = new Set<PartCategory>()
+    for (const p of b.parts) {
+      const c = TAG_TO_CATEGORY[p.tag]
+      if (c) cats.add(c)
+    }
+    const catalogs = await Promise.all(
+      [...cats].map(async c => [c, await fetchPartsByCategory(c)] as const),
+    )
+    const byCat = new Map<PartCategory, Part[]>(catalogs)
+
+    for (const p of b.parts) {
+      const c = TAG_TO_CATEGORY[p.tag]
+      if (!c) continue
+      const catalog = byCat.get(c) ?? []
+      // Match on the catalog row whose name appears at the start of the
+      // build part's display name (the build name strips brand-only
+      // prefixes — e.g. "Intel Core i9-13900K" vs "Core i9-13900K").
+      const match = catalog.find(cp => p.name.includes(cp.name))
+        ?? catalog.find(cp => cp.name.includes(stripQty(p.name)))
+      if (match) selections.value[c] = match
+    }
+  } finally {
+    editLoading.value = false
+  }
+}
+
+// "Corsair Vengeance 32GB ×2" -> "Corsair Vengeance 32GB"
+function stripQty(name: string): string {
+  return name.replace(/\s*×\s*\d+\s*$/, '').trim()
+}
+
+onMounted(async () => {
+  await loadActivePicker()
+  if (editingId.value) await loadExistingBuild(editingId.value)
+})
+
+// Re-load when navigating between new / edit, or between different edit ids.
+watch(editingId, async (id) => {
+  if (id) {
+    await loadExistingBuild(id)
+  } else {
+    // Switched back to "new" mode — reset everything.
+    buildName.value = 'Untitled Build'
+    isPublic.value = false
+    for (const k of Object.keys(selections.value) as PartCategory[]) {
+      selections.value[k] = null
+    }
+  }
+})
+
 watch(activeSlot, () => {
   search.value = ''
   currentPage.value = 1
@@ -333,6 +420,64 @@ const pickerHeading = computed(() => {
   const slot = slots.find(s => s.key === activeSlot.value)
   return slot ? `Choose a ${slot.label}` : 'Choose a Part'
 })
+
+// ─── Save flow ────────────────────────────────────────────
+// `isPublic` is toggled by the Make Public button — it's the same flag
+// the DB persists on the builds row. `saveError` surfaces failure to the
+// user; `saving` disables the button while the request is in flight.
+const isPublic = ref(false)
+const saving = ref(false)
+const saveError = ref('')
+
+// At least one slot has a part picked. We don't block saving on the
+// compat checks themselves (a draft is fine to save), but we won't let
+// the user save an empty form.
+const hasAnySelection = computed(() =>
+  slots.some(s => selections.value[s.key] !== null),
+)
+
+async function saveBuild() {
+  saveError.value = ''
+  if (!isSignedIn.value || !userId.value) {
+    // Bounce to sign-in; user can return and re-pick. State is local
+    // so it'll reset — acceptable for v1.
+    router.push('/sign-in')
+    return
+  }
+  if (!hasAnySelection.value) {
+    saveError.value = 'Pick at least one part before saving.'
+    return
+  }
+
+  const payload = {
+    name: buildName.value.trim() || 'Untitled Build',
+    isPublic: isPublic.value,
+    cpu:         selections.value.cpu,
+    motherboard: selections.value.motherboard,
+    gpu:         selections.value.gpu,
+    psu:         selections.value.psu,
+    case:        selections.value.case,
+    cooler:      selections.value.cooler,
+    ram:         selections.value.ram,
+  }
+
+  saving.value = true
+  try {
+    if (editingId.value) {
+      // Update path — stay on the edit page so the user can keep tweaking.
+      await updateBuild(editingId.value, payload)
+      router.push(`/builds/${editingId.value}`)
+    } else {
+      // Create path — navigate to the new build's detail screen.
+      const newId = await createBuild({ userId: userId.value, ...payload })
+      router.push(`/builds/${newId}`)
+    }
+  } catch (e: any) {
+    saveError.value = e?.message ?? 'Failed to save build.'
+  } finally {
+    saving.value = false
+  }
+}
 </script>
 
 <template>
@@ -341,7 +486,7 @@ const pickerHeading = computed(() => {
   <div class="page">
     <div class="page-header">
       <div>
-        <span class="kicker">// builder · editing</span>
+        <span class="kicker">{{ editingId ? '// builder · editing existing build' : '// builder · new build' }}</span>
         <input v-model="buildName" class="title-input" spellcheck="false" />
       </div>
     </div>
@@ -496,8 +641,26 @@ const pickerHeading = computed(() => {
         </div>
 
         <div class="builder-actions">
-          <button class="t-btn primary full">Validate &amp; Save</button>
-          <button class="t-btn full">Make Public</button>
+          <button
+            class="t-btn primary full"
+            :disabled="saving || !hasAnySelection || editLoading"
+            @click="saveBuild"
+          >{{
+            saving
+              ? (editingId ? 'Updating…' : 'Saving…')
+              : !isSignedIn
+                ? 'Sign In to Save'
+                : editingId
+                  ? 'Update Build'
+                  : 'Save Build'
+          }}</button>
+          <button
+            class="t-btn full"
+            :class="{ active: isPublic }"
+            @click="isPublic = !isPublic"
+            type="button"
+          >{{ isPublic ? '✓ Public' : 'Make Public' }}</button>
+          <p v-if="saveError" class="save-err">{{ saveError }}</p>
         </div>
 
         <!-- Quick link to the budget auto-builder. -->
@@ -964,6 +1127,24 @@ const pickerHeading = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+/* Public-toggle pill — when active, mirror the primary button's filled
+   style so the user can see the build is going out publicly. */
+.builder-actions .t-btn.active {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: var(--bg);
+  font-weight: 700;
+}
+.save-err {
+  margin-top: 6px;
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  background: rgba(255, 70, 85, 0.08);
+  border: 1px solid rgba(255, 70, 85, 0.35);
+  letter-spacing: 0.04em;
 }
 
 .switch-link {

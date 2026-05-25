@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import BuildsSubNav from '../../components/BuildsSubNav.vue'
 import type { Build } from '../../data/mock'
 import { php } from '../../data/mock'
 import { fetchMyBuilds, deleteBuild } from '../../data/builds'
@@ -56,6 +57,8 @@ async function onDelete(buildId: string, name: string) {
   <AppNav />
 
   <div class="page">
+    <BuildsSubNav />
+
     <div class="page-header">
       <div>
         <span class="kicker">// dashboard</span>
@@ -112,6 +115,7 @@ async function onDelete(buildId: string, name: string) {
             <span class="total-amber">{{ php(b.totalPrice) }}</span>
             <div class="row-actions">
               <RouterLink :to="`/builds/${b.id}`" class="icon-btn" title="Open">↗</RouterLink>
+              <RouterLink :to="`/builder/manual/${b.id}`" class="icon-btn" title="Edit">✎</RouterLink>
               <button class="icon-btn danger" title="Delete" @click="onDelete(b.id, b.name)">🗑</button>
             </div>
           </div>
