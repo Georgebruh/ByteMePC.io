@@ -165,6 +165,24 @@ function partWarning(p: Part): string | null {
   return null
 }
 
+// True when at least one *other* part the picker card depends on is
+// already selected — i.e. there's actually something to compare against.
+// Used to suppress the green "Compatible" tag when no comparison has
+// been performed yet (otherwise we'd be claiming "compatible" against
+// nothing).
+function hasCompatContext(p: Part): boolean {
+  const s = selections.value
+  switch (p.category) {
+    case 'motherboard': return !!(s.cpu || s.ram || s.case)
+    case 'cpu':         return !!(s.motherboard || s.cooler)
+    case 'ram':         return !!s.motherboard
+    case 'psu':         return !!s.gpu
+    case 'case':        return !!s.motherboard
+    case 'cooler':      return !!s.cpu
+    default:            return false
+  }
+}
+
 // ─── Power budget ────────────────────────────────────────
 // Rough draw used by the PSU compat check + sidebar warning. Sum of
 // GPU TDP + a flat headroom for CPU/board/storage/fans.
@@ -398,7 +416,7 @@ const pickerHeading = computed(() => {
             <div class="foot">
               <span class="price-amber">{{ php(opt.price) }}</span>
               <span v-if="partWarning(opt)" class="h-tag warn">{{ partWarning(opt) }}</span>
-              <span v-else class="h-tag ok">Compatible</span>
+              <span v-else-if="hasCompatContext(opt)" class="h-tag ok">Compatible</span>
             </div>
           </button>
         </div>
