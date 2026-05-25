@@ -2,19 +2,35 @@
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import { supabase } from '../../lib/supabase'
 
-// Same shape as SignInView — keeping a thin local state until Supabase
-// sign-up is wired in. Reuses the .auth-card styling.
 const username = ref('')
 const email = ref('')
 const password = ref('')
 const acceptedTerms = ref(false)
+const errorMsg = ref('')
+const loading = ref(false)
 
 const router = useRouter()
 
-function onSubmit(e: Event) {
+async function onSubmit(e: Event) {
   e.preventDefault()
   if (!acceptedTerms.value) return
+  errorMsg.value = ''
+  loading.value = true
+  // username is forwarded via raw_user_meta_data so the handle_new_user()
+  // trigger picks it up when it auto-creates the profiles row.
+  const handle = username.value.replace(/^@/, '').trim()
+  const { error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value,
+    options: { data: { username: handle } },
+  })
+  loading.value = false
+  if (error) {
+    errorMsg.value = error.message
+    return
+  }
   router.push('/builds')
 }
 </script>
@@ -52,8 +68,10 @@ function onSubmit(e: Event) {
         </span>
       </label>
 
-      <button type="submit" class="t-btn primary full" :disabled="!acceptedTerms">
-        Create Account <span class="arrow">→</span>
+      <p v-if="errorMsg" class="err">{{ errorMsg }}</p>
+
+      <button type="submit" class="t-btn primary full" :disabled="!acceptedTerms || loading">
+        {{ loading ? 'Creating…' : 'Create Account' }} <span class="arrow">→</span>
       </button>
 
       <div class="auth-foot">
@@ -121,4 +139,14 @@ function onSubmit(e: Event) {
   color: var(--text-mute);
 }
 .auth-foot a { color: var(--cyan); font-weight: 600; }
+
+.err {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  background: rgba(255, 70, 85, 0.06);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
 </style>

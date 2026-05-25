@@ -2,18 +2,29 @@
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import { supabase } from '../../lib/supabase'
 
-// Local form state. No backend yet — submitting just bounces to the
-// my-builds dashboard so the click flow is testable end-to-end.
 const email = ref('')
 const password = ref('')
 const remember = ref(false)
+const errorMsg = ref('')
+const loading = ref(false)
 
 const router = useRouter()
 
-function onSubmit(e: Event) {
+async function onSubmit(e: Event) {
   e.preventDefault()
-  // TODO: replace with real Supabase sign-in once auth is wired.
+  errorMsg.value = ''
+  loading.value = true
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  })
+  loading.value = false
+  if (error) {
+    errorMsg.value = error.message
+    return
+  }
   router.push('/builds')
 }
 </script>
@@ -46,8 +57,10 @@ function onSubmit(e: Event) {
         <a href="#">Forgot password?</a>
       </div>
 
-      <button type="submit" class="t-btn primary full">
-        Sign In <span class="arrow">→</span>
+      <p v-if="errorMsg" class="err">{{ errorMsg }}</p>
+
+      <button type="submit" class="t-btn primary full" :disabled="loading">
+        {{ loading ? 'Signing in…' : 'Sign In' }} <span class="arrow">→</span>
       </button>
 
       <div class="divider">OR</div>
@@ -143,4 +156,14 @@ function onSubmit(e: Event) {
   color: var(--text-mute);
 }
 .auth-foot a { color: var(--cyan); font-weight: 600; }
+
+.err {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  background: rgba(255, 70, 85, 0.06);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
 </style>

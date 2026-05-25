@@ -1,36 +1,62 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import AppNav from '../../components/AppNav.vue'
 import BuildCard from '../../components/BuildCard.vue'
-import { builds } from '../../data/mock'
+import type { Build } from '../../data/mock'
+import {
+  fetchPublicBuilds,
+  fetchFavouriteIds,
+  toggleFavourite,
+} from '../../data/builds'
+import { useSession } from '../../lib/session'
 
-// Filter chips along the top of the feed. "All" shows everything; the
-// rest are placeholder taxonomies until the DB exposes real ones.
+const { userId } = useSession()
+
+// All public builds loaded from Supabase. Each card's heart state is
+// derived from the user's favourite_builds set when they're signed in.
+const builds = ref<Build[]>([])
+const loading = ref(true)
+const errorMsg = ref('')
+
 const chips = ['All', 'Gaming', 'Workstation', 'Budget', 'High-End', 'SFF / ITX']
 const activeChip = ref('All')
-
-// Search filter applies to the build name + tags.
 const search = ref('')
+
+async function load() {
+  loading.value = true
+  errorMsg.value = ''
+  try {
+    const favIds = userId.value
+      ? await fetchFavouriteIds(userId.value)
+      : new Set<string>()
+    builds.value = await fetchPublicBuilds(favIds)
+  } catch (e: any) {
+    errorMsg.value = e?.message ?? 'Failed to load builds.'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(load)
+// Re-load when the auth session changes so heart states stay accurate.
+watch(userId, load)
 
 const visibleBuilds = computed(() => {
   const q = search.value.trim().toLowerCase()
-  return builds.filter(b => {
+  return builds.value.filter(b => {
     if (!q) return true
     return b.name.toLowerCase().includes(q)
       || b.tags.some(t => t.toLowerCase().includes(q))
   })
 })
 
-// Trending ticker — frozen mock data, parallel to the landing's.
-type Trend = { name: string; pins: string; dir: 'up' | 'dn' | 'hot' }
-const trending: Trend[] = [
-  { name: 'MIDNIGHT FOUNDRY', pins: '412 PINS', dir: 'hot' },
-  { name: 'SILENT STORM',     pins: '287 PINS', dir: 'up'  },
-  { name: 'APEX PREDATOR V2', pins: '231 PINS', dir: 'up'  },
-  { name: 'BUDGET BEAST MK1', pins: '174 PINS', dir: 'dn'  },
-  { name: 'WORKSTATION 2026', pins: '142 PINS', dir: 'up'  },
-  { name: 'NORTH STAR ITX',   pins: '118 PINS', dir: 'hot' },
-]
+async function onToggleFav(buildId: string) {
+  if (!userId.value) return
+  const target = builds.value.find(b => b.id === buildId)
+  if (!target) return
+  const newState = await toggleFavourite(userId.value, buildId, !!target.favourited)
+  target.favourited = newState
+}
 </script>
 
 <template>
@@ -41,27 +67,12 @@ const trending: Trend[] = [
       <div>
         <span class="kicker">// field notes</span>
         <div class="section-title">Community Builds</div>
-        <div class="section-sub">8,942 public builds · live trending index</div>
+        <div class="section-sub">Public builds shared by the community</div>
       </div>
       <button class="t-btn">Sort: Popular</button>
     </div>
 
-    <!-- Trending builds ticker. -->
-    <div class="ticker" aria-hidden="true">
-      <div class="scroll">
-        <template v-for="pass in 2" :key="pass">
-          <span v-for="t in trending" :key="`${pass}-${t.name}`" class="tick">
-            <b>{{ t.name }}</b>
-            {{ t.pins }}
-            <em :class="`d-${t.dir}`">
-              {{ t.dir === 'hot' ? '↑ HOT' : t.dir === 'up' ? '↑' : '↓' }}
-            </em>
-          </span>
-        </template>
-      </div>
-    </div>
-
-    <!-- Chip row + search box live on the same line. -->
+    <!-- Filter chips + search live on the same row. -->
     <div class="feed-controls">
       <div class="seg-tabs">
         <button
@@ -76,15 +87,23 @@ const trending: Trend[] = [
       <input class="input search" v-model="search" placeholder="🔍  Search builds…" />
     </div>
 
-    <!-- The card grid. BuildCard handles its own click + favourite logic. -->
-    <div class="feed-grid">
-      <BuildCard v-for="b in visibleBuilds" :key="b.id" :build="b" />
-    </div>
-
-    <div v-if="!visibleBuilds.length" class="empty-state">
-      <div class="ic" style="font-size:40px;margin-bottom:12px">🔍</div>
-      No builds match your search.
-    </div>
+    <div v-if="loading" class="empty-state">Loading builds…</div>
+    <div v-else-if="errorMsg" class="empty-state err">{{ errorMsg }}</div>
+    <template v-else>
+      <div v-if="visibleBuilds.length" class="feed-grid">
+        <BuildCard
+          v-for="b in visibleBuilds"
+          :key="b.id"
+          :build="b"
+          @toggle-fav="onToggleFav"
+        />
+      </div>
+      <div v-else class="empty-state">
+        <div class="ic">📡</div>
+        <div class="empty-title">No public builds yet</div>
+        <div class="empty-sub">Be the first to publish one from the Builder.</div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -108,49 +127,14 @@ const trending: Trend[] = [
   color: var(--text-low);
 }
 
-/* Trending ticker — same vocab as Browse / landing. */
-.ticker {
-  padding: 8px 16px;
-  overflow: hidden;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-mute);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  border: 1px solid var(--line);
-  background: rgba(5, 8, 16, 0.5);
-  margin: 18px 0 22px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
-  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
-}
-.ticker .scroll {
-  display: inline-flex;
-  gap: 40px;
-  white-space: nowrap;
-  animation: feed-scroll 50s linear infinite;
-}
-.ticker .tick { display: inline-flex; align-items: baseline; gap: 8px; }
-.ticker b      { color: var(--cyan); font-weight: 500; }
-.ticker .d-up  { color: var(--green); font-style: normal; }
-.ticker .d-dn  { color: var(--red);   font-style: normal; }
-.ticker .d-hot { color: var(--amber); font-style: normal; }
-@keyframes feed-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ticker .scroll { animation: none !important; }
-}
-
 .feed-controls {
   display: flex;
   gap: 12px;
-  margin-bottom: 22px;
+  margin: 18px 0 22px;
   align-items: center;
   flex-wrap: wrap;
 }
 
-/* Hairline segmented chips — same pattern as Browse + AppNav. */
 .seg-tabs {
   display: flex;
   gap: 2px;
@@ -183,6 +167,24 @@ const trending: Trend[] = [
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
+
+.empty-state .ic {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+.empty-state .empty-title {
+  font-family: var(--display);
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.empty-state .empty-sub {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+.empty-state.err { color: var(--red); border-color: rgba(255, 70, 85, 0.35); }
 
 @media (max-width: 1100px) {
   .feed-grid { grid-template-columns: 1fr 1fr; }
