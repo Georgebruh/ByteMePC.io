@@ -67,7 +67,7 @@ const summary = {
         <div class="section-title">Budget Auto-Builder</div>
         <div class="section-sub">Drop a budget · we pick the parts</div>
       </div>
-      <RouterLink to="/builder" class="t-btn">Switch to Manual <span class="arrow">→</span></RouterLink>
+      <RouterLink to="/builder/manual" class="t-btn">Switch to Manual <span class="arrow">→</span></RouterLink>
     </div>
 
     <!-- ─── Command-prompt budget panel ─── -->
