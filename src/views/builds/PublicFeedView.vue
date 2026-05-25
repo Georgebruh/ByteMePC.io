@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import AppNav from '../../components/AppNav.vue'
+import BuildsSubNav from '../../components/BuildsSubNav.vue'
 import BuildCard from '../../components/BuildCard.vue'
 import type { Build } from '../../data/mock'
 import {
@@ -63,9 +64,11 @@ async function onToggleFav(buildId: string) {
   <AppNav />
 
   <div class="page">
+    <BuildsSubNav />
+
     <div class="page-header">
       <div>
-        <span class="kicker">// field notes</span>
+        <span class="kicker">// community</span>
         <div class="section-title">Community Builds</div>
         <div class="section-sub">Public builds shared by the community</div>
       </div>

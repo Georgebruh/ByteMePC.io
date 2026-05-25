@@ -69,7 +69,7 @@ const showAvatar = computed(() => props.showAvatar !== false)
       <RouterLink to="/"          :class="{ active: isActive(['/']) && route.path === '/' }">Workshop</RouterLink>
       <RouterLink to="/builder"   :class="{ active: isActive(['/builder']) }">Builder</RouterLink>
       <RouterLink to="/browse"    :class="{ active: isActive(['/browse', '/parts']) }">Catalog</RouterLink>
-      <RouterLink to="/community" :class="{ active: isActive(['/community', '/builds']) }">Field Notes</RouterLink>
+      <RouterLink to="/community" :class="{ active: isActive(['/community', '/builds', '/favourites']) }">Builds</RouterLink>
     </div>
 
     <div class="nav-right">

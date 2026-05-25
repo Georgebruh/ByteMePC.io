@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import BuildsSubNav from '../../components/BuildsSubNav.vue'
 import BuildCard from '../../components/BuildCard.vue'
 import type { Build } from '../../data/mock'
 import { fetchFavouriteBuilds, toggleFavourite } from '../../data/builds'
@@ -45,6 +46,8 @@ async function onToggleFav(buildId: string) {
   <AppNav />
 
   <div class="page">
+    <BuildsSubNav />
+
     <div class="page-header">
       <div>
         <span class="kicker">// saved · favourites</span>
