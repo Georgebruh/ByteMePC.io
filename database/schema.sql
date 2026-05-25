@@ -289,17 +289,26 @@ CREATE TRIGGER builds_updated_at
 
 -- when someone signs up, immediately give them a profile row
 -- uses their supplied username, or falls back to the email prefix
-CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS TRIGGER AS $$
+--
+-- search_path is pinned explicitly because the trigger fires under the
+-- auth schema and SECURITY DEFINER functions don't inherit the caller's
+-- path. Without this, INSERT INTO profiles raises "relation does not
+-- exist" and the whole /signup request returns 500.
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
 BEGIN
-  INSERT INTO profiles (user_id, username)
+  INSERT INTO public.profiles (user_id, username)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1))
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
