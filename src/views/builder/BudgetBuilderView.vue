@@ -217,7 +217,7 @@ async function saveGeneratedBuild() {
     <!-- ─── Suggested build result ─── -->
     <div class="result-wrap">
       <div class="parts-list">
-        <div class="result-head">// suggested build · 99% budget utilized</div>
+        <div class="result-head">// suggested build · {{ (summary.budget != 0) ? Math.round((summary.total / summary.budget) * 100) : 0 }}% budget utilized</div>
         <div v-for="row in suggested" :key="row.tag" class="row">
           <span class="tag">{{ row.tag }}</span>
           <div>

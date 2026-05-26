@@ -10,6 +10,8 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req) => {
+  console.log("Hi");
+
   // 1. Handle the CORS preflight request from the browser
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -67,6 +69,8 @@ Deno.serve(async (req) => {
 
     // 2. Initialize Gemini using Deno's environment variables
     const ai = new GoogleGenAI({ apiKey: Deno.env.get('GEMINI_API_KEY') as string });
+
+    console.log("Generating the build of a lifetime with a budget of " + budget);
 
     // 3. Call Gemini, we just gonna use flash para fast B)
     const response = await ai.models.generateContent({
