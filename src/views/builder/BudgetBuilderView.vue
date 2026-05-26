@@ -2,7 +2,13 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
-import { php } from '../../data/mock'
+import { php, type BuildPartRef } from '../../data/mock'
+
+// AI stuff grrrr
+import { supabase } from '../../lib/supabase' 
+import { fetchAllParts } from '../../data/catalog'
+import { createBuild } from '../../data/builds'
+import type { CreateBuildInput } from '../../data/builds'
 
 // User-typed budget — kept as a string so the input handles commas
 // gracefully and we don't fight number/locale formatting.
@@ -11,6 +17,22 @@ const budget = ref('120,000')
 // Preset budget chips under the big input.
 const presets = ['₱40k', '₱80k', '₱120k', '₱200k']
 const activePreset = ref('₱120k')
+
+interface SuggestedPart extends BuildPartRef {
+  id: string;
+}
+
+const suggested = ref<SuggestedPart[]>([])
+const summary = ref({
+  budget: 0,
+  total: 0,
+  overBudget: 0,
+  perfScore: 0,
+})
+
+// for some UI loading stuff I guess
+const isGenerating = ref(false)
+const isSaving = ref(false)
 
 // Locks — slots where the user said "I already own this, build around
 // it". The GPU one is locked in the design preview to demo the state.
@@ -37,23 +59,79 @@ function toggleLock(key: string) {
   if (slot) slot.locked = !slot.locked
 }
 
-// ─── Suggested build result ─────────────────────────
-// Hardcoded for now — eventually this comes back from the optimiser.
-const suggested = [
-  { tag: 'CPU',  name: 'AMD Ryzen 9 7900X',                 sub: '12 cores · AM5 · 5.6GHz boost', price: 28900 },
-  { tag: 'MOBO', name: 'ASUS ROG STRIX B650-E',             sub: 'ATX · AM5 · DDR5',              price: 16800 },
-  { tag: 'GPU',  name: 'NVIDIA RTX 4080',                   sub: '16GB GDDR6X · LOCKED',          price: 68500 },
-  { tag: 'RAM',  name: 'Corsair Vengeance 32GB DDR5-6000',  sub: '2 × 16GB',                      price: 9200 },
-  { tag: 'PSU',  name: 'Corsair RM850x',                    sub: '850W · 80+ Gold',               price: 8400 },
-  { tag: 'SSD',  name: 'Samsung 990 Pro 2TB',               sub: 'NVMe Gen4',                     price: 9800 },
-  { tag: 'CASE', name: 'Lian Li Lancool 216',               sub: 'ATX Mid Tower',                 price: 5200 },
-]
+async function generatePCBuild() {
+  isGenerating.value = true;
+  const numericBudget = Number(budget.value.replace(/,/g, ''));
+  const lockedParts = locks.value.filter(l => l.locked);
 
-const summary = {
-  budget: 120000,
-  total: 146800,
-  overBudget: 26800,
-  perfScore: 9420,
+  try {
+    // 1. Fetch the formatted catalog from your existing logic
+    const allParts = await fetchAllParts();
+
+    // 2. Token Optimization: Filter out parts that cost more than 80% of the total budget
+    // (You wouldn't spend 100k on a GPU if your total budget is 120k)
+    const sensibleParts = allParts.filter(part => part.price <= numericBudget * 0.8);
+
+    // 3. Send the budget, locks, and the optimized catalog to your Edge Function
+    const response = await fetch('YOUR_EDGE_FUNCTION_URL', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        budget: numericBudget, 
+        lockedParts,
+        catalog: sensibleParts // Send the pre-formatted parts array to Gemini
+      })
+    });
+
+    if (!response.ok) throw new Error('Failed to generate build');
+
+    const data = await response.json();
+    
+    // 4. Update the UI
+    suggested.value = data.suggested;
+    summary.value = data.summary;
+
+  } catch (error) {
+    console.error("Generation failed:", error);
+  } finally {
+    isGenerating.value = false;
+  }
+}
+
+async function saveGeneratedBuild() {
+  if (!suggested.value.length) return;
+  isSaving.value = true;
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Must be logged in to save.");
+
+    const getId = (tag: string) => {
+      const part = suggested.value.find(p => p.tag === tag);
+      return part ? { id: part.id } : null; // id will be formatted like "cpu-123"
+    };
+
+    const buildPayload: CreateBuildInput = {
+      userId: user.id,
+      name: `Auto-Build (${summary.value.perfScore})`,
+      isPublic: false,
+      cpu: getId('CPU'),
+      motherboard: getId('MOBO'),
+      gpu: getId('GPU'),
+      ram: getId('RAM'),
+      psu: getId('PSU'),
+      case: getId('CASE'),
+      cooler: getId('COOLER'),
+    };
+
+    const newBuildId = await createBuild(buildPayload);
+    console.log("Saved! Build ID:", newBuildId);
+
+  } catch (error) {
+    console.error("Failed to save:", error);
+  } finally {
+    isSaving.value = false;
+  }
 }
 </script>
 
@@ -144,8 +222,14 @@ const summary = {
         </div>
 
         <div class="result-actions">
-          <button class="t-btn primary full">Tweak Build</button>
-          <button class="t-btn full">Re-generate</button>
+          <button 
+            class="t-btn primary full" 
+            @click="saveGeneratedBuild" 
+            :disabled="isSaving || suggested.length === 0"
+          >
+            {{ isSaving ? 'Saving...' : 'Save Build to Profile' }}
+          </button>
+          <button class="t-btn full" @click="generatePCBuild">Re-generate</button>
         </div>
       </aside>
     </div>
