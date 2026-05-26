@@ -60,6 +60,7 @@ function toggleLock(key: string) {
 }
 
 async function generatePCBuild() {
+  console.log("Clicked generate build!");
   isGenerating.value = true;
   const numericBudget = Number(budget.value.replace(/,/g, ''));
   const lockedParts = locks.value.filter(l => l.locked);
@@ -209,7 +210,7 @@ async function saveGeneratedBuild() {
     </div>
 
     <div class="generate-row">
-      <button class="t-btn primary big">⚡ Generate Build</button>
+      <button class="t-btn primary big" @click="generatePCBuild">⚡ Generate Build</button>
       <button class="t-btn">Advanced Options</button>
     </div>
 

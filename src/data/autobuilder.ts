@@ -1,3 +1,9 @@
+/*
+Note from the Manlanman himself:
+Ngl idt this is needed kay naa raman diay ni sa supabase/functions/generate-thine-build/index.ts.
+Planning to delete this later tho if everything is all g.
+*/
+
 import { GoogleGenAI, Type, type Schema } from '@google/genai';
 import type { Request, Response } from 'express';
 
