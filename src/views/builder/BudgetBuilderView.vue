@@ -72,18 +72,36 @@ async function generatePCBuild() {
     // (You wouldn't spend 100k on a GPU if your total budget is 120k)
     const sensibleParts = allParts.filter(part => part.price <= numericBudget * 0.8);
 
+    // gotta be logged in to generate a build
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    // 2. Handle the case where they aren't logged in
+    if (sessionError || !session) {
+      throw new Error("You must be logged in to generate a build.");
+    }
+
+    // 3. Extract the token
+    const accessToken = session.access_token;
+
     // 3. Send the budget, locks, and the optimized catalog to your Edge Function
-    const response = await fetch('YOUR_EDGE_FUNCTION_URL', {
+    const response = await fetch(import.meta.env.VITE_EDGE_FUNCTION_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        // 4. Attach the token here using the standard Bearer format
+        'Authorization': `Bearer ${accessToken}` 
+      },
       body: JSON.stringify({ 
         budget: numericBudget, 
         lockedParts,
-        catalog: sensibleParts // Send the pre-formatted parts array to Gemini
+        catalog: sensibleParts 
       })
     });
 
-    if (!response.ok) throw new Error('Failed to generate build');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to generate build: ${errorText}`);
+    }
 
     const data = await response.json();
     
