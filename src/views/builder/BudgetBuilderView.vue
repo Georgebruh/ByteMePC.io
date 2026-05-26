@@ -33,6 +33,7 @@ const summary = ref({
 // for some UI loading stuff I guess
 const isGenerating = ref(false)
 const isSaving = ref(false)
+import Lebron from "../../assets/lebron-lebron-james.gif"
 
 // Locks — slots where the user said "I already own this, build around
 // it". The GPU one is locked in the design preview to demo the state.
@@ -218,6 +219,9 @@ async function saveGeneratedBuild() {
     <div class="result-wrap">
       <div class="parts-list">
         <div class="result-head">// suggested build · {{ (summary.budget != 0) ? Math.round((summary.total / summary.budget) * 100) : 0 }}% budget utilized</div>
+      
+        <img class="loading-screen" :src="Lebron" v-if="isGenerating"/>
+
         <div v-for="row in suggested" :key="row.tag" class="row">
           <span class="tag">{{ row.tag }}</span>
           <div>
@@ -237,7 +241,7 @@ async function saveGeneratedBuild() {
 
         <div class="row-total">
           <span class="lbl">STATUS</span>
-          <span class="h-tag warn">Over budget</span>
+          <span class="h-tag" :class="(summary.overBudget > 0) ? 'warn' : ''">{{ (summary.overBudget > 0) ? "Over budget" : (summary.budget == 0 || summary.total == 0 ) ? "Incomplete" : "Compatible"  }}</span>
         </div>
 
         <div class="result-actions">
@@ -416,7 +420,12 @@ async function saveGeneratedBuild() {
   grid-template-columns: 1fr 320px;
   gap: 22px;
 }
+.loading-screen {
+  display: absolute;
+  width: 200px;
+}
 .parts-list {
+  display: relative;
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
   overflow: hidden;
