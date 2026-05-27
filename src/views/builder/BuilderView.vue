@@ -425,13 +425,14 @@ const pickerHeading = computed(() => {
 // `isPublic` is toggled by the Make Public button — it's the same flag
 // the DB persists on the builds row. `saveError` surfaces failure to the
 // user; `saving` disables the button while the request is in flight.
+// `savedAt` flashes a brief "✓ Saved" line so the user has confirmation
+// without being yanked off the builder.
 const isPublic = ref(false)
 const saving = ref(false)
 const saveError = ref('')
+const savedAt = ref<number | null>(null)
+const justSaved = computed(() => savedAt.value !== null)
 
-// At least one slot has a part picked. We don't block saving on the
-// compat checks themselves (a draft is fine to save), but we won't let
-// the user save an empty form.
 const hasAnySelection = computed(() =>
   slots.some(s => selections.value[s.key] !== null),
 )
@@ -439,8 +440,6 @@ const hasAnySelection = computed(() =>
 async function saveBuild() {
   saveError.value = ''
   if (!isSignedIn.value || !userId.value) {
-    // Bounce to sign-in; user can return and re-pick. State is local
-    // so it'll reset — acceptable for v1.
     router.push('/sign-in')
     return
   }
@@ -464,16 +463,28 @@ async function saveBuild() {
   saving.value = true
   try {
     if (editingId.value) {
-      // Update path — stay on the edit page so the user can keep tweaking.
+      // Edit — stay on the builder so the user can keep tweaking. The
+      // "✓ Saved" flag in the actions strip is the only confirmation.
       await updateBuild(editingId.value, payload)
-      router.push(`/builds/${editingId.value}`)
     } else {
-      // Create path — navigate to the new build's detail screen.
+      // Create — swap the URL from /builder/manual to /builder/manual/:id
+      // so a follow-up Save Build hits the update path instead of
+      // re-creating the row. Replace, not push, so the back button still
+      // exits the builder rather than landing on the empty form.
       const newId = await createBuild({ userId: userId.value, ...payload })
-      router.push(`/builds/${newId}`)
+      await router.replace(`/builder/manual/${newId}`)
     }
+    savedAt.value = Date.now()
+    // Auto-clear the "✓ Saved" pill after a moment so it doesn't linger.
+    setTimeout(() => {
+      // Only clear if no newer save happened in the meantime.
+      if (savedAt.value && Date.now() - savedAt.value >= 2400) {
+        savedAt.value = null
+      }
+    }, 2500)
   } catch (e: any) {
     saveError.value = e?.message ?? 'Failed to save build.'
+    savedAt.value = null
   } finally {
     saving.value = false
   }
@@ -661,6 +672,7 @@ async function saveBuild() {
             type="button"
           >{{ isPublic ? '✓ Public' : 'Make Public' }}</button>
           <p v-if="saveError" class="save-err">{{ saveError }}</p>
+          <p v-else-if="justSaved" class="save-ok">✓ Saved</p>
         </div>
 
         <!-- Quick link to the budget auto-builder. -->
@@ -1145,6 +1157,17 @@ async function saveBuild() {
   background: rgba(255, 70, 85, 0.08);
   border: 1px solid rgba(255, 70, 85, 0.35);
   letter-spacing: 0.04em;
+}
+.save-ok {
+  margin-top: 6px;
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  background: rgba(34, 211, 168, 0.08);
+  border: 1px solid rgba(34, 211, 168, 0.35);
+  letter-spacing: 0.04em;
+  text-align: center;
 }
 
 .switch-link {

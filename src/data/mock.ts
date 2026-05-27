@@ -78,6 +78,9 @@ export interface Build {
   // ISO timestamp of the last edit. Populated by the Supabase queries;
   // mock builds leave it undefined.
   updatedAt?: string
+  // Auth user id of the build's owner. Used by the detail page to decide
+  // whether to show owner-only controls (visibility toggle, edit, delete).
+  ownerUserId?: string
 }
 
 // ─── Parts catalog ────────────────────────────────────────

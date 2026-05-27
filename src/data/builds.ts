@@ -86,7 +86,7 @@ function usdToPhp(n: number | string): number {
 // One Supabase select string used by every "build with parts" query — keeps
 // the projection identical whether we're listing or fetching a single row.
 const BUILD_SELECT = `
-  build_id, name, description, is_public, views, created_at, updated_at,
+  build_id, user_id, name, description, is_public, views, created_at, updated_at,
   cpu:cpu_id ( cpu_id, name, brand, core_numbers, frequency, socket, price ),
   motherboard:mb_id ( mb_id, name, brand, socket, size, ram_type, price ),
   gpu:gpu_id ( gpu_id, name, brand, memory, core_clock, tdp, price ),
@@ -100,6 +100,7 @@ const BUILD_SELECT = `
 
 interface BuildRow {
   build_id: string
+  user_id: string
   name: string
   description: string | null
   is_public: boolean
@@ -155,6 +156,7 @@ function rowToBuild(row: BuildRow, favouritedIds: Set<string>): Build {
     parts,
     icon: row.gpu?.name?.includes('RTX 40') ? '🚀' : '🖥',
     updatedAt: row.updated_at,
+    ownerUserId: row.user_id,
   }
 }
 
@@ -435,6 +437,8 @@ export async function createBuild(input: CreateBuildInput): Promise<string> {
 // ownership — non-owners just get 0 rows updated. The trailing select()
 // surfaces silent zero-row writes (stale session, wrong id, RLS) as a
 // thrown error instead of letting the caller think the save succeeded.
+// Additionally verifies is_public round-trips so a silent column-level
+// reject (rare, but possible with column policies) is also caught.
 export async function updateBuild(buildId: string, input: BuildInput): Promise<void> {
   const { data, error } = await supabase
     .from('builds')
@@ -445,6 +449,29 @@ export async function updateBuild(buildId: string, input: BuildInput): Promise<v
   if (!data || data.length === 0) {
     throw new Error('Update affected 0 rows. Sign in again, or you may not own this build.')
   }
+  if (data[0].is_public !== input.isPublic) {
+    throw new Error(
+      `Visibility did not persist: requested ${input.isPublic}, DB returned ${data[0].is_public}.`,
+    )
+  }
 
   await replaceBuildRam(buildId, input.ram?.id)
+}
+
+// One-shot visibility flip used by the detail page's owner toggle.
+// Touches only is_public so we can isolate the bug class where the full
+// updateBuild payload composition might be at fault.
+export async function updateBuildVisibility(buildId: string, isPublic: boolean): Promise<void> {
+  const { data, error } = await supabase
+    .from('builds')
+    .update({ is_public: isPublic })
+    .eq('build_id', buildId)
+    .select('build_id, is_public')
+  if (error) throw error
+  if (!data || data.length === 0) {
+    throw new Error('Visibility update affected 0 rows — sign in again or check ownership.')
+  }
+  if (data[0].is_public !== isPublic) {
+    throw new Error(`Visibility did not persist: requested ${isPublic}, DB returned ${data[0].is_public}.`)
+  }
 }

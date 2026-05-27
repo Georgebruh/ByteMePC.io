@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
 import type { Build, BuildPartRef } from '../../data/mock'
 import { php } from '../../data/mock'
-import { fetchBuildById, toggleFavourite } from '../../data/builds'
+import { fetchBuildById, toggleFavourite, updateBuildVisibility } from '../../data/builds'
 import { useSession } from '../../lib/session'
 
 const route = useRoute()
@@ -201,6 +201,31 @@ function onFork() {
   // Stub for now — wired up alongside the builder pre-fill flow.
   console.log('Fork build', build.value?.id)
 }
+
+// Owner-only visibility toggle. The pill on the title block doubles as
+// the trigger when the viewer owns this build — one click flips public
+// ↔ private through a minimal update path so the bug class of full
+// updateBuild silently dropping is_public is bypassed.
+const isOwner = computed(() =>
+  !!userId.value && !!build.value?.ownerUserId && userId.value === build.value.ownerUserId,
+)
+const togglingVisibility = ref(false)
+const visibilityError = ref('')
+
+async function onToggleVisibility() {
+  if (!isOwner.value || !build.value || togglingVisibility.value) return
+  togglingVisibility.value = true
+  visibilityError.value = ''
+  const target = !build.value.isPublic
+  try {
+    await updateBuildVisibility(build.value.id, target)
+    build.value.isPublic = target
+  } catch (e: any) {
+    visibilityError.value = e?.message ?? 'Failed to update visibility.'
+  } finally {
+    togglingVisibility.value = false
+  }
+}
 </script>
 
 <template>
@@ -292,11 +317,23 @@ function onFork() {
           <div class="title-block">
             <div class="head">
               <h1>{{ build.name }}</h1>
-              <span class="pill" :class="{ private: !build.isPublic }">
+              <button
+                v-if="isOwner"
+                type="button"
+                class="pill clickable"
+                :class="{ private: !build.isPublic }"
+                :disabled="togglingVisibility"
+                :title="build.isPublic ? 'Click to make Private' : 'Click to make Public'"
+                @click="onToggleVisibility"
+              >
+                {{ togglingVisibility ? '…' : (build.isPublic ? 'Public' : 'Private') }}
+              </button>
+              <span v-else class="pill" :class="{ private: !build.isPublic }">
                 {{ build.isPublic ? 'Public' : 'Private' }}
               </span>
             </div>
             <div class="author"><b>{{ build.user }}</b></div>
+            <p v-if="visibilityError" class="vis-err">{{ visibilityError }}</p>
           </div>
 
           <div class="total-block">
@@ -640,6 +677,28 @@ function onFork() {
 .pill.private::before {
   background: var(--text-mute);
   box-shadow: none;
+}
+/* Owner-clickable variant — a real button rendered inside the title row.
+   Resets the default button chrome so it stays visually identical to the
+   span, then layers in a hover/disabled state for the interactive feel. */
+button.pill {
+  cursor: pointer;
+  font-family: var(--mono);
+}
+button.pill:hover:not(:disabled) {
+  filter: brightness(1.2);
+}
+button.pill:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.vis-err {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--red);
 }
 
 .total-block {
