@@ -25,6 +25,20 @@ async function load() {
   try {
     build.value = await fetchBuildById(id, userId.value)
     if (!build.value) errorMsg.value = 'Build not found.'
+    else {
+      // Diagnostic: confirms owner detection wires up correctly when the
+      // visibility toggle "doesn't do anything". Compare ownerUserId to
+      // the current session userId in DevTools.
+      console.log('[build] loaded', {
+        id: build.value.id,
+        name: build.value.name,
+        isPublic: build.value.isPublic,
+        ownerUserId: build.value.ownerUserId,
+        sessionUserId: userId.value,
+        ownerMatchesSession:
+          !!userId.value && build.value.ownerUserId === userId.value,
+      })
+    }
   } catch (e: any) {
     errorMsg.value = e?.message ?? 'Failed to load build.'
   } finally {
@@ -213,14 +227,27 @@ const togglingVisibility = ref(false)
 const visibilityError = ref('')
 
 async function onToggleVisibility() {
+  // Diagnostic console line — confirms the click handler actually fires
+  // when the user reports "nothing happened". Stripped on a future pass
+  // once the bug is settled.
+  console.log('[visibility] click', {
+    isOwner: isOwner.value,
+    userId: userId.value,
+    ownerUserId: build.value?.ownerUserId,
+    currentIsPublic: build.value?.isPublic,
+    busy: togglingVisibility.value,
+  })
   if (!isOwner.value || !build.value || togglingVisibility.value) return
   togglingVisibility.value = true
   visibilityError.value = ''
   const target = !build.value.isPublic
   try {
+    console.log('[visibility] → updateBuildVisibility', { id: build.value.id, target })
     await updateBuildVisibility(build.value.id, target)
     build.value.isPublic = target
+    console.log('[visibility] ✓ persisted', target)
   } catch (e: any) {
+    console.error('[visibility] ✗ failed', e)
     visibilityError.value = e?.message ?? 'Failed to update visibility.'
   } finally {
     togglingVisibility.value = false
