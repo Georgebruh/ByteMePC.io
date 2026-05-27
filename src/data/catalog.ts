@@ -16,6 +16,7 @@ const ICONS: Record<PartCategory, string> = {
   motherboard: '🧩',
   gpu: '🎮',
   ram: '💾',
+  storage: '🗄',
   psu: '💡',
   case: '📦',
   cooler: '❄',
@@ -33,6 +34,7 @@ interface CpuRow    { cpu_id: number;    name: string; brand: string; core_numbe
 interface MbRow     { mb_id: number;     name: string; brand: string; socket: string; size: string; ram_type: string; price: number }
 interface GpuRow    { gpu_id: number;    name: string; brand: string; memory: number; core_clock: number; tdp: number; price: number }
 interface RamRow    { ram_id: number;    name: string; brand: string; type: string; capacity: number; speed: number; price: number }
+interface StorageRow { storage_id: number; name: string; brand: string; type: string; capacity: number; interface: string; price: number }
 interface PsuRow    { psu_id: number;    name: string; brand: string; wattage: number; efficiency_rating: string; form_factor: string; price: number }
 interface CaseRow   { case_id: number;   name: string; brand: string; price: number; case_supported_size: { size: string }[] }
 interface CoolerRow { cooler_id: number; name: string; brand: string; type: string; tdp_rating: number; price: number; cooler_socket: { socket: string }[] }
@@ -70,6 +72,11 @@ const CONFIGS = {
     toSpec: (r: RamRow) => `${r.capacity}GB · ${r.type} · ${r.speed}MHz`,
     extras: (r: RamRow) => ({ ramType: r.type as 'DDR4' | 'DDR5' }),
   } satisfies CategoryConfigExt<RamRow>,
+  storage: {
+    table: 'storage',
+    idCol: 'storage_id',
+    toSpec: (r: StorageRow) => `${r.capacity}GB · ${r.type} · ${r.interface}`,
+  } satisfies CategoryConfigExt<StorageRow>,
   psu: {
     table: 'psu',
     idCol: 'psu_id',
@@ -126,14 +133,14 @@ export async function fetchPartsByCategory(category: PartCategory): Promise<Part
 // Pull every category in parallel and concatenate. Used by the catalog
 // when no category filter is active — the grid shows the full inventory.
 export async function fetchAllParts(): Promise<Part[]> {
-  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'psu', 'case', 'cooler']
+  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'storage', 'psu', 'case', 'cooler']
   const results = await Promise.all(cats.map(fetchPartsByCategory))
   return results.flat()
 }
 
 // Counts shown on the segmented category tabs.
 export async function fetchCategoryCounts(): Promise<Record<PartCategory, number>> {
-  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'psu', 'case', 'cooler']
+  const cats: PartCategory[] = ['cpu', 'motherboard', 'gpu', 'ram', 'storage', 'psu', 'case', 'cooler']
   const results = await Promise.all(
     cats.map(c =>
       supabase.from(CONFIGS[c].table).select('*', { count: 'exact', head: true }),
@@ -152,6 +159,7 @@ function specColumns(category: PartCategory): string {
     case 'motherboard': return 'socket, size, ram_type'
     case 'gpu':         return 'memory, core_clock, tdp'
     case 'ram':         return 'type, capacity, speed'
+    case 'storage':     return 'type, capacity, interface'
     case 'psu':         return 'wattage, efficiency_rating, form_factor'
     case 'case':        return 'case_supported_size(size)'
     case 'cooler':      return 'type, tdp_rating, cooler_socket(socket)'

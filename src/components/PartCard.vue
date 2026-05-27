@@ -3,6 +3,8 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import type { Part } from '../data/mock'
 import { builds, php } from '../data/mock'
+import { useSession } from '../lib/session'
+import SignInPromptModal from './SignInPromptModal.vue'
 
 // Tile used in the parts catalog grid and the Pinned screen. Clicking
 // the body opens the part detail; right-clicking opens a context menu
@@ -21,6 +23,12 @@ const emit = defineEmits<{
 }>()
 
 const router = useRouter()
+const { isSignedIn } = useSession()
+
+// Sign-in prompt shown when a signed-out user tries to pin (a "favourite"
+// in catalog terms). The pin context-menu action funnels through here so
+// the auth gate is consistent with build favourites.
+const signInOpen = ref(false)
 
 // Mono part-class label used in the top-left of the hero panel.
 const classTag = computed(() => {
@@ -60,8 +68,12 @@ function closeMenu() {
 }
 
 function onPin() {
-  emit('toggle-pin', props.part.id)
   closeMenu()
+  if (!isSignedIn.value) {
+    signInOpen.value = true
+    return
+  }
+  emit('toggle-pin', props.part.id)
 }
 
 function onNewBuild() {
@@ -185,6 +197,13 @@ onBeforeUnmount(closeMenu)
         </template>
       </div>
     </Teleport>
+
+    <SignInPromptModal
+      :open="signInOpen"
+      title="Sign in to pin parts"
+      message="Pinning saves a part to your watch-list so you can revisit it across sessions."
+      @close="signInOpen = false"
+    />
   </div>
 </template>
 

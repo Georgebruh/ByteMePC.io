@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
 import { supabase } from '../../lib/supabase'
+import { useSession } from '../../lib/session'
 
 const username = ref('')
 const email = ref('')
@@ -12,6 +13,29 @@ const errorMsg = ref('')
 const loading = ref(false)
 
 const router = useRouter()
+const route = useRoute()
+const { isSignedIn } = useSession()
+
+// Only relative same-origin paths are honoured so the param can't be
+// abused to bounce the user off-site after sign-up.
+const redirectTarget = computed(() => {
+  const raw = route.query.redirect
+  if (typeof raw !== 'string') return '/builds'
+  return raw.startsWith('/') && !raw.startsWith('//') ? raw : '/builds'
+})
+
+const signInTarget = computed(() => {
+  const raw = route.query.redirect
+  return typeof raw === 'string'
+    ? `/sign-in?redirect=${encodeURIComponent(raw)}`
+    : '/sign-in'
+})
+
+// Already-signed-in users get bounced off the sign-up screen — same
+// pattern as SignInView so the auth flows stay symmetric.
+watch(isSignedIn, (signedIn) => {
+  if (signedIn) router.replace(redirectTarget.value)
+}, { immediate: true })
 
 async function onSubmit(e: Event) {
   e.preventDefault()
@@ -31,12 +55,12 @@ async function onSubmit(e: Event) {
     errorMsg.value = error.message
     return
   }
-  router.push('/builds')
+  router.push(redirectTarget.value)
 }
 </script>
 
 <template>
-  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign In', to: '/sign-in' }" />
+  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign In', to: signInTarget }" />
 
   <div class="auth-wrap">
     <form class="auth-card spec-frame" @submit="onSubmit">
@@ -76,7 +100,7 @@ async function onSubmit(e: Event) {
 
       <div class="auth-foot">
         Already have an account?
-        <RouterLink to="/sign-in">Sign in</RouterLink>
+        <RouterLink :to="signInTarget">Sign in</RouterLink>
       </div>
     </form>
   </div>

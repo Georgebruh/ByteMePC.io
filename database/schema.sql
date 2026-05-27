@@ -314,6 +314,27 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
 
+-- top_favourited_builds: return the top N public builds ranked by favourite count.
+-- SECURITY DEFINER bypasses the per-owner RLS on favorite_builds so anyone
+-- (including signed-out visitors on the landing page) can see popularity
+-- without exposing *who* favourited what.
+CREATE OR REPLACE FUNCTION public.top_favourited_builds(limit_count INT DEFAULT 3)
+RETURNS TABLE (build_id UUID, fav_count BIGINT)
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+  SELECT b.build_id, COALESCE(COUNT(fb.user_id), 0) AS fav_count
+  FROM builds b
+  LEFT JOIN favorite_builds fb ON fb.build_id = b.build_id
+  WHERE b.is_public = TRUE
+  GROUP BY b.build_id
+  ORDER BY fav_count DESC, b.updated_at DESC
+  LIMIT limit_count;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.top_favourited_builds(INT) TO anon, authenticated;
+
 -- -------------------------------------------------------
 -- this is the RLS PART
 -- row level security — nobody reads or writes data that isn't theirs.

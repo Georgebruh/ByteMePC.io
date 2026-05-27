@@ -19,42 +19,57 @@ const slotMappers = {
     name: r.name,
     sub: `${r.core_numbers} cores · ${r.socket} · ${r.frequency}GHz`,
     price: usdToPhp(r.price),
+    socket: r.socket,
   }),
   motherboard: (r: any): BuildPartRef => ({
     tag: 'MOBO',
     name: r.name,
     sub: `${r.size} · ${r.socket} · ${r.ram_type}`,
     price: usdToPhp(r.price),
+    socket: r.socket,
+    size: r.size,
+    ramType: r.ram_type as 'DDR4' | 'DDR5',
   }),
   gpu: (r: any): BuildPartRef => ({
     tag: 'GPU',
     name: r.name,
     sub: `${r.memory}GB · ${r.tdp}W TDP`,
     price: usdToPhp(r.price),
+    tdp: r.tdp,
   }),
   psu: (r: any): BuildPartRef => ({
     tag: 'PSU',
     name: r.name,
     sub: `${r.wattage}W · ${r.efficiency_rating}`,
     price: usdToPhp(r.price),
+    wattage: r.wattage,
   }),
-  case: (r: any): BuildPartRef => ({
-    tag: 'CASE',
-    name: r.name,
-    sub: r.brand,
-    price: usdToPhp(r.price),
-  }),
-  cooler: (r: any): BuildPartRef => ({
-    tag: 'COOLER',
-    name: r.name,
-    sub: `${r.type} · ${r.tdp_rating}W rating`,
-    price: usdToPhp(r.price),
-  }),
+  case: (r: any): BuildPartRef => {
+    const sizes: string[] = (r.case_supported_size ?? []).map((s: any) => s.size)
+    return {
+      tag: 'CASE',
+      name: r.name,
+      sub: sizes.length ? `Fits ${sizes.join(' / ')}` : r.brand,
+      price: usdToPhp(r.price),
+      caseSizes: sizes,
+    }
+  },
+  cooler: (r: any): BuildPartRef => {
+    const sockets: string[] = (r.cooler_socket ?? []).map((s: any) => s.socket)
+    return {
+      tag: 'COOLER',
+      name: r.name,
+      sub: `${r.type} · ${r.tdp_rating}W rating`,
+      price: usdToPhp(r.price),
+      coolerSockets: sockets,
+    }
+  },
   ram: (r: any, qty: number): BuildPartRef => ({
     tag: 'RAM',
     name: qty > 1 ? `${r.name} ×${qty}` : r.name,
     sub: `${r.type} · ${r.capacity}GB · ${r.speed}MHz`,
     price: usdToPhp(r.price) * qty,
+    ramType: r.type as 'DDR4' | 'DDR5',
   }),
   storage: (r: any, qty: number): BuildPartRef => ({
     tag: 'STORAGE',
@@ -71,13 +86,13 @@ function usdToPhp(n: number | string): number {
 // One Supabase select string used by every "build with parts" query — keeps
 // the projection identical whether we're listing or fetching a single row.
 const BUILD_SELECT = `
-  build_id, name, description, is_public, views, created_at, updated_at,
+  build_id, user_id, name, description, is_public, views, created_at, updated_at,
   cpu:cpu_id ( cpu_id, name, brand, core_numbers, frequency, socket, price ),
   motherboard:mb_id ( mb_id, name, brand, socket, size, ram_type, price ),
   gpu:gpu_id ( gpu_id, name, brand, memory, core_clock, tdp, price ),
   psu:psu_id ( psu_id, name, brand, wattage, efficiency_rating, price ),
-  case:case_id ( case_id, name, brand, price ),
-  cooler:cooler_id ( cooler_id, name, brand, type, tdp_rating, price ),
+  case:case_id ( case_id, name, brand, price, case_supported_size ( size ) ),
+  cooler:cooler_id ( cooler_id, name, brand, type, tdp_rating, price, cooler_socket ( socket ) ),
   build_ram ( quantity, ram ( ram_id, name, brand, type, capacity, speed, price ) ),
   build_storage ( quantity, storage ( storage_id, name, brand, type, capacity, interface, price ) ),
   profile:user_id ( username )
@@ -85,6 +100,7 @@ const BUILD_SELECT = `
 
 interface BuildRow {
   build_id: string
+  user_id: string
   name: string
   description: string | null
   is_public: boolean
@@ -139,6 +155,8 @@ function rowToBuild(row: BuildRow, favouritedIds: Set<string>): Build {
     favourited: favouritedIds.has(row.build_id),
     parts,
     icon: row.gpu?.name?.includes('RTX 40') ? '🚀' : '🖥',
+    updatedAt: row.updated_at,
+    ownerUserId: row.user_id,
   }
 }
 
@@ -166,6 +184,42 @@ export async function fetchPublicBuilds(favouritedIds: Set<string> = new Set()):
 
   if (error) throw error
   return (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, favouritedIds))
+}
+
+// Top N public builds ranked by favourite count, used by the landing
+// carousel. Calls the SECURITY DEFINER RPC `top_favourited_builds` because
+// the `favorite_builds` table has per-owner RLS and can't be aggregated
+// from the client directly. If the RPC isn't deployed yet we fall back to
+// the most-viewed public builds so the landing page always renders.
+export async function fetchTopFavouritedBuilds(limit = 3): Promise<Build[]> {
+  const { data: rpcRows, error: rpcErr } = await supabase
+    .rpc('top_favourited_builds', { limit_count: limit })
+
+  let buildIds: string[] = []
+  if (!rpcErr && Array.isArray(rpcRows)) {
+    buildIds = rpcRows.map((r: any) => r.build_id as string)
+  }
+
+  if (!buildIds.length) {
+    const { data, error } = await supabase
+      .from('builds')
+      .select(BUILD_SELECT)
+      .eq('is_public', true)
+      .order('views', { ascending: false })
+      .limit(limit)
+    if (error) throw error
+    return (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, new Set()))
+  }
+
+  const { data, error } = await supabase
+    .from('builds')
+    .select(BUILD_SELECT)
+    .in('build_id', buildIds)
+  if (error) throw error
+  const rows = (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, new Set()))
+  // Preserve the RPC's ordering (most favourited first).
+  const order = new Map(buildIds.map((id, i) => [id, i]))
+  return rows.sort((a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99))
 }
 
 // Builds owned by the current authenticated user (private + public).
@@ -265,6 +319,66 @@ export async function deleteBuild(buildId: string): Promise<void> {
   if (error) throw error
 }
 
+// Fork: clone a build's part selections into a new private build owned by
+// the current user. Junction rows (ram + storage) are copied row-for-row.
+// Returns the new build_id so the caller can route into the editor.
+export async function forkBuild(sourceBuildId: string, userId: string): Promise<string> {
+  const { data: source, error: srcErr } = await supabase
+    .from('builds')
+    .select(`
+      name, description,
+      cpu_id, mb_id, gpu_id, psu_id, case_id, cooler_id,
+      build_ram ( ram_id, quantity ),
+      build_storage ( storage_id, quantity )
+    `)
+    .eq('build_id', sourceBuildId)
+    .single()
+  if (srcErr) throw srcErr
+
+  const { data: inserted, error: insErr } = await supabase
+    .from('builds')
+    .insert({
+      user_id: userId,
+      name: `Fork of ${source.name}`,
+      description: source.description,
+      cpu_id: source.cpu_id,
+      mb_id:  source.mb_id,
+      gpu_id: source.gpu_id,
+      psu_id: source.psu_id,
+      case_id: source.case_id,
+      cooler_id: source.cooler_id,
+      is_public: false,
+    })
+    .select('build_id')
+    .single()
+  if (insErr) throw insErr
+  const newId = inserted.build_id as string
+
+  try {
+    const ramRows = (source.build_ram ?? []).map((r: any) => ({
+      build_id: newId, ram_id: r.ram_id, quantity: r.quantity,
+    }))
+    if (ramRows.length) {
+      const { error } = await supabase.from('build_ram').insert(ramRows)
+      if (error) throw error
+    }
+
+    const storRows = (source.build_storage ?? []).map((s: any) => ({
+      build_id: newId, storage_id: s.storage_id, quantity: s.quantity,
+    }))
+    if (storRows.length) {
+      const { error } = await supabase.from('build_storage').insert(storRows)
+      if (error) throw error
+    }
+  } catch (e) {
+    // Roll back the parent row so a half-copied fork doesn't linger.
+    await supabase.from('builds').delete().eq('build_id', newId)
+    throw e
+  }
+
+  return newId
+}
+
 // ─── Create / update builds ─────────────────────────────
 
 // Inputs the builder passes in — one Part per slot, name + visibility.
@@ -280,6 +394,7 @@ export interface BuildInput {
   case?: { id: string } | null
   cooler?: { id: string } | null
   ram?: { id: string } | null
+  storage?: { id: string } | null
 }
 
 export interface CreateBuildInput extends BuildInput {
@@ -331,6 +446,25 @@ async function replaceBuildRam(buildId: string, ramId: string | null | undefined
   if (insErr) throw insErr
 }
 
+// Mirror of replaceBuildRam for the storage junction. Storage is a
+// many-to-one in the schema (one row per drive), but the builder UI
+// currently exposes a single slot, so we keep it 1:1 like RAM.
+async function replaceBuildStorage(buildId: string, storageId: string | null | undefined): Promise<void> {
+  const { error: delErr } = await supabase
+    .from('build_storage')
+    .delete()
+    .eq('build_id', buildId)
+  if (delErr) throw delErr
+
+  const storageDbId = partIdToDbId(storageId)
+  if (storageDbId === null) return
+
+  const { error: insErr } = await supabase
+    .from('build_storage')
+    .insert({ build_id: buildId, storage_id: storageDbId, quantity: 1 })
+  if (insErr) throw insErr
+}
+
 // Insert the build row + (optionally) one ram junction row. Returns the
 // new build_id so the caller can navigate to /builds/:id.
 export async function createBuild(input: CreateBuildInput): Promise<string> {
@@ -345,6 +479,7 @@ export async function createBuild(input: CreateBuildInput): Promise<string> {
 
   try {
     await replaceBuildRam(buildId, input.ram?.id)
+    await replaceBuildStorage(buildId, input.storage?.id)
   } catch (e) {
     // Roll back the build so we don't leave an orphan row that the
     // user thinks was saved successfully.
@@ -356,13 +491,45 @@ export async function createBuild(input: CreateBuildInput): Promise<string> {
 }
 
 // Update an existing build owned by the current user. RLS enforces
-// ownership — non-owners just get 0 rows updated.
+// ownership — non-owners just get 0 rows updated. The trailing select()
+// surfaces silent zero-row writes (stale session, wrong id, RLS) as a
+// thrown error instead of letting the caller think the save succeeded.
+// Additionally verifies is_public round-trips so a silent column-level
+// reject (rare, but possible with column policies) is also caught.
 export async function updateBuild(buildId: string, input: BuildInput): Promise<void> {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('builds')
     .update(buildRowPayload(input))
     .eq('build_id', buildId)
+    .select('build_id, is_public')
   if (error) throw error
+  if (!data || data.length === 0) {
+    throw new Error('Update affected 0 rows. Sign in again, or you may not own this build.')
+  }
+  if (data[0].is_public !== input.isPublic) {
+    throw new Error(
+      `Visibility did not persist: requested ${input.isPublic}, DB returned ${data[0].is_public}.`,
+    )
+  }
 
   await replaceBuildRam(buildId, input.ram?.id)
+  await replaceBuildStorage(buildId, input.storage?.id)
+}
+
+// One-shot visibility flip used by the detail page's owner toggle.
+// Touches only is_public so we can isolate the bug class where the full
+// updateBuild payload composition might be at fault.
+export async function updateBuildVisibility(buildId: string, isPublic: boolean): Promise<void> {
+  const { data, error } = await supabase
+    .from('builds')
+    .update({ is_public: isPublic })
+    .eq('build_id', buildId)
+    .select('build_id, is_public')
+  if (error) throw error
+  if (!data || data.length === 0) {
+    throw new Error('Visibility update affected 0 rows — sign in again or check ownership.')
+  }
+  if (data[0].is_public !== isPublic) {
+    throw new Error(`Visibility did not persist: requested ${isPublic}, DB returned ${data[0].is_public}.`)
+  }
 }

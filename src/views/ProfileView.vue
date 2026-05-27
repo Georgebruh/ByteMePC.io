@@ -1,283 +1,489 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { computed, onMounted, ref, watch } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
 import AppNav from '../components/AppNav.vue'
+import { signOut, useSession } from '../lib/session'
+import {
+  fetchProfile,
+  fetchProfileActivity,
+  fetchProfileStats,
+  updateProfile,
+  type ActivityKind,
+  type ProfileActivity,
+  type ProfileRow,
+  type ProfileStats,
+} from '../data/profile'
 
-// ─── Account form state ─────────────────────────────
-// Pre-populated with the user info known from the system context.
-const displayName = ref('George Senagan')
-const username = ref('@georgebruh')
-const email = ref('senagan.george@gmail.com')
+const router = useRouter()
+const { session, userId, isSignedIn } = useSession()
 
-// ─── Preferences ────────────────────────────────────
-const currency = ref('PHP — ₱ Philippine Peso')
-const visibility = ref('Private (you decide later)')
-const notifFavourite = ref(true)
-const notifDigest = ref(false)
+// Anonymous viewers have no business on /profile — bounce them through
+// the sign-in flow with a redirect back so they land here after auth.
+watch(
+  isSignedIn,
+  (signedIn) => {
+    if (signedIn === false) router.replace('/sign-in?redirect=/profile')
+  },
+  { immediate: true },
+)
 
-// ─── Recent activity feed ───────────────────────────
-// Each row shows the "kind" tag (PUBLISHED / FAVOURITED / PINNED /
-// CREATED), the subject, a short sub-line, and a "when" string.
-type ActivityKind = 'PUBLISHED' | 'FAVOURITED' | 'PINNED' | 'CREATED'
-interface Activity {
-  kind: ActivityKind
-  name: string
-  sub: string
-  when: string
-}
+// ─── Loaded state ──────────────────────────────────────
+const profile = ref<ProfileRow | null>(null)
+const stats = ref<ProfileStats | null>(null)
+const activity = ref<ProfileActivity[]>([])
+const loading = ref(true)
+const errorMsg = ref('')
 
-const activity: Activity[] = [
-  { kind: 'PUBLISHED',  name: 'Apex Predator V2',        sub: 'Made public · ₱128,300',  when: '2 min ago' },
-  { kind: 'FAVOURITED', name: 'SILENT STORM',            sub: 'by @silent_ops',           when: 'Yesterday' },
-  { kind: 'PINNED',     name: 'NVIDIA RTX 4090 Founders',sub: 'GPU · ₱94,500',            when: '3 days ago' },
-  { kind: 'CREATED',    name: 'Workstation 2026',        sub: 'Draft build',              when: '1 week ago' },
-]
+// Edit-form state — initialised once the profile loads. Kept separate
+// from the loaded profile so the user can revert by re-loading without
+// losing the rest of the screen.
+const editUsername = ref('')
+const saving = ref(false)
+const saveMsg = ref('')
 
-// Map activity kind to the .h-tag variant that matches its meaning.
-function tagClass(k: ActivityKind): string {
-  switch (k) {
-    case 'PUBLISHED':  return 'h-tag'
-    case 'FAVOURITED': return 'h-tag purp'
-    case 'PINNED':     return 'h-tag ok'
-    case 'CREATED':    return 'h-tag amber'
+async function load() {
+  if (!userId.value) return
+  loading.value = true
+  errorMsg.value = ''
+  try {
+    const [p, s, a] = await Promise.all([
+      fetchProfile(userId.value),
+      fetchProfileStats(userId.value),
+      fetchProfileActivity(userId.value, 8),
+    ])
+    profile.value = p
+    stats.value = s
+    activity.value = a
+    editUsername.value = p?.username ?? ''
+  } catch (e: any) {
+    errorMsg.value = e?.message ?? 'Failed to load profile.'
+  } finally {
+    loading.value = false
   }
 }
+
+onMounted(load)
+watch(userId, load)
+
+// ─── Derived bits ──────────────────────────────────────
+// Email lives on auth.users (not in profiles), so pull from session.
+const email = computed(() => session.value?.user?.email ?? '')
+
+// Avatar initials — derived from the username so an account named
+// @shadow_ripper shows "SH" instead of always rendering "G".
+const initials = computed(() => {
+  const handle = (profile.value?.username ?? email.value ?? '?').replace(/^@/, '')
+  return handle.slice(0, 2).toUpperCase()
+})
+
+const joinedLabel = computed(() => {
+  const iso = profile.value?.created_at
+  if (!iso) return '—'
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return '—'
+  return d.toISOString().slice(0, 10) // YYYY-MM-DD, locale-stable
+})
+
+const kpis = computed(() => [
+  { key: 'builds', label: 'Builds',     value: stats.value?.builds ?? 0,        accent: 'cyan'   },
+  { key: 'public', label: 'Public',     value: stats.value?.publicBuilds ?? 0,  accent: 'green'  },
+  { key: 'favs',   label: 'Favourites', value: stats.value?.favourites ?? 0,    accent: 'red'    },
+  { key: 'pins',   label: 'Pinned',     value: stats.value?.pins ?? 0,          accent: 'purple' },
+  { key: 'views',  label: 'Views',      value: stats.value?.views ?? 0,         accent: 'amber'  },
+])
+
+// "2m ago" / "Yesterday" / "3d ago" formatter for the activity feed.
+function relTime(iso: string): string {
+  const then = new Date(iso).getTime()
+  if (Number.isNaN(then)) return '—'
+  const diffSec = Math.max(0, (Date.now() - then) / 1000)
+  if (diffSec < 60)       return 'just now'
+  if (diffSec < 3600)     return `${Math.floor(diffSec / 60)}m ago`
+  if (diffSec < 86400)    return `${Math.floor(diffSec / 3600)}h ago`
+  if (diffSec < 172800)   return 'Yesterday'
+  if (diffSec < 604800)   return `${Math.floor(diffSec / 86400)}d ago`
+  if (diffSec < 2592000)  return `${Math.floor(diffSec / 604800)}w ago`
+  if (diffSec < 31536000) return `${Math.floor(diffSec / 2592000)}mo ago`
+  return `${Math.floor(diffSec / 31536000)}y ago`
+}
+
+// Coloured chip variant per activity kind — matches existing .h-tag
+// vocabulary used elsewhere in the app (purp = favourites, amber = create).
+function tagClass(k: ActivityKind): string {
+  switch (k) {
+    case 'PUBLISHED':  return 'h-tag ok'
+    case 'FAVOURITED': return 'h-tag purp'
+    case 'CREATED':    return 'h-tag'
+  }
+}
+
+// ─── Save / sign out ──────────────────────────────────
+async function onSave() {
+  if (!userId.value) return
+  const next = editUsername.value.replace(/^@/, '').trim()
+  if (!next) {
+    saveMsg.value = 'Username can\'t be empty.'
+    return
+  }
+  saving.value = true
+  saveMsg.value = ''
+  try {
+    await updateProfile(userId.value, { username: next })
+    saveMsg.value = 'Saved.'
+    if (profile.value) profile.value.username = next
+  } catch (e: any) {
+    saveMsg.value = e?.message ?? 'Failed to save.'
+  } finally {
+    saving.value = false
+  }
+}
+
+async function onSignOut() {
+  await signOut()
+  router.push('/')
+}
+
+// Dirty marker — disables Save until the input differs from the
+// currently-loaded profile username.
+const isDirty = computed(() => {
+  const next = editUsername.value.replace(/^@/, '').trim()
+  return !!profile.value && next !== profile.value.username
+})
 </script>
 
 <template>
   <AppNav />
 
   <div class="page">
-    <!-- ─── Profile header card ─── -->
-    <div class="profile-head spec-frame">
-      <span class="corner"></span>
-      <span class="hex-tile profile-avatar">G</span>
-      <div class="profile-meta">
-        <span class="kicker">// profile · {{ username }}</span>
-        <h1>{{ displayName }}</h1>
-      </div>
-      <div class="profile-actions">
-        <button class="t-btn">Edit Profile</button>
-        <RouterLink to="/builder" class="t-btn primary">+ New Build</RouterLink>
-      </div>
-    </div>
+    <div v-if="loading" class="empty-state">Loading profile…</div>
+    <div v-else-if="errorMsg" class="empty-state err">{{ errorMsg }}</div>
 
-    <!-- Status strip showing the profile counts. -->
-    <div class="terminal-strip stats-strip" aria-hidden="true">
-      <span class="dot"></span>
-      <span class="lbl">BUILDS · 12</span>
-      <span class="sep">/</span>
-      <span class="lbl">PUBLIC · 4</span>
-      <span class="sep">/</span>
-      <span class="lbl">FAV · 28</span>
-      <span class="sep">/</span>
-      <span class="lbl">PINS · 17</span>
-      <span class="sep">/</span>
-      <span class="lbl">VIEWS · 342</span>
-      <span class="grow"></span>
-      <span class="lbl">JOINED 2026-02-11</span>
-    </div>
+    <template v-else>
+      <!-- ─── Header card ───────────────────────────────────── -->
+      <section class="profile-head spec-frame">
+        <span class="corner"></span>
 
-    <!-- ─── Settings: Account + Preferences ─── -->
-    <div class="settings-grid">
+        <span class="hex-tile profile-avatar">{{ initials }}</span>
 
-      <div class="settings-card">
-        <span class="kicker mute">// account</span>
-
-        <div class="form-row">
-          <label class="field-label" for="dn">Display Name</label>
-          <input id="dn" class="input" v-model="displayName" />
-        </div>
-        <div class="form-row">
-          <label class="field-label" for="un">Username</label>
-          <input id="un" class="input" v-model="username" />
-        </div>
-        <div class="form-row">
-          <label class="field-label" for="em">Email</label>
-          <input id="em" class="input" v-model="email" disabled />
+        <div class="profile-meta">
+          <span class="kicker">// profile · @{{ profile?.username ?? '—' }}</span>
+          <h1>{{ profile?.username ?? 'Account' }}</h1>
+          <div class="meta-line">
+            <span class="meta-pill">{{ email }}</span>
+            <span class="meta-sep">/</span>
+            <span class="meta-pill">Joined {{ joinedLabel }}</span>
+          </div>
         </div>
 
-        <button class="t-btn primary save">Save Changes</button>
-      </div>
+        <div class="profile-actions">
+          <RouterLink to="/builder" class="t-btn primary">+ New Build</RouterLink>
+          <button type="button" class="t-btn warn" @click="onSignOut">Sign Out</button>
+        </div>
+      </section>
 
-      <div class="settings-card">
-        <span class="kicker mute">// preferences</span>
+      <!-- ─── KPI tiles ─────────────────────────────────────── -->
+      <section class="kpi-grid">
+        <div
+          v-for="k in kpis"
+          :key="k.key"
+          class="kpi-tile"
+          :class="`accent-${k.accent}`"
+        >
+          <div class="kpi-label">{{ k.label }}</div>
+          <div class="kpi-value">{{ k.value.toLocaleString('en-PH') }}</div>
+        </div>
+      </section>
 
-        <div class="form-row">
-          <label class="field-label" for="cur">Default Currency</label>
-          <select id="cur" class="select" v-model="currency">
-            <option>PHP — ₱ Philippine Peso</option>
-            <option>USD — $ US Dollar</option>
-          </select>
+      <!-- ─── Settings + Activity grid ──────────────────────── -->
+      <section class="lower-grid">
+
+        <!-- Account form ─── -->
+        <div class="settings-card">
+          <span class="kicker mute">// account</span>
+
+          <div class="form-row">
+            <label class="field-label" for="un">Username</label>
+            <input id="un" class="input" v-model="editUsername" />
+          </div>
+
+          <div class="form-row">
+            <label class="field-label" for="em">Email</label>
+            <input id="em" class="input" :value="email" disabled />
+          </div>
+
+          <div class="save-row">
+            <button
+              type="button"
+              class="t-btn primary"
+              :disabled="!isDirty || saving"
+              @click="onSave"
+            >{{ saving ? 'Saving…' : 'Save Changes' }}</button>
+            <span v-if="saveMsg" class="save-msg">{{ saveMsg }}</span>
+          </div>
         </div>
 
-        <div class="form-row">
-          <label class="field-label" for="vis">Default Build Visibility</label>
-          <select id="vis" class="select" v-model="visibility">
-            <option>Private (you decide later)</option>
-            <option>Public</option>
-          </select>
-        </div>
+        <!-- Activity feed ─── -->
+        <div class="activity-card">
+          <div class="activity-head">
+            <span class="kicker mute">// recent activity</span>
+            <span class="count">{{ activity.length }} entries</span>
+          </div>
 
-        <div class="form-row">
-          <label class="check-line">
-            <input type="checkbox" v-model="notifFavourite" />
-            Email me when someone favourites a build
-          </label>
-        </div>
-        <div class="form-row">
-          <label class="check-line">
-            <input type="checkbox" v-model="notifDigest" />
-            Weekly digest of trending builds
-          </label>
-        </div>
+          <div v-if="activity.length" class="activity-list">
+            <RouterLink
+              v-for="a in activity"
+              :key="a.buildId + a.kind + a.at"
+              :to="`/builds/${a.buildId}`"
+              class="activity-row"
+            >
+              <span :class="tagClass(a.kind)">{{ a.kind }}</span>
+              <div class="part">
+                <div class="part-name">{{ a.name }}</div>
+                <div class="part-sub">{{ a.sub }}</div>
+              </div>
+              <span class="when">{{ relTime(a.at) }}</span>
+            </RouterLink>
+          </div>
 
-        <div class="danger-zone">
-          <button class="t-btn warn">Delete Account</button>
+          <div v-else class="empty-activity">
+            <div class="empty-glyph">▢</div>
+            No activity yet — save a build or favourite one to see it here.
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- ─── Recent activity ─── -->
-    <span class="kicker mute section-kicker">// recent activity</span>
-    <div class="activity-list">
-      <div v-for="a in activity" :key="a.name + a.when" class="row">
-        <span :class="tagClass(a.kind)">{{ a.kind }}</span>
-        <div>
-          <div class="part-name">{{ a.name }}</div>
-          <div class="part-sub">{{ a.sub }}</div>
-        </div>
-        <span class="when">{{ a.when }}</span>
-      </div>
-    </div>
+      </section>
+    </template>
   </div>
 </template>
 
 <style scoped>
 .page { font-family: var(--mono); }
 
-/* ─── Header card ─── */
+/* ─── Header card ──────────────────────────────────────── */
 .profile-head {
   display: flex;
   gap: 24px;
   align-items: center;
-  padding: 28px 32px;
-  margin-bottom: 0;
+  padding: 26px 32px;
   flex-wrap: wrap;
 }
 .profile-avatar {
-  width: 80px;
+  width: 76px;
   height: 64px;
   font-family: var(--mono);
   font-weight: 700;
-  font-size: 32px;
+  font-size: 28px;
   letter-spacing: 0.04em;
   clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
 }
-
+.profile-meta { min-width: 0; }
 .profile-meta .kicker { display: block; margin-bottom: 6px; }
 .profile-meta h1 {
   font-family: var(--display);
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 700;
   letter-spacing: -0.025em;
   color: var(--text);
   line-height: 1.05;
+  margin-bottom: 8px;
+  word-break: break-word;
 }
+.meta-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-mute);
+}
+.meta-pill {
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  background: rgba(0, 212, 255, 0.04);
+  color: var(--text-dim);
+  text-transform: lowercase;
+}
+.meta-sep { color: rgba(255, 255, 255, 0.1); }
 
 .profile-actions {
   margin-left: auto;
   display: flex;
   gap: 10px;
+  flex-shrink: 0;
 }
 
-/* Stats status strip — sits directly under the profile header. */
-.stats-strip {
-  margin: 14px 0 28px;
-  border-top: none;
-}
-
-/* ─── Settings grid (Account + Preferences) ─── */
-.settings-grid {
+/* ─── KPI tiles ────────────────────────────────────────── */
+.kpi-grid {
   display: grid;
-  grid-template-columns: 1fr 1px 1fr;
-  background: var(--line);
-  border: 1px solid var(--line);
-  margin-bottom: 0;
-}
-.settings-card {
-  background: var(--bg);
-  padding: 22px;
-}
-.settings-grid::after {
-  /* The 1px middle column already gives the divider; no extra rule. */
-}
-.settings-card .kicker { display: block; margin-bottom: 14px; }
-
-.section-kicker {
-  display: block;
-  margin: 32px 0 14px;
-}
-
-.form-row { margin-bottom: 16px; }
-.check-line {
-  display: flex;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
-  align-items: center;
+  margin: 18px 0 22px;
+}
+.kpi-tile {
+  position: relative;
+  padding: 16px 18px;
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--line);
   font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text-dim);
-  cursor: pointer;
+  overflow: hidden;
 }
-.check-line input { accent-color: var(--cyan); }
+.kpi-tile::after {
+  /* Subtle scan-line gradient that picks up the accent colour. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 60%);
+}
+.kpi-label {
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-low);
+  margin-bottom: 8px;
+}
+.kpi-value {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: var(--text);
+}
+.kpi-tile.accent-cyan   { border-top-color: var(--cyan); }
+.kpi-tile.accent-green  { border-top-color: var(--green); }
+.kpi-tile.accent-red    { border-top-color: var(--red); }
+.kpi-tile.accent-purple { border-top-color: var(--purple); }
+.kpi-tile.accent-amber  { border-top-color: var(--amber); }
+.kpi-tile.accent-cyan   .kpi-value { color: var(--cyan); }
+.kpi-tile.accent-green  .kpi-value { color: var(--green); }
+.kpi-tile.accent-red    .kpi-value { color: var(--red); }
+.kpi-tile.accent-purple .kpi-value { color: var(--purple); }
+.kpi-tile.accent-amber  .kpi-value { color: var(--amber); }
 
-.t-btn.save { margin-top: 6px; }
-
-.danger-zone {
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px dashed var(--line);
+/* ─── Lower grid (Account · Activity) ──────────────────── */
+.lower-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 18px;
 }
 
-/* ─── Activity list ─── */
-.activity-list {
+.settings-card,
+.activity-card {
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
-  overflow: hidden;
+  padding: 22px;
+}
+
+.settings-card .kicker { display: block; margin-bottom: 14px; }
+
+.form-row { margin-bottom: 16px; }
+
+.save-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+.save-msg {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-mute);
+}
+
+/* ─── Activity ─────────────────────────────────────────── */
+.activity-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.activity-head .count {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+.activity-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 100px;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 4px;
+  border-top: 1px dashed var(--line);
+  text-decoration: none;
+  color: inherit;
   font-family: var(--mono);
 }
-.row {
-  display: grid;
-  grid-template-columns: 130px 1fr 130px;
-  padding: 13px 18px;
-  font-size: 12px;
-  border-bottom: 1px dashed var(--line);
-  align-items: center;
-}
-.row:last-child { border-bottom: none; }
-.row .part-name {
+.activity-row:first-child { border-top: none; }
+.activity-row:hover .part-name { color: var(--cyan); }
+
+.part-name {
   font-family: var(--display);
   font-size: 14px;
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.015em;
+  line-height: 1.2;
+  transition: color 0.12s;
 }
-.row .part-sub {
+.part-sub {
   font-size: 10.5px;
   color: var(--text-mute);
   margin-top: 3px;
   letter-spacing: 0.04em;
 }
-.row .when {
+.when {
   text-align: right;
   color: var(--text-mute);
   font-size: 10.5px;
   letter-spacing: 0.06em;
 }
 
-@media (max-width: 1000px) {
-  .settings-grid { grid-template-columns: 1fr; gap: 1px; }
+.empty-activity {
+  padding: 28px 8px;
+  text-align: center;
+  color: var(--text-mute);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  border: 1px dashed var(--line);
+}
+.empty-activity .empty-glyph {
+  font-size: 26px;
+  margin-bottom: 10px;
+  color: var(--text-low);
+}
+
+.empty-state.err {
+  color: var(--red);
+  border-color: rgba(255, 70, 85, 0.35);
+}
+
+/* ─── Responsive ───────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lower-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .profile-head { padding: 22px 20px; }
   .profile-actions { margin-left: 0; width: 100%; }
-  .stats-strip { overflow-x: auto; }
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .activity-row {
+    grid-template-columns: 90px 1fr;
+    grid-template-areas:
+      'kind part'
+      'when when';
+  }
+  .activity-row .when { text-align: left; }
 }
 </style>
