@@ -19,42 +19,57 @@ const slotMappers = {
     name: r.name,
     sub: `${r.core_numbers} cores · ${r.socket} · ${r.frequency}GHz`,
     price: usdToPhp(r.price),
+    socket: r.socket,
   }),
   motherboard: (r: any): BuildPartRef => ({
     tag: 'MOBO',
     name: r.name,
     sub: `${r.size} · ${r.socket} · ${r.ram_type}`,
     price: usdToPhp(r.price),
+    socket: r.socket,
+    size: r.size,
+    ramType: r.ram_type as 'DDR4' | 'DDR5',
   }),
   gpu: (r: any): BuildPartRef => ({
     tag: 'GPU',
     name: r.name,
     sub: `${r.memory}GB · ${r.tdp}W TDP`,
     price: usdToPhp(r.price),
+    tdp: r.tdp,
   }),
   psu: (r: any): BuildPartRef => ({
     tag: 'PSU',
     name: r.name,
     sub: `${r.wattage}W · ${r.efficiency_rating}`,
     price: usdToPhp(r.price),
+    wattage: r.wattage,
   }),
-  case: (r: any): BuildPartRef => ({
-    tag: 'CASE',
-    name: r.name,
-    sub: r.brand,
-    price: usdToPhp(r.price),
-  }),
-  cooler: (r: any): BuildPartRef => ({
-    tag: 'COOLER',
-    name: r.name,
-    sub: `${r.type} · ${r.tdp_rating}W rating`,
-    price: usdToPhp(r.price),
-  }),
+  case: (r: any): BuildPartRef => {
+    const sizes: string[] = (r.case_supported_size ?? []).map((s: any) => s.size)
+    return {
+      tag: 'CASE',
+      name: r.name,
+      sub: sizes.length ? `Fits ${sizes.join(' / ')}` : r.brand,
+      price: usdToPhp(r.price),
+      caseSizes: sizes,
+    }
+  },
+  cooler: (r: any): BuildPartRef => {
+    const sockets: string[] = (r.cooler_socket ?? []).map((s: any) => s.socket)
+    return {
+      tag: 'COOLER',
+      name: r.name,
+      sub: `${r.type} · ${r.tdp_rating}W rating`,
+      price: usdToPhp(r.price),
+      coolerSockets: sockets,
+    }
+  },
   ram: (r: any, qty: number): BuildPartRef => ({
     tag: 'RAM',
     name: qty > 1 ? `${r.name} ×${qty}` : r.name,
     sub: `${r.type} · ${r.capacity}GB · ${r.speed}MHz`,
     price: usdToPhp(r.price) * qty,
+    ramType: r.type as 'DDR4' | 'DDR5',
   }),
   storage: (r: any, qty: number): BuildPartRef => ({
     tag: 'STORAGE',
@@ -76,8 +91,8 @@ const BUILD_SELECT = `
   motherboard:mb_id ( mb_id, name, brand, socket, size, ram_type, price ),
   gpu:gpu_id ( gpu_id, name, brand, memory, core_clock, tdp, price ),
   psu:psu_id ( psu_id, name, brand, wattage, efficiency_rating, price ),
-  case:case_id ( case_id, name, brand, price ),
-  cooler:cooler_id ( cooler_id, name, brand, type, tdp_rating, price ),
+  case:case_id ( case_id, name, brand, price, case_supported_size ( size ) ),
+  cooler:cooler_id ( cooler_id, name, brand, type, tdp_rating, price, cooler_socket ( socket ) ),
   build_ram ( quantity, ram ( ram_id, name, brand, type, capacity, speed, price ) ),
   build_storage ( quantity, storage ( storage_id, name, brand, type, capacity, interface, price ) ),
   profile:user_id ( username )

@@ -42,6 +42,16 @@ export interface BuildPartRef {
   name: string
   sub: string
   price: number
+  // Optional structured compat fields, populated by data/builds.ts when
+  // they're known from the source row. Mirrors the catalog Part shape so
+  // the detail view can run the same cross-part checks as the Builder.
+  socket?: string
+  ramType?: 'DDR4' | 'DDR5'
+  size?: string
+  caseSizes?: string[]
+  coolerSockets?: string[]
+  tdp?: number
+  wattage?: number
 }
 
 export interface Build {

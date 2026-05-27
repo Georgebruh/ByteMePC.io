@@ -76,37 +76,111 @@ const slots = computed<Slot[]>(() => {
 
 const filledCount = computed(() => slots.value.filter(s => s.part).length)
 
-// ─── Compatibility extraction ───
-// BuildPartRef only carries name + sub strings, so values for the
-// compat panel are mined from each part's sub-spec line. When a part
-// is missing or the pattern doesn't match we fall back to a dash so
-// the row still renders cleanly.
+// ─── Compatibility (mirrors BuilderView's compatChecks) ───
+// BuildPartRef now carries the structured fields the Builder uses
+// (socket, ramType, size, caseSizes, coolerSockets, tdp, wattage),
+// so the same cross-part checks run here against the saved build.
 function partFor(tag: string): BuildPartRef | undefined {
   return build.value?.parts.find(p => p.tag === tag)
 }
 
-function extract(sub: string | undefined, pattern: RegExp): string | null {
-  if (!sub) return null
-  const m = sub.match(pattern)
-  return m ? m[0] : null
-}
+type CompatKind = 'ok' | 'warn' | 'pending'
+interface CompatCheck { kind: CompatKind; label: string; detail: string }
 
-const cpuSocket = computed(() => extract(partFor('CPU')?.sub, /(LGA\d+|AM\d+)/i))
-const moboRam   = computed(() => extract(partFor('MOBO')?.sub, /DDR\d/i))
-const moboForm  = computed(() => extract(partFor('MOBO')?.sub, /\b(E-ATX|mATX|Micro-ATX|ITX|ATX)\b/i))
-const psuWatts  = computed(() => {
-  const m = partFor('PSU')?.sub?.match(/(\d{3,4})\s*W/i)
-  return m ? Number(m[1]) : null
+// Same overhead the builder uses on top of GPU TDP to estimate draw.
+const SYSTEM_OVERHEAD_W = 200
+
+const estimatedDraw = computed(() => {
+  const gpu = partFor('GPU')
+  if (!gpu?.tdp) return 0
+  return gpu.tdp + SYSTEM_OVERHEAD_W
 })
 
-// Placeholder draw estimate — without per-part TDP/wattage on
-// BuildPartRef we can't compute real consumption yet. Surfaces the
-// PSU headroom bar so the UI looks correct; the real number lands
-// when the catalog plumbing reaches the build viewer.
-const ESTIMATED_DRAW = 545
+const compatChecks = computed<CompatCheck[]>(() => {
+  const out: CompatCheck[] = []
+  if (!build.value) return out
+
+  const cpu    = partFor('CPU')
+  const mobo   = partFor('MOBO')
+  const ram    = partFor('RAM')
+  const gpu    = partFor('GPU')
+  const psu    = partFor('PSU')
+  const pcCase = partFor('CASE')
+  const cooler = partFor('COOLER')
+
+  // CPU ↔ MB socket
+  if (!cpu || !mobo) {
+    out.push({ kind: 'pending', label: 'Socket', detail: 'missing CPU + MB' })
+  } else if (cpu.socket && mobo.socket && cpu.socket === mobo.socket) {
+    out.push({ kind: 'ok', label: 'Socket', detail: `${cpu.socket} matched` })
+  } else {
+    out.push({ kind: 'warn', label: 'Socket', detail: `CPU ${cpu.socket ?? '?'} ≠ MB ${mobo.socket ?? '?'}` })
+  }
+
+  // RAM type ↔ MB
+  if (!ram || !mobo) {
+    out.push({ kind: 'pending', label: 'Memory', detail: 'missing MB + RAM' })
+  } else if (ram.ramType && mobo.ramType && ram.ramType === mobo.ramType) {
+    out.push({ kind: 'ok', label: 'Memory', detail: `${ram.ramType} matched` })
+  } else {
+    out.push({ kind: 'warn', label: 'Memory', detail: `RAM ${ram.ramType ?? '?'} ≠ MB ${mobo.ramType ?? '?'}` })
+  }
+
+  // Form factor: MB ↔ Case
+  if (!mobo || !pcCase) {
+    out.push({ kind: 'pending', label: 'Form factor', detail: 'missing MB + case' })
+  } else if (mobo.size && pcCase.caseSizes?.includes(mobo.size)) {
+    out.push({ kind: 'ok', label: 'Form factor', detail: `${mobo.size} fits case` })
+  } else {
+    out.push({ kind: 'warn', label: 'Form factor', detail: `case won't fit ${mobo.size ?? '?'}` })
+  }
+
+  // Cooler ↔ CPU socket
+  if (!cpu || !cooler) {
+    out.push({ kind: 'pending', label: 'Cooler', detail: 'missing CPU + cooler' })
+  } else if (cpu.socket && cooler.coolerSockets?.includes(cpu.socket)) {
+    out.push({ kind: 'ok', label: 'Cooler', detail: `mounts on ${cpu.socket}` })
+  } else {
+    out.push({ kind: 'warn', label: 'Cooler', detail: `no ${cpu.socket ?? '?'} mount` })
+  }
+
+  // PSU wattage vs estimated draw
+  if (!gpu) {
+    out.push({ kind: 'pending', label: 'Power', detail: 'no GPU to estimate' })
+  } else if (!psu) {
+    out.push({ kind: 'pending', label: 'Power', detail: `missing PSU (~${estimatedDraw.value}W)` })
+  } else if (psu.wattage && psu.wattage >= estimatedDraw.value) {
+    out.push({ kind: 'ok', label: 'Power', detail: `${psu.wattage}W ≥ ~${estimatedDraw.value}W` })
+  } else {
+    out.push({ kind: 'warn', label: 'Power', detail: `${psu.wattage ?? '?'}W < ~${estimatedDraw.value}W` })
+  }
+
+  return out
+})
+
+interface CompatSummary { kind: CompatKind; glyph: string; text: string }
+const compatSummary = computed<CompatSummary>(() => {
+  const counts = { ok: 0, warn: 0, pending: 0 }
+  for (const c of compatChecks.value) counts[c.kind]++
+  const total = compatChecks.value.length
+  if (counts.warn > 0) {
+    return { kind: 'warn', glyph: '✗', text: `${counts.warn} issue${counts.warn === 1 ? '' : 's'} flagged` }
+  }
+  if (counts.pending > 0) {
+    return { kind: 'pending', glyph: '○', text: `${counts.ok}/${total} checks · ${counts.pending} pending` }
+  }
+  return { kind: 'ok', glyph: '✓', text: 'All checks pass — build is compatible' }
+})
+
+function glyphFor(kind: CompatKind): string {
+  return kind === 'ok' ? '✓' : kind === 'warn' ? '✗' : '○'
+}
+
+// PSU draw bar, anchored to the real estimate.
+const psuWatts = computed(() => partFor('PSU')?.wattage ?? null)
 const drawPct = computed(() => {
-  if (!psuWatts.value) return 0
-  return Math.min(100, Math.round((ESTIMATED_DRAW / psuWatts.value) * 100))
+  if (!psuWatts.value || !estimatedDraw.value) return 0
+  return Math.min(100, Math.round((estimatedDraw.value / psuWatts.value) * 100))
 })
 
 async function onToggleFav() {
@@ -158,7 +232,10 @@ function onFork() {
               @click="mode = '3d'"
             >3D</button>
             <span class="grow" />
-            <span class="meta">{{ filledCount }} / {{ UML_SLOTS.length }} slots · compat ✓</span>
+            <span class="meta">
+              {{ filledCount }} / {{ UML_SLOTS.length }} slots ·
+              <span :class="`compat-meta ${compatSummary.kind}`">{{ compatSummary.glyph }} {{ compatSummary.text }}</span>
+            </span>
           </div>
 
           <div class="viewer-body">
@@ -246,30 +323,25 @@ function onFork() {
 
           <div class="panel">
             <h4>Compatibility</h4>
-            <div class="compat">
-              <div class="row">
-                <span class="k">CPU ↔ Socket</span>
-                <span class="v">{{ cpuSocket ? `✓ ${cpuSocket}` : '—' }}</span>
-              </div>
-              <div class="row">
-                <span class="k">MOBO ↔ RAM</span>
-                <span class="v">{{ moboRam ? `✓ ${moboRam}` : '—' }}</span>
-              </div>
-              <div class="row">
-                <span class="k">Case ↔ Form Factor</span>
-                <span class="v">{{ moboForm ? `✓ ${moboForm}` : '—' }}</span>
-              </div>
-              <div class="row">
-                <span class="k">Cooler ↔ Socket</span>
-                <span class="v">{{ partFor('COOLER') && cpuSocket ? `✓ ${cpuSocket}` : '—' }}</span>
-              </div>
-              <div class="row">
-                <span class="k">PSU Wattage</span>
-                <span class="v" :class="{ warn: psuWatts && drawPct > 80 }">
-                  {{ psuWatts ? `${ESTIMATED_DRAW} / ${psuWatts}W` : '—' }}
-                </span>
+
+            <div class="compat-summary" :class="compatSummary.kind">
+              <span class="compat-summary-glyph">{{ compatSummary.glyph }}</span>
+              <span class="compat-summary-text">{{ compatSummary.text }}</span>
+            </div>
+
+            <div class="compat-list">
+              <div
+                v-for="c in compatChecks"
+                :key="c.label"
+                class="compat-row"
+                :class="c.kind"
+              >
+                <span class="compat-glyph">{{ glyphFor(c.kind) }}</span>
+                <span class="compat-label">{{ c.label }}</span>
+                <span class="compat-detail">{{ c.detail }}</span>
               </div>
             </div>
+
             <div v-if="psuWatts" class="power-bar">
               <div class="fill" :style="{ width: drawPct + '%' }" />
             </div>
@@ -671,17 +743,86 @@ function onFork() {
   color: var(--text-mute);
   margin-bottom: 10px;
 }
-.compat {
+/* Verdict band — worst-state-wins colour above the row list. */
+.compat-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.25);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.compat-summary-glyph {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+.compat-summary-text { color: var(--text-dim); }
+.compat-summary.ok {
+  border-color: rgba(110, 231, 183, 0.4);
+  background: rgba(110, 231, 183, 0.08);
+}
+.compat-summary.ok .compat-summary-glyph,
+.compat-summary.ok .compat-summary-text { color: var(--green); }
+.compat-summary.warn {
+  border-color: rgba(255, 70, 85, 0.45);
+  background: rgba(255, 70, 85, 0.1);
+}
+.compat-summary.warn .compat-summary-glyph,
+.compat-summary.warn .compat-summary-text { color: var(--red); }
+.compat-summary.pending { border-color: var(--line); }
+.compat-summary.pending .compat-summary-glyph { color: var(--text-mute); }
+
+.compat-list {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  font-family: var(--mono);
-  font-size: 10.5px;
+  gap: 2px;
 }
-.compat .row { display: flex; justify-content: space-between; gap: 14px; }
-.compat .row .k { color: var(--text-mute); }
-.compat .row .v { color: var(--green); }
-.compat .row .v.warn { color: var(--amber); }
+.compat-row {
+  display: grid;
+  grid-template-columns: 16px 80px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  border-left: 2px solid transparent;
+}
+.compat-glyph {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+}
+.compat-label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  color: var(--text-low);
+}
+.compat-detail { color: var(--text-dim); }
+.compat-row.ok .compat-glyph { color: var(--green); }
+.compat-row.pending .compat-glyph { color: var(--text-mute); }
+.compat-row.pending .compat-detail { color: var(--text-low); }
+.compat-row.warn {
+  background: rgba(255, 70, 85, 0.08);
+  border-left-color: var(--red);
+}
+.compat-row.warn .compat-glyph,
+.compat-row.warn .compat-label,
+.compat-row.warn .compat-detail { color: var(--red); }
+
+/* Inline compat summary in the viewer-tabs strip. */
+.compat-meta { font-weight: 700; }
+.compat-meta.ok { color: var(--green); }
+.compat-meta.warn { color: var(--red); }
+.compat-meta.pending { color: var(--text-mute); }
 
 .power-bar {
   height: 10px;
