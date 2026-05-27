@@ -139,6 +139,7 @@ function rowToBuild(row: BuildRow, favouritedIds: Set<string>): Build {
     favourited: favouritedIds.has(row.build_id),
     parts,
     icon: row.gpu?.name?.includes('RTX 40') ? '🚀' : '🖥',
+    updatedAt: row.updated_at,
   }
 }
 
@@ -263,6 +264,66 @@ export async function deleteBuild(buildId: string): Promise<void> {
     .delete()
     .eq('build_id', buildId)
   if (error) throw error
+}
+
+// Fork: clone a build's part selections into a new private build owned by
+// the current user. Junction rows (ram + storage) are copied row-for-row.
+// Returns the new build_id so the caller can route into the editor.
+export async function forkBuild(sourceBuildId: string, userId: string): Promise<string> {
+  const { data: source, error: srcErr } = await supabase
+    .from('builds')
+    .select(`
+      name, description,
+      cpu_id, mb_id, gpu_id, psu_id, case_id, cooler_id,
+      build_ram ( ram_id, quantity ),
+      build_storage ( storage_id, quantity )
+    `)
+    .eq('build_id', sourceBuildId)
+    .single()
+  if (srcErr) throw srcErr
+
+  const { data: inserted, error: insErr } = await supabase
+    .from('builds')
+    .insert({
+      user_id: userId,
+      name: `Fork of ${source.name}`,
+      description: source.description,
+      cpu_id: source.cpu_id,
+      mb_id:  source.mb_id,
+      gpu_id: source.gpu_id,
+      psu_id: source.psu_id,
+      case_id: source.case_id,
+      cooler_id: source.cooler_id,
+      is_public: false,
+    })
+    .select('build_id')
+    .single()
+  if (insErr) throw insErr
+  const newId = inserted.build_id as string
+
+  try {
+    const ramRows = (source.build_ram ?? []).map((r: any) => ({
+      build_id: newId, ram_id: r.ram_id, quantity: r.quantity,
+    }))
+    if (ramRows.length) {
+      const { error } = await supabase.from('build_ram').insert(ramRows)
+      if (error) throw error
+    }
+
+    const storRows = (source.build_storage ?? []).map((s: any) => ({
+      build_id: newId, storage_id: s.storage_id, quantity: s.quantity,
+    }))
+    if (storRows.length) {
+      const { error } = await supabase.from('build_storage').insert(storRows)
+      if (error) throw error
+    }
+  } catch (e) {
+    // Roll back the parent row so a half-copied fork doesn't linger.
+    await supabase.from('builds').delete().eq('build_id', newId)
+    throw e
+  }
+
+  return newId
 }
 
 // ─── Create / update builds ─────────────────────────────

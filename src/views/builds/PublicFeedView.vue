@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
 import BuildsSubNav from '../../components/BuildsSubNav.vue'
 import BuildCard from '../../components/BuildCard.vue'
@@ -8,20 +9,27 @@ import {
   fetchPublicBuilds,
   fetchFavouriteIds,
   toggleFavourite,
+  forkBuild,
 } from '../../data/builds'
 import { useSession } from '../../lib/session'
 
 const { userId } = useSession()
+const router = useRouter()
 
-// All public builds loaded from Supabase. Each card's heart state is
-// derived from the user's favourite_builds set when they're signed in.
 const builds = ref<Build[]>([])
 const loading = ref(true)
 const errorMsg = ref('')
 
-const chips = ['All', 'Gaming', 'Workstation', 'Budget', 'High-End', 'SFF / ITX']
-const activeChip = ref('All')
 const search = ref('')
+
+type SortMode = 'newest' | 'popular' | 'price-asc' | 'price-desc'
+const sortMode = ref<SortMode>('newest')
+const sortLabels: Record<SortMode, string> = {
+  newest:       'Newest',
+  popular:      'Popular',
+  'price-asc':  'Price ↑',
+  'price-desc': 'Price ↓',
+}
 
 async function load() {
   loading.value = true
@@ -39,16 +47,22 @@ async function load() {
 }
 
 onMounted(load)
-// Re-load when the auth session changes so heart states stay accurate.
 watch(userId, load)
 
 const visibleBuilds = computed(() => {
   const q = search.value.trim().toLowerCase()
-  return builds.value.filter(b => {
+  const filtered = builds.value.filter(b => {
     if (!q) return true
     return b.name.toLowerCase().includes(q)
       || b.tags.some(t => t.toLowerCase().includes(q))
   })
+  const arr = [...filtered]
+  switch (sortMode.value) {
+    case 'popular':    return arr.sort((a, b) => b.views - a.views)
+    case 'price-asc':  return arr.sort((a, b) => a.totalPrice - b.totalPrice)
+    case 'price-desc': return arr.sort((a, b) => b.totalPrice - a.totalPrice)
+    default:           return arr // newest = server order (updated_at desc)
+  }
 })
 
 async function onToggleFav(buildId: string) {
@@ -58,6 +72,19 @@ async function onToggleFav(buildId: string) {
   const newState = await toggleFavourite(userId.value, buildId, !!target.favourited)
   target.favourited = newState
 }
+
+async function onFork(buildId: string) {
+  if (!userId.value) {
+    router.push('/sign-in')
+    return
+  }
+  try {
+    const newId = await forkBuild(buildId, userId.value)
+    router.push(`/builder/manual/${newId}`)
+  } catch (e: any) {
+    errorMsg.value = e?.message ?? 'Failed to fork build.'
+  }
+}
 </script>
 
 <template>
@@ -66,28 +93,19 @@ async function onToggleFav(buildId: string) {
   <div class="page">
     <BuildsSubNav />
 
-    <div class="page-header">
-      <div>
-        <span class="kicker">// community</span>
-        <div class="section-title">Community Builds</div>
-        <div class="section-sub">Public builds shared by the community</div>
-      </div>
-      <button class="t-btn">Sort: Popular</button>
-    </div>
-
-    <!-- Filter chips + search live on the same row. -->
-    <div class="feed-controls">
-      <div class="seg-tabs">
-        <button
-          v-for="c in chips"
-          :key="c"
-          class="seg"
-          :class="{ active: activeChip === c }"
-          @click="activeChip = c"
-        >{{ c }}</button>
-      </div>
-      <div class="spacer" />
-      <input class="input search" v-model="search" placeholder="🔍  Search builds…" />
+    <!-- One-line head-bar: kicker + title + live count + search + sort. -->
+    <div class="head-bar">
+      <span class="kicker">// community</span>
+      <div class="title">Community Builds</div>
+      <span class="count"><b>{{ visibleBuilds.length }}</b> public</span>
+      <div class="grow"></div>
+      <input v-model="search" class="search" placeholder="Search…" />
+      <label class="sort">
+        Sort
+        <select v-model="sortMode">
+          <option v-for="(label, mode) in sortLabels" :key="mode" :value="mode">{{ label }}</option>
+        </select>
+      </label>
     </div>
 
     <div v-if="loading" class="empty-state">Loading builds…</div>
@@ -99,12 +117,11 @@ async function onToggleFav(buildId: string) {
           :key="b.id"
           :build="b"
           @toggle-fav="onToggleFav"
+          @fork="onFork"
         />
       </div>
       <div v-else class="empty-state">
-        <div class="ic">📡</div>
         <div class="empty-title">No public builds yet</div>
-        <div class="empty-sub">Be the first to publish one from the Builder.</div>
       </div>
     </template>
   </div>
@@ -113,57 +130,69 @@ async function onToggleFav(buildId: string) {
 <style scoped>
 .page { font-family: var(--mono); }
 
-.page-header .kicker { display: block; margin-bottom: 6px; }
-.section-title {
+.head-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  background: rgba(5, 8, 16, 0.5);
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.head-bar .title {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 28px;
-  letter-spacing: -0.02em;
+  font-size: 20px;
+  letter-spacing: -0.015em;
   color: var(--text);
-  margin-bottom: 4px;
 }
-.section-sub {
+.head-bar .count {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-low);
 }
-
-.feed-controls {
-  display: flex;
-  gap: 12px;
-  margin: 18px 0 22px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.seg-tabs {
-  display: flex;
-  gap: 2px;
-  padding: 2px;
+.head-bar .count b { color: var(--cyan); font-weight: 500; }
+.head-bar .grow { flex: 1; }
+.head-bar .search {
+  width: 240px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--line);
-  overflow-x: auto;
-}
-.seg {
-  padding: 7px 14px;
+  color: var(--text);
   font-family: var(--mono);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  background: none;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.15s, background 0.15s;
+  font-size: 11px;
+  outline: none;
+  border-radius: 0;
 }
-.seg:hover:not(.active) { color: var(--text); }
-.seg.active { background: var(--text); color: var(--bg); }
-
-.spacer { flex: 1; }
-.search { max-width: 280px; }
+.head-bar .search:focus { border-color: var(--cyan); }
+.head-bar .sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.head-bar .sort select {
+  background: transparent;
+  color: var(--text);
+  border: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  outline: none;
+  cursor: pointer;
+}
+.head-bar .sort select option { background: var(--bg-2); color: var(--text); }
 
 .feed-grid {
   display: grid;
@@ -171,28 +200,16 @@ async function onToggleFav(buildId: string) {
   gap: 16px;
 }
 
-.empty-state .ic {
-  font-size: 40px;
-  margin-bottom: 12px;
-}
 .empty-state .empty-title {
   font-family: var(--display);
-  font-size: 18px;
+  font-size: 16px;
   color: var(--text);
-  margin-bottom: 6px;
-}
-.empty-state .empty-sub {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-low);
 }
 .empty-state.err { color: var(--red); border-color: rgba(255, 70, 85, 0.35); }
 
 @media (max-width: 1100px) {
   .feed-grid { grid-template-columns: 1fr 1fr; }
-  .spacer { display: none; }
-  .search { max-width: 100%; flex: 1; }
+  .head-bar .search { width: auto; flex: 1; min-width: 160px; }
 }
 @media (max-width: 600px) {
   .feed-grid { grid-template-columns: 1fr; }

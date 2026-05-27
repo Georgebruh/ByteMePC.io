@@ -65,6 +65,9 @@ export interface Build {
   parts: BuildPartRef[]
   // Big tile background icon on the card.
   icon: string
+  // ISO timestamp of the last edit. Populated by the Supabase queries;
+  // mock builds leave it undefined.
+  updatedAt?: string
 }
 
 // ─── Parts catalog ────────────────────────────────────────
