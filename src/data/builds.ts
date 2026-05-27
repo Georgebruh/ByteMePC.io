@@ -186,6 +186,42 @@ export async function fetchPublicBuilds(favouritedIds: Set<string> = new Set()):
   return (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, favouritedIds))
 }
 
+// Top N public builds ranked by favourite count, used by the landing
+// carousel. Calls the SECURITY DEFINER RPC `top_favourited_builds` because
+// the `favorite_builds` table has per-owner RLS and can't be aggregated
+// from the client directly. If the RPC isn't deployed yet we fall back to
+// the most-viewed public builds so the landing page always renders.
+export async function fetchTopFavouritedBuilds(limit = 3): Promise<Build[]> {
+  const { data: rpcRows, error: rpcErr } = await supabase
+    .rpc('top_favourited_builds', { limit_count: limit })
+
+  let buildIds: string[] = []
+  if (!rpcErr && Array.isArray(rpcRows)) {
+    buildIds = rpcRows.map((r: any) => r.build_id as string)
+  }
+
+  if (!buildIds.length) {
+    const { data, error } = await supabase
+      .from('builds')
+      .select(BUILD_SELECT)
+      .eq('is_public', true)
+      .order('views', { ascending: false })
+      .limit(limit)
+    if (error) throw error
+    return (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, new Set()))
+  }
+
+  const { data, error } = await supabase
+    .from('builds')
+    .select(BUILD_SELECT)
+    .in('build_id', buildIds)
+  if (error) throw error
+  const rows = (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, new Set()))
+  // Preserve the RPC's ordering (most favourited first).
+  const order = new Map(buildIds.map((id, i) => [id, i]))
+  return rows.sort((a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99))
+}
+
 // Builds owned by the current authenticated user (private + public).
 export async function fetchMyBuilds(userId: string): Promise<Build[]> {
   const { data, error } = await supabase
