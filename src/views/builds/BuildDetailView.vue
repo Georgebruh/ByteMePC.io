@@ -191,9 +191,10 @@ function onFork() {
           <div class="action-row">
             <button class="btn primary span-2" @click="onExportPdf">Export PDF</button>
             <button
-              v-if="userId"
               class="btn"
               :class="{ on: build.favourited }"
+              :disabled="!userId"
+              :title="userId ? '' : 'Sign in to favourite'"
               @click="onToggleFav"
             >{{ build.favourited ? '♥ Favourited' : '♥ Favourite' }}</button>
             <button class="btn" @click="onFork">⑂ Fork Build</button>
@@ -588,6 +589,14 @@ function onFork() {
 .btn.on {
   color: var(--red);
   border-color: rgba(255, 70, 85, 0.45);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn:disabled:hover {
+  border-color: var(--line);
+  background: transparent;
 }
 
 /* compatibility panel */
