@@ -210,19 +210,37 @@ a { color: inherit; text-decoration: none; }
 .breadcrumb a { color: var(--cyan); }
 .breadcrumb span { color: var(--text-low); margin: 0 8px; }
 
-/* ─── Avatar bubble used in the navbar and profile ─── */
+/* ─── Avatar bubble used in the navbar ───
+   Dark disc with a hairline cyan border + cyan mono initial — same
+   workshop-terminal vocabulary the rest of the chrome uses, instead of
+   the old loud cyan→purple gradient that fought the theme. */
 .avatar {
   width: 34px; height: 34px;
   border-radius: 50%;
-  background: var(--grad);
+  background:
+    radial-gradient(circle at 30% 28%, rgba(0, 212, 255, 0.18), transparent 60%),
+    rgba(10, 18, 32, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  color: var(--bg);
-  font-size: 13px;
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--cyan);
+  font-size: 12px;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  border: 2px solid rgba(0, 212, 255, 0.4);
+  border: 1px solid rgba(0, 212, 255, 0.55);
+  box-shadow:
+    inset 0 0 8px rgba(0, 212, 255, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.15s, box-shadow 0.15s, color 0.15s;
+}
+.avatar:hover {
+  border-color: var(--cyan);
+  color: #e7fbff;
+  box-shadow:
+    inset 0 0 10px rgba(0, 212, 255, 0.15),
+    0 0 14px rgba(0, 212, 255, 0.25);
 }
 
 /* ─── Tabs row (used on browse + pinned) ─── */

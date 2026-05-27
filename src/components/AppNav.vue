@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { RouterLink, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { useSession, signOut } from '../lib/session'
 
 // The main top bar shown on (almost) every screen. Two modes are
 // supported via props so the auth screens can hide the avatar / show
@@ -25,16 +26,68 @@ const props = defineProps<{
 }>()
 
 const route = useRoute()
+const router = useRouter()
+const { isSignedIn } = useSession()
+
+// Avatar dropdown: Profile + Sign Out. Click-outside / Escape close
+// it; the menu lives in the nav itself rather than teleported because
+// it's small and the nav already escapes overflow.
+const menuOpen = ref(false)
+const menuEl = ref<HTMLElement | null>(null)
+
+function toggleMenu() { menuOpen.value = !menuOpen.value }
+function closeMenu() { menuOpen.value = false }
+
+async function onSignOut() {
+  closeMenu()
+  await signOut()
+  // After sign-out, kick the user back to the landing page so they're
+  // never left staring at a screen their session no longer authorises.
+  router.push('/')
+}
+
+function onDocPointerDown(ev: PointerEvent) {
+  if (!menuOpen.value) return
+  const t = ev.target as Node | null
+  if (menuEl.value && t && menuEl.value.contains(t)) return
+  closeMenu()
+}
+function onKey(ev: KeyboardEvent) { if (ev.key === 'Escape') closeMenu() }
+
+watch(menuOpen, (open) => {
+  if (open) {
+    window.addEventListener('pointerdown', onDocPointerDown, true)
+    window.addEventListener('keydown', onKey)
+  } else {
+    window.removeEventListener('pointerdown', onDocPointerDown, true)
+    window.removeEventListener('keydown', onKey)
+  }
+})
+// Close the menu whenever the route changes so it doesn't hang open
+// after a nav click.
+watch(() => route.fullPath, closeMenu)
+onBeforeUnmount(closeMenu)
 
 // Highlight a link if the current route matches one of its "owns" prefixes.
 // We compare on path prefix so e.g. /parts/cpu-13900k still lights "Browse Parts".
 function isActive(prefixes: string[]): boolean {
   return prefixes.some(p => route.path === p || route.path.startsWith(p + '/'))
 }
-
-const showAvatar = computed(() => props.showAvatar !== false)
-
+ 
+// logo of ByteMePC, made by the GOAT
 import logo from '../assets/logo.png'
+  
+// The avatar is the entry point to Profile + Sign Out, so it must
+// follow the signed-in state across every screen — not the per-screen
+// showAvatar prop. The prop only controls the anonymous case (auth
+// screens hide it so the right-side CTA can take the slot instead).
+const showAvatar = computed(() => isSignedIn.value || props.showAvatar !== false)
+
+// Sign-in / Sign-up CTAs are only meaningful to anonymous viewers — once
+// the user is signed in, suppress them so the nav doesn't double up on
+// "Sign In" link + profile avatar.
+const showSecondaryCta = computed(() => !!props.secondaryCta && !isSignedIn.value)
+const showRightCta = computed(() => !!props.rightCta && props.showAvatar === false && !isSignedIn.value)
 </script>
 
 <template>
@@ -77,17 +130,62 @@ import logo from '../assets/logo.png'
 
     <div class="nav-right">
       <!-- Secondary right-side CTA (text-only link style). -->
-      <RouterLink v-if="secondaryCta" :to="secondaryCta.to" class="nav-cta">
+      <RouterLink v-if="showSecondaryCta && secondaryCta" :to="secondaryCta.to" class="nav-cta">
         {{ secondaryCta.label }}
       </RouterLink>
 
       <!-- Right CTA when there's no avatar (sign-in, sign-up). -->
-      <RouterLink v-if="rightCta && !showAvatar" :to="rightCta.to" class="nav-cta primary">
+      <RouterLink v-if="showRightCta && rightCta" :to="rightCta.to" class="nav-cta primary">
         {{ rightCta.label }} <span class="arrow">→</span>
       </RouterLink>
 
-      <!-- Avatar shortcut to the profile screen. -->
-      <RouterLink v-if="showAvatar" to="/profile" class="avatar" title="Profile">G</RouterLink>
+      <!-- Avatar button + dropdown. Only shown to signed-in viewers so
+           anonymous browsers don't see a profile shortcut that bounces
+           straight back through the auth gate. The button doubles as the
+           menu trigger — click to expose Profile + Sign Out. -->
+      <div v-if="showAvatar && isSignedIn" ref="menuEl" class="avatar-wrap">
+        <button
+          type="button"
+          class="avatar"
+          :class="{ open: menuOpen }"
+          :aria-expanded="menuOpen"
+          aria-haspopup="menu"
+          title="Account menu"
+          @click="toggleMenu"
+        >G</button>
+
+        <div v-if="menuOpen" class="avatar-menu" role="menu">
+          <RouterLink
+            to="/profile"
+            class="menu-item"
+            role="menuitem"
+            @click="closeMenu"
+          >
+            <!-- Inline SVG (head + shoulders) so the glyph renders the
+                 same on every OS / font instead of falling back to a
+                 box when the colour-emoji font is missing. -->
+            <svg class="mi-glyph" viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="8" cy="5.5" r="2.6" />
+              <path d="M2.6 13.4 a5.4 5.4 0 0 1 10.8 0" />
+            </svg>
+            <span>Profile</span>
+          </RouterLink>
+          <button
+            type="button"
+            class="menu-item danger"
+            role="menuitem"
+            @click="onSignOut"
+          >
+            <!-- Door + arrow-out: the universal "log out" pictogram. -->
+            <svg class="mi-glyph" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M9.5 2.5 H3.5 a1 1 0 0 0 -1 1 v9 a1 1 0 0 0 1 1 h6" />
+              <path d="M10.5 5 L13.5 8 L10.5 11" />
+              <line x1="6.5" y1="8" x2="13.5" y2="8" />
+            </svg>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
     </div>
   </nav>
 </template>
@@ -251,6 +349,84 @@ import logo from '../assets/logo.png'
 }
 .nav-cta .arrow { transition: transform 0.15s; }
 .nav-cta:hover .arrow { transform: translateX(3px); }
+
+/* ─── Avatar + dropdown ─────────────────────────────────────────── */
+.avatar-wrap {
+  position: relative;
+}
+/* Button variant of the global .avatar — strip default button chrome
+   so the disc renders cleanly, then layer an "open" ring on top of the
+   shared hover state. */
+button.avatar {
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: var(--mono);
+}
+button.avatar.open {
+  border-color: var(--cyan);
+  color: #e7fbff;
+  box-shadow:
+    inset 0 0 10px rgba(0, 212, 255, 0.18),
+    0 0 0 3px rgba(0, 212, 255, 0.22);
+}
+
+.avatar-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1000;
+  min-width: 180px;
+  padding: 4px;
+  background: rgba(5, 8, 16, 0.96);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6),
+              0 0 0 1px rgba(34, 211, 238, 0.18);
+  font-family: var(--mono);
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+}
+.menu-item:hover {
+  background: rgba(34, 211, 238, 0.08);
+  border-color: var(--line);
+  color: var(--cyan);
+}
+.menu-item.danger { color: var(--red); }
+.menu-item.danger:hover {
+  background: rgba(255, 70, 85, 0.06);
+  border-color: rgba(255, 70, 85, 0.35);
+  color: var(--red);
+}
+/* Inline SVG icons — sized + colour-inherited so they pick up the
+   row's text colour on hover and on the destructive .danger variant. */
+.mi-glyph {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--text-mute);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.12s;
+}
+.menu-item:hover .mi-glyph { stroke: currentColor; }
+.menu-item.danger .mi-glyph { stroke: var(--red); }
 
 /* ─── Mobile ─────────────────────────────────────────────────────
    Collapse the grid into a wrapping flex and let the tabs drop to

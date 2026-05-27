@@ -126,8 +126,8 @@ watch(userId, loadRecent)
         </span>
         <div class="nm">{{ b.name }}</div>
         <div class="pct">
-          {{ b.parts.length }} part{{ b.parts.length === 1 ? '' : 's' }}
-          <span class="bar" :style="{ '--w': `${Math.min(100, b.parts.length * 14)}%` }"></span>
+          {{ b.parts.length }} / 8 parts
+          <span class="bar" :style="{ '--w': `${Math.min(100, b.parts.length * 12.5)}%` }"></span>
         </div>
         <div class="pr">{{ php(b.totalPrice) }}</div>
         <div class="act">
