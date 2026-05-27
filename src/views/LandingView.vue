@@ -203,11 +203,11 @@ const ticks: Tick[] = [
          it inert; --mx / --my are set from JS each pointermove. -->
     <div class="cursor-glow" aria-hidden="true"></div>
 
-    <!-- Status strip removed — irrelevant ops info, not wired up. -->
-    <AppNav
-      :show-avatar="false"
-      :secondary-cta="{ label: 'Sign In', to: '/sign-in' }"
-    />
+    <!-- Status strip removed — irrelevant ops info, not wired up.
+         Avatar visibility is left to AppNav's default (show when signed
+         in, hide otherwise). The Sign In secondary CTA self-hides for
+         signed-in viewers so the right-side slot doesn't double up. -->
+    <AppNav :secondary-cta="{ label: 'Sign In', to: '/sign-in' }" />
 
     <!-- The main column is a 3-row grid: hero takes the remaining
          space (1fr), modules + ticker collapse to their natural
