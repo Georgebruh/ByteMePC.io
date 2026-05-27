@@ -2,13 +2,27 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import SignInPromptModal from '../../components/SignInPromptModal.vue'
 import type { Build, BuildPartRef } from '../../data/mock'
 import { php } from '../../data/mock'
 import { fetchBuildById, toggleFavourite, updateBuildVisibility } from '../../data/builds'
 import { useSession } from '../../lib/session'
 
 const route = useRoute()
-const { userId } = useSession()
+const { userId, isSignedIn } = useSession()
+
+// Sign-in modal state — shared between the favourite button (clicked
+// while signed out) and the missing-build case where the row is likely
+// private and blocked by RLS for the anonymous viewer.
+const signInOpen = ref(false)
+const signInPromptTitle = ref('Sign in to continue')
+const signInPromptMessage = ref('Create an account or sign in to continue.')
+
+function promptSignIn(title: string, message: string) {
+  signInPromptTitle.value = title
+  signInPromptMessage.value = message
+  signInOpen.value = true
+}
 
 const build = ref<Build | null>(null)
 const loading = ref(true)
@@ -198,7 +212,14 @@ const drawPct = computed(() => {
 })
 
 async function onToggleFav() {
-  if (!userId.value || !build.value) return
+  if (!build.value) return
+  if (!userId.value) {
+    promptSignIn(
+      'Sign in to favourite builds',
+      'Save builds across sessions so you can revisit them from anywhere.',
+    )
+    return
+  }
   const newState = await toggleFavourite(
     userId.value,
     build.value.id,
@@ -266,6 +287,29 @@ async function onToggleVisibility() {
     </div>
 
     <div v-if="loading" class="empty-state">Loading build…</div>
+
+    <!-- Signed-out users hitting a build that didn't load are almost
+         always bouncing off RLS on a private row. Surface a sign-in CTA
+         instead of the generic 'Build not found' so they have a path
+         forward. Signed-in users keep the original message. -->
+    <div
+      v-else-if="!build && !isSignedIn"
+      class="empty-state auth-gate"
+    >
+      <div class="empty-title">Sign in to view this build</div>
+      <div class="empty-sub">This build is private, or you need an account to access it.</div>
+      <div class="empty-cta">
+        <RouterLink
+          :to="`/sign-in?redirect=${encodeURIComponent(route.fullPath)}`"
+          class="t-btn primary"
+        >Sign In</RouterLink>
+        <RouterLink
+          :to="`/sign-up?redirect=${encodeURIComponent(route.fullPath)}`"
+          class="t-btn"
+        >Create Account</RouterLink>
+      </div>
+    </div>
+
     <div v-else-if="errorMsg" class="empty-state err">{{ errorMsg }}</div>
 
     <template v-else-if="build">
@@ -378,7 +422,6 @@ async function onToggleVisibility() {
             <button
               class="btn"
               :class="{ on: build.favourited }"
-              :disabled="!userId"
               :title="userId ? '' : 'Sign in to favourite'"
               @click="onToggleFav"
             >{{ build.favourited ? '♥ Favourited' : '♥ Favourite' }}</button>
@@ -444,6 +487,13 @@ async function onToggleVisibility() {
       </section>
     </template>
   </div>
+
+  <SignInPromptModal
+    :open="signInOpen"
+    :title="signInPromptTitle"
+    :message="signInPromptMessage"
+    @close="signInOpen = false"
+  />
 </template>
 
 <style scoped>
@@ -1025,6 +1075,33 @@ button.pill:disabled {
 .empty-state.err {
   color: var(--red);
   border-color: rgba(255, 70, 85, 0.35);
+}
+
+/* Sign-in prompt that replaces the build view when an anonymous
+   viewer trips RLS on a private row. */
+.empty-state.auth-gate {
+  padding: 64px 24px;
+  text-align: center;
+}
+.empty-state.auth-gate .empty-title {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.015em;
+}
+.empty-state.auth-gate .empty-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: 0.06em;
+  margin-bottom: 22px;
+}
+.empty-state.auth-gate .empty-cta {
+  display: inline-flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 1080px) {

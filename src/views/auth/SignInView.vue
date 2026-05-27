@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
 import { supabase } from '../../lib/supabase'
+import { useSession } from '../../lib/session'
 
 const email = ref('')
 const password = ref('')
@@ -11,6 +12,31 @@ const errorMsg = ref('')
 const loading = ref(false)
 
 const router = useRouter()
+const route = useRoute()
+const { isSignedIn } = useSession()
+
+// Only honour same-origin relative paths so a crafted ?redirect=https://evil
+// link can't bounce the user off-site after auth.
+const redirectTarget = computed(() => {
+  const raw = route.query.redirect
+  if (typeof raw !== 'string') return '/builds'
+  return raw.startsWith('/') && !raw.startsWith('//') ? raw : '/builds'
+})
+
+const signUpTarget = computed(() => {
+  const raw = route.query.redirect
+  return typeof raw === 'string'
+    ? `/sign-up?redirect=${encodeURIComponent(raw)}`
+    : '/sign-up'
+})
+
+// Already-signed-in users have no business on this screen — bounce
+// them to the redirect target (or /builds) the moment we know it.
+// Watching `isSignedIn` covers both the cached-session-on-mount and
+// the rare cross-tab sign-in case.
+watch(isSignedIn, (signedIn) => {
+  if (signedIn) router.replace(redirectTarget.value)
+}, { immediate: true })
 
 async function onSubmit(e: Event) {
   e.preventDefault()
@@ -25,12 +51,12 @@ async function onSubmit(e: Event) {
     errorMsg.value = error.message
     return
   }
-  router.push('/builds')
+  router.push(redirectTarget.value)
 }
 </script>
 
 <template>
-  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign Up', to: '/sign-up' }" />
+  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign Up', to: signUpTarget }" />
 
   <div class="auth-wrap">
     <form class="auth-card spec-frame" @submit="onSubmit">
@@ -69,7 +95,7 @@ async function onSubmit(e: Event) {
 
       <div class="auth-foot">
         Don't have an account?
-        <RouterLink to="/sign-up">Create one</RouterLink>
+        <RouterLink :to="signUpTarget">Create one</RouterLink>
       </div>
     </form>
   </div>

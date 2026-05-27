@@ -3,6 +3,8 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import type { Build } from '../data/mock'
 import { php } from '../data/mock'
+import { useSession } from '../lib/session'
+import SignInPromptModal from './SignInPromptModal.vue'
 
 // Tile used in the Community feed and the Favourites screens. Whole card
 // links to the build detail. Heart and right-click context menu emit up
@@ -23,6 +25,20 @@ const emit = defineEmits<{
 }>()
 
 const router = useRouter()
+const { isSignedIn } = useSession()
+
+// Auth-gate state for the favourite / fork actions. Both bounce the
+// signed-out user through the modal instead of silently no-op'ing —
+// the parent views still receive the emit when the user is signed in.
+const signInOpen = ref(false)
+const signInPromptTitle = ref('Sign in to continue')
+const signInPromptMessage = ref('Create an account or sign in to continue.')
+
+function promptSignIn(title: string, message: string) {
+  signInPromptTitle.value = title
+  signInPromptMessage.value = message
+  signInOpen.value = true
+}
 
 const detailTo = computed(() => ({
   path: `/builds/${props.build.id}`,
@@ -55,12 +71,38 @@ function onOpen() {
   router.push(detailTo.value)
 }
 function onFav() {
-  emit('toggle-fav', props.build.id)
   closeMenu()
+  if (!isSignedIn.value) {
+    promptSignIn(
+      'Sign in to favourite builds',
+      'Save builds across sessions so you can revisit them from anywhere.',
+    )
+    return
+  }
+  emit('toggle-fav', props.build.id)
 }
 function onFork() {
-  emit('fork', props.build.id)
   closeMenu()
+  if (!isSignedIn.value) {
+    promptSignIn(
+      'Sign in to fork builds',
+      'Forking copies a build into your own private workspace to customise.',
+    )
+    return
+  }
+  emit('fork', props.build.id)
+}
+
+// Heart button on the card body — same gate as the context-menu favourite.
+function onHeartClick() {
+  if (!isSignedIn.value) {
+    promptSignIn(
+      'Sign in to favourite builds',
+      'Save builds across sessions so you can revisit them from anywhere.',
+    )
+    return
+  }
+  emit('toggle-fav', props.build.id)
 }
 
 function onDocPointerDown(ev: PointerEvent) {
@@ -156,8 +198,8 @@ onBeforeUnmount(closeMenu)
           class="heart"
           :class="{ fav: build.favourited }"
           type="button"
-          :title="build.favourited ? 'Unfavourite' : 'Favourite'"
-          @click.prevent="emit('toggle-fav', build.id)"
+          :title="isSignedIn ? (build.favourited ? 'Unfavourite' : 'Favourite') : 'Sign in to favourite'"
+          @click.prevent="onHeartClick"
         >{{ build.favourited ? '♥' : '♡' }}</button>
       </div>
     </div>
@@ -195,6 +237,13 @@ onBeforeUnmount(closeMenu)
         </button>
       </div>
     </Teleport>
+
+    <SignInPromptModal
+      :open="signInOpen"
+      :title="signInPromptTitle"
+      :message="signInPromptMessage"
+      @close="signInOpen = false"
+    />
   </RouterLink>
 </template>
 

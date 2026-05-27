@@ -67,10 +67,9 @@ async function onToggleFav(buildId: string) {
 }
 
 async function onFork(buildId: string) {
-  if (!userId.value) {
-    router.push('/sign-in')
-    return
-  }
+  // BuildCard already gates this behind the sign-in modal when the
+  // user is signed out. Bail defensively if that ever changes.
+  if (!userId.value) return
   try {
     const newId = await forkBuild(buildId, userId.value)
     router.push(`/builder/manual/${newId}`)

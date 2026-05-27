@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
 import PartCard from '../../components/PartCard.vue'
 import { parts, type PartCategory } from '../../data/mock'
+import { useSession } from '../../lib/session'
+
+const { isSignedIn } = useSession()
+const route = useRoute()
 
 // "All" plus the five part categories. The user can filter the pinned
 // grid down to a single category.
@@ -51,6 +56,24 @@ const tabs: Array<{ key: Filter; label: string }> = [
   <AppNav />
 
   <div class="page">
+    <!-- Pins are per-user, so signed-out viewers get a sign-in CTA
+         instead of the hard-coded mock pinned items. -->
+    <div v-if="!isSignedIn" class="empty-state auth-gate">
+      <div class="empty-title">Sign in to view your pinned parts</div>
+      <div class="empty-sub">Pinning saves a part to your watch-list so you can revisit it across sessions.</div>
+      <div class="empty-cta">
+        <RouterLink
+          :to="`/sign-in?redirect=${encodeURIComponent(route.fullPath)}`"
+          class="t-btn primary"
+        >Sign In</RouterLink>
+        <RouterLink
+          :to="`/sign-up?redirect=${encodeURIComponent(route.fullPath)}`"
+          class="t-btn"
+        >Create Account</RouterLink>
+      </div>
+    </div>
+
+    <template v-else>
     <div class="page-header">
       <div>
         <span class="kicker">// watch-list</span>
@@ -85,6 +108,7 @@ const tabs: Array<{ key: Filter; label: string }> = [
       <div class="ic" style="font-size:40px;margin-bottom:12px">📌</div>
       Nothing pinned in this category yet.
     </div>
+    </template>
   </div>
 </template>
 
@@ -137,6 +161,32 @@ const tabs: Array<{ key: Filter; label: string }> = [
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+}
+
+/* Sign-in prompt that replaces the grid for anonymous viewers. */
+.empty-state.auth-gate {
+  padding: 64px 24px;
+  text-align: center;
+}
+.empty-state.auth-gate .empty-title {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.015em;
+}
+.empty-state.auth-gate .empty-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: 0.06em;
+  margin-bottom: 22px;
+}
+.empty-state.auth-gate .empty-cta {
+  display: inline-flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 @media (max-width: 1100px) {
   .parts-grid { grid-template-columns: 1fr 1fr; }
