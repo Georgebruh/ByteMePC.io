@@ -33,6 +33,8 @@ function isActive(prefixes: string[]): boolean {
 }
 
 const showAvatar = computed(() => props.showAvatar !== false)
+
+import logo from '../assets/logo.png'
 </script>
 
 <template>
@@ -59,7 +61,8 @@ const showAvatar = computed(() => props.showAvatar !== false)
     <!-- Brand on the left. Square-bracket sigils + italic "me" gives
          the wordmark a code-syntax feel without yelling. -->
     <RouterLink to="/" class="logo">
-      <span class="sigil">[</span>byte<em>me</em>pc<span class="sigil">]</span>
+      <img class="logo-image" :src="logo">
+      <span class="sigil-2"><span class="sigil">[</span>byte<em>me</em>pc<span class="sigil">]</span></span>
     </RouterLink>
 
     <!-- Tabs are wrapped in a bordered pill — the active tab inverts
@@ -154,8 +157,13 @@ const showAvatar = computed(() => props.showAvatar !== false)
   letter-spacing: -0.02em;
   color: var(--text);
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
+}
+.sigil-2 {
+  gap: 6px;
+  display: inline-flex;
+  align-items: baseline;
 }
 .logo .sigil {
   font-family: var(--mono);
@@ -168,7 +176,9 @@ const showAvatar = computed(() => props.showAvatar !== false)
   color: var(--cyan);
   font-family: var(--display);
 }
-
+.logo-image {
+  height: 25px;
+}
 /* Tabs sit inside a hairline container so the whole unit reads as
    one segmented control rather than four floating links. Absolutely
    positioned so the pill is dead-centred on the nav regardless of
