@@ -33,7 +33,7 @@ const summary = ref({
 // for some UI loading stuff I guess
 const isGenerating = ref(false)
 const isSaving = ref(false)
-import Lebron from "../../assets/lebron-lebron-james.gif"
+import loadingScreenDark from "../../assets/loading-screen-dark.gif"
 
 // Locks — slots where the user said "I already own this, build around
 // it". The GPU one is locked in the design preview to demo the state.
@@ -219,18 +219,21 @@ async function saveGeneratedBuild() {
     <div class="result-wrap">
       <div class="parts-list">
         <div class="result-head">// suggested build · {{ (summary.budget != 0) ? Math.round((summary.total / summary.budget) * 100) : 0 }}% budget utilized</div>
-      
-        <img class="loading-screen" :src="Lebron" v-if="isGenerating"/>
-
-        <div v-for="row in suggested" :key="row.tag" class="row">
-          <span class="tag">{{ row.tag }}</span>
-          <div>
-            <div class="part-name">{{ row.name }}</div>
-            <div class="part-sub">{{ row.sub }}</div>
-          </div>
-          <div class="pr">{{ php(row.price) }}</div>
+        
+        <div class="loading-screen-container" v-if="isGenerating">
+          <img class="loading-screen" :src="loadingScreenDark"/>
         </div>
-      </div>
+    
+        <div v-for="row in suggested" :key="row.tag" class="row">
+            <span class="tag">{{ row.tag }}</span>
+            <div>
+              <div class="part-name">{{ row.name }}</div>
+              <div class="part-sub">{{ row.sub }}</div>
+            </div>
+            <div class="pr">{{ php(row.price) }}</div>
+        </div>
+      </div> 
+       
 
       <aside class="result-summary">
         <span class="kicker mute side-kicker">// auto result</span>
@@ -420,12 +423,22 @@ async function saveGeneratedBuild() {
   grid-template-columns: 1fr 320px;
   gap: 22px;
 }
+.loading-screen-container {
+  position: absolute;
+  display: flex;
+  backdrop-filter: blur(2px);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
 .loading-screen {
-  display: absolute;
-  width: 200px;
+  margin-top: -5%;
+  width: 40%;
 }
 .parts-list {
-  display: relative;
+  position: relative;
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
   overflow: hidden;
