@@ -13,7 +13,6 @@ export async function generateBuild(req: Request, res: Response) {
   // Now we extract the catalog directly from the Vue frontend request
   const { budget, lockedParts, catalog } = req.body;
 
-  // 2. Define the exact JSON structure you need for your Vue component
   const responseSchema: Schema = {
     type: Type.OBJECT,
     properties: {
@@ -22,7 +21,7 @@ export async function generateBuild(req: Request, res: Response) {
         items: {
           type: Type.OBJECT,
           properties: {
-            id: { type: Type.STRING }, // 3. FIX: Add the 'id' so your Vue app can save the build
+            id: { type: Type.STRING }, 
             tag: { type: Type.STRING },
             name: { type: Type.STRING },
             sub: { type: Type.STRING },
