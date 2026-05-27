@@ -7,7 +7,15 @@ import { php } from '../data/mock'
 // Tile used in the Community feed and the Favourites screens. Whole card
 // links to the build detail. Heart and right-click context menu emit up
 // so the parent owns the favourite + fork mutations.
-const props = defineProps<{ build: Build }>()
+//
+// `from` rides along on the navigation as a query param so the detail
+// page's breadcrumb can route back to the originating tab instead of
+// always defaulting to Community.
+type BackOrigin = 'community' | 'my-builds' | 'favourites'
+const props = defineProps<{
+  build: Build
+  from?: BackOrigin
+}>()
 
 const emit = defineEmits<{
   (e: 'toggle-fav', id: string): void
@@ -15,6 +23,11 @@ const emit = defineEmits<{
 }>()
 
 const router = useRouter()
+
+const detailTo = computed(() => ({
+  path: `/builds/${props.build.id}`,
+  query: props.from ? { from: props.from } : {},
+}))
 
 const slug = computed(() => `RIG-${props.build.id.slice(0, 6).toUpperCase()}`)
 const authorInitials = computed(() =>
@@ -39,7 +52,7 @@ function closeMenu() { menuOpen.value = false }
 
 function onOpen() {
   closeMenu()
-  router.push(`/builds/${props.build.id}`)
+  router.push(detailTo.value)
 }
 function onFav() {
   emit('toggle-fav', props.build.id)
@@ -77,7 +90,7 @@ onBeforeUnmount(closeMenu)
 
 <template>
   <RouterLink
-    :to="`/builds/${build.id}`"
+    :to="detailTo"
     class="build-card"
     @contextmenu.prevent="openMenu"
   >

@@ -109,7 +109,7 @@ async function onDelete(buildId: string, name: string) {
 
           <div v-for="b in builds" :key="b.id" class="row">
             <div class="name-line">
-              <RouterLink :to="`/builds/${b.id}`" class="name">{{ b.name }}</RouterLink>
+              <RouterLink :to="{ path: `/builds/${b.id}`, query: { from: 'my-builds' } }" class="name">{{ b.name }}</RouterLink>
               <span v-for="t in b.tags.slice(0, 2)" :key="t" class="h-tag inline">{{ t }}</span>
             </div>
             <span>
@@ -121,7 +121,7 @@ async function onDelete(buildId: string, name: string) {
             <span class="updated">{{ relTime(b.updatedAt) }}</span>
             <span class="total-amber">{{ php(b.totalPrice) }}</span>
             <div class="row-actions">
-              <RouterLink :to="`/builds/${b.id}`" class="icon-btn" title="Open">↗</RouterLink>
+              <RouterLink :to="{ path: `/builds/${b.id}`, query: { from: 'my-builds' } }" class="icon-btn" title="Open">↗</RouterLink>
               <RouterLink :to="`/builder/manual/${b.id}`" class="icon-btn" title="Edit">✎</RouterLink>
               <button class="icon-btn danger" title="Delete" @click="onDelete(b.id, b.name)">🗑</button>
             </div>

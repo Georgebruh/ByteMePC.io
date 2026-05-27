@@ -115,6 +115,7 @@ async function onFork(buildId: string) {
           v-for="b in visibleBuilds"
           :key="b.id"
           :build="b"
+          from="community"
           @toggle-fav="onToggleFav"
           @fork="onFork"
         />

@@ -32,6 +32,17 @@ async function load() {
   }
 }
 
+// Back-link target derived from the ?from= query the listing pages set.
+// Defaults to Community so deep-linked builds (shared URLs, refreshes
+// without a referrer) still have a sane back path.
+const backLink = computed(() => {
+  switch (route.query.from) {
+    case 'my-builds':  return { path: '/builds',     label: 'My Builds' }
+    case 'favourites': return { path: '/favourites', label: 'Favourites' }
+    default:           return { path: '/community',  label: 'Community' }
+  }
+})
+
 onMounted(load)
 watch(() => route.params.id, load)
 watch(userId, load)
@@ -123,7 +134,7 @@ function onFork() {
 
   <div class="page">
     <div class="breadcrumb">
-      <RouterLink to="/community">Builds</RouterLink>
+      <RouterLink :to="backLink.path">{{ backLink.label }}</RouterLink>
       <span>/</span>
       {{ build?.name ?? '…' }}
     </div>

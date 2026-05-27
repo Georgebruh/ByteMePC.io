@@ -417,13 +417,19 @@ export async function createBuild(input: CreateBuildInput): Promise<string> {
 }
 
 // Update an existing build owned by the current user. RLS enforces
-// ownership — non-owners just get 0 rows updated.
+// ownership — non-owners just get 0 rows updated. The trailing select()
+// surfaces silent zero-row writes (stale session, wrong id, RLS) as a
+// thrown error instead of letting the caller think the save succeeded.
 export async function updateBuild(buildId: string, input: BuildInput): Promise<void> {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('builds')
     .update(buildRowPayload(input))
     .eq('build_id', buildId)
+    .select('build_id, is_public')
   if (error) throw error
+  if (!data || data.length === 0) {
+    throw new Error('Update affected 0 rows. Sign in again, or you may not own this build.')
+  }
 
   await replaceBuildRam(buildId, input.ram?.id)
 }
