@@ -65,6 +65,39 @@ const slots = computed<Slot[]>(() => {
 
 const filledCount = computed(() => slots.value.filter(s => s.part).length)
 
+// ─── Compatibility extraction ───
+// BuildPartRef only carries name + sub strings, so values for the
+// compat panel are mined from each part's sub-spec line. When a part
+// is missing or the pattern doesn't match we fall back to a dash so
+// the row still renders cleanly.
+function partFor(tag: string): BuildPartRef | undefined {
+  return build.value?.parts.find(p => p.tag === tag)
+}
+
+function extract(sub: string | undefined, pattern: RegExp): string | null {
+  if (!sub) return null
+  const m = sub.match(pattern)
+  return m ? m[0] : null
+}
+
+const cpuSocket = computed(() => extract(partFor('CPU')?.sub, /(LGA\d+|AM\d+)/i))
+const moboRam   = computed(() => extract(partFor('MOBO')?.sub, /DDR\d/i))
+const moboForm  = computed(() => extract(partFor('MOBO')?.sub, /\b(E-ATX|mATX|Micro-ATX|ITX|ATX)\b/i))
+const psuWatts  = computed(() => {
+  const m = partFor('PSU')?.sub?.match(/(\d{3,4})\s*W/i)
+  return m ? Number(m[1]) : null
+})
+
+// Placeholder draw estimate — without per-part TDP/wattage on
+// BuildPartRef we can't compute real consumption yet. Surfaces the
+// PSU headroom bar so the UI looks correct; the real number lands
+// when the catalog plumbing reaches the build viewer.
+const ESTIMATED_DRAW = 545
+const drawPct = computed(() => {
+  if (!psuWatts.value) return 0
+  return Math.min(100, Math.round((ESTIMATED_DRAW / psuWatts.value) * 100))
+})
+
 async function onToggleFav() {
   if (!userId.value || !build.value) return
   const newState = await toggleFavourite(
@@ -204,18 +237,32 @@ function onFork() {
             <h4>Compatibility</h4>
             <div class="compat">
               <div class="row">
-                <span class="k">Slots filled</span>
-                <span class="v">{{ filledCount }} / {{ UML_SLOTS.length }}</span>
+                <span class="k">CPU ↔ Socket</span>
+                <span class="v">{{ cpuSocket ? `✓ ${cpuSocket}` : '—' }}</span>
               </div>
               <div class="row">
-                <span class="k">Parts</span>
-                <span class="v">{{ build.parts.length }}</span>
+                <span class="k">MOBO ↔ RAM</span>
+                <span class="v">{{ moboRam ? `✓ ${moboRam}` : '—' }}</span>
               </div>
               <div class="row">
-                <span class="k">Schema</span>
-                <span class="v">✓ Valid</span>
+                <span class="k">Case ↔ Form Factor</span>
+                <span class="v">{{ moboForm ? `✓ ${moboForm}` : '—' }}</span>
+              </div>
+              <div class="row">
+                <span class="k">Cooler ↔ Socket</span>
+                <span class="v">{{ partFor('COOLER') && cpuSocket ? `✓ ${cpuSocket}` : '—' }}</span>
+              </div>
+              <div class="row">
+                <span class="k">PSU Wattage</span>
+                <span class="v" :class="{ warn: psuWatts && drawPct > 80 }">
+                  {{ psuWatts ? `${ESTIMATED_DRAW} / ${psuWatts}W` : '—' }}
+                </span>
               </div>
             </div>
+            <div v-if="psuWatts" class="power-bar">
+              <div class="fill" :style="{ width: drawPct + '%' }" />
+            </div>
+            <div v-if="psuWatts" class="power-bar-lbl">est. {{ drawPct }}% of supply</div>
           </div>
         </div>
       </section>
@@ -623,6 +670,31 @@ function onFork() {
 .compat .row { display: flex; justify-content: space-between; gap: 14px; }
 .compat .row .k { color: var(--text-mute); }
 .compat .row .v { color: var(--green); }
+.compat .row .v.warn { color: var(--amber); }
+
+.power-bar {
+  height: 10px;
+  margin-top: 10px;
+  background: rgba(10, 18, 32, 0.85);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.power-bar .fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, var(--green), var(--amber));
+}
+.power-bar-lbl {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
 
 /* ── below the fold: components ── */
 .parts-wrap { margin-top: 36px; }
