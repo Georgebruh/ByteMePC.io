@@ -13,6 +13,7 @@ const categories: Array<{ key: PartCategory; label: string }> = [
   { key: 'motherboard', label: 'Motherboard' },
   { key: 'gpu',         label: 'GPU' },
   { key: 'ram',         label: 'RAM' },
+  { key: 'storage',     label: 'Storage' },
   { key: 'psu',         label: 'PSU' },
   { key: 'case',        label: 'Case' },
   { key: 'cooler',      label: 'Cooler' },
@@ -31,7 +32,7 @@ function toggleCat(key: PartCategory) {
 }
 
 const categoryCounts = ref<Record<PartCategory, number>>({
-  cpu: 0, motherboard: 0, gpu: 0, ram: 0, psu: 0, case: 0, cooler: 0,
+  cpu: 0, motherboard: 0, gpu: 0, ram: 0, storage: 0, psu: 0, case: 0, cooler: 0,
 })
 const totalCount = computed(() =>
   Object.values(categoryCounts.value).reduce((sum, n) => sum + n, 0),

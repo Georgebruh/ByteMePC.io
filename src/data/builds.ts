@@ -394,6 +394,7 @@ export interface BuildInput {
   case?: { id: string } | null
   cooler?: { id: string } | null
   ram?: { id: string } | null
+  storage?: { id: string } | null
 }
 
 export interface CreateBuildInput extends BuildInput {
@@ -445,6 +446,25 @@ async function replaceBuildRam(buildId: string, ramId: string | null | undefined
   if (insErr) throw insErr
 }
 
+// Mirror of replaceBuildRam for the storage junction. Storage is a
+// many-to-one in the schema (one row per drive), but the builder UI
+// currently exposes a single slot, so we keep it 1:1 like RAM.
+async function replaceBuildStorage(buildId: string, storageId: string | null | undefined): Promise<void> {
+  const { error: delErr } = await supabase
+    .from('build_storage')
+    .delete()
+    .eq('build_id', buildId)
+  if (delErr) throw delErr
+
+  const storageDbId = partIdToDbId(storageId)
+  if (storageDbId === null) return
+
+  const { error: insErr } = await supabase
+    .from('build_storage')
+    .insert({ build_id: buildId, storage_id: storageDbId, quantity: 1 })
+  if (insErr) throw insErr
+}
+
 // Insert the build row + (optionally) one ram junction row. Returns the
 // new build_id so the caller can navigate to /builds/:id.
 export async function createBuild(input: CreateBuildInput): Promise<string> {
@@ -459,6 +479,7 @@ export async function createBuild(input: CreateBuildInput): Promise<string> {
 
   try {
     await replaceBuildRam(buildId, input.ram?.id)
+    await replaceBuildStorage(buildId, input.storage?.id)
   } catch (e) {
     // Roll back the build so we don't leave an orphan row that the
     // user thinks was saved successfully.
@@ -492,6 +513,7 @@ export async function updateBuild(buildId: string, input: BuildInput): Promise<v
   }
 
   await replaceBuildRam(buildId, input.ram?.id)
+  await replaceBuildStorage(buildId, input.storage?.id)
 }
 
 // One-shot visibility flip used by the detail page's owner toggle.

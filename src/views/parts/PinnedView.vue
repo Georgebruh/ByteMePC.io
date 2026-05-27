@@ -18,7 +18,7 @@ const pinnedParts = computed(() => parts.filter(p => p.pinned))
 
 // Counts per category — shown in the tab labels.
 const counts = computed(() => {
-  const c: Record<Filter, number> = { all: 0, cpu: 0, motherboard: 0, gpu: 0, ram: 0, psu: 0, case: 0, cooler: 0 }
+  const c: Record<Filter, number> = { all: 0, cpu: 0, motherboard: 0, gpu: 0, ram: 0, storage: 0, psu: 0, case: 0, cooler: 0 }
   for (const p of pinnedParts.value) {
     c.all++
     c[p.category]++
