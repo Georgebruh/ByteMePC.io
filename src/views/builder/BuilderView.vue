@@ -19,9 +19,7 @@ const editingId = computed<string | null>(() => {
 })
 
 // ─── Slot definitions ─────────────────────────────────────
-// Each slot maps 1:1 to a PartCategory in the catalog. Storage is
-// not in the catalog yet — it'll get added here once its tables are
-// queryable.
+// Each slot maps 1:1 to a PartCategory in the catalog.
 interface BuilderSlot {
   key: PartCategory
   label: string
@@ -33,6 +31,7 @@ const slots: BuilderSlot[] = [
   { key: 'motherboard', label: 'Motherboard', code: 'MB'  },
   { key: 'gpu',         label: 'GPU',         code: 'GPU' },
   { key: 'ram',         label: 'RAM',         code: 'RAM' },
+  { key: 'storage',     label: 'Storage',     code: 'SSD' },
   { key: 'psu',         label: 'PSU',         code: 'PSU' },
   { key: 'case',        label: 'Case',        code: 'CSE' },
   { key: 'cooler',      label: 'CPU Cooler',  code: 'CLR' },
@@ -41,14 +40,14 @@ const slots: BuilderSlot[] = [
 // Short summary label (e.g. "MB" → row tag in the summary panel) keyed
 // by category so we don't restate it in the template.
 const SUMMARY_TAGS: Record<PartCategory, string> = {
-  cpu: 'CPU', motherboard: 'MB', gpu: 'GPU', ram: 'RAM', psu: 'PSU', case: 'CSE', cooler: 'CLR',
+  cpu: 'CPU', motherboard: 'MB', gpu: 'GPU', ram: 'RAM', storage: 'SSD', psu: 'PSU', case: 'CSE', cooler: 'CLR',
 }
 
 // ─── Selections ───────────────────────────────────────────
 // One part (or null) per slot. Keyed by category, mutated when the user
 // clicks a card in the picker.
 const selections = ref<Record<PartCategory, Part | null>>({
-  cpu: null, motherboard: null, gpu: null, ram: null, psu: null, case: null, cooler: null,
+  cpu: null, motherboard: null, gpu: null, ram: null, storage: null, psu: null, case: null, cooler: null,
 })
 
 // Currently active slot — drives which catalog category the picker shows.
@@ -92,7 +91,7 @@ const editLoading = ref(false)
 
 const TAG_TO_CATEGORY: Record<string, PartCategory> = {
   CPU: 'cpu', MOBO: 'motherboard', GPU: 'gpu',
-  RAM: 'ram', PSU: 'psu', CASE: 'case', COOLER: 'cooler',
+  RAM: 'ram', STORAGE: 'storage', PSU: 'psu', CASE: 'case', COOLER: 'cooler',
 }
 
 async function loadExistingBuild(id: string) {
@@ -128,6 +127,9 @@ async function loadExistingBuild(id: string) {
         ?? catalog.find(cp => cp.name.includes(stripQty(p.name)))
       if (match) selections.value[c] = match
     }
+    // Snapshot the loaded state as the dirty-check baseline. Any edit
+    // from here on flips `dirty` to true and lights the Update button.
+    baseline.value = currentSnapshot()
   } finally {
     editLoading.value = false
   }
@@ -154,6 +156,7 @@ watch(editingId, async (id) => {
     for (const k of Object.keys(selections.value) as PartCategory[]) {
       selections.value[k] = null
     }
+    baseline.value = null
   }
 })
 
@@ -286,7 +289,7 @@ type SlotStatus = 'filled' | 'empty' | 'warn'
 
 const slotStatuses = computed<Record<PartCategory, SlotStatus>>(() => {
   const out: Record<PartCategory, SlotStatus> = {
-    cpu: 'empty', motherboard: 'empty', gpu: 'empty', ram: 'empty', psu: 'empty', case: 'empty', cooler: 'empty',
+    cpu: 'empty', motherboard: 'empty', gpu: 'empty', ram: 'empty', storage: 'empty', psu: 'empty', case: 'empty', cooler: 'empty',
   }
   for (const slot of slots) {
     const part = selections.value[slot.key]
@@ -425,8 +428,7 @@ const pickerHeading = computed(() => {
 // `isPublic` is toggled by the Make Public button — it's the same flag
 // the DB persists on the builds row. `saveError` surfaces failure to the
 // user; `saving` disables the button while the request is in flight.
-// `savedAt` flashes a brief "✓ Saved" line so the user has confirmation
-// without being yanked off the builder.
+// `savedAt` flashes a brief "✓ Saved/Updated" success state on the button.
 const isPublic = ref(false)
 const saving = ref(false)
 const saveError = ref('')
@@ -436,6 +438,48 @@ const justSaved = computed(() => savedAt.value !== null)
 const hasAnySelection = computed(() =>
   slots.some(s => selections.value[s.key] !== null),
 )
+
+// ─── Dirty tracking ──────────────────────────────────────
+// We snapshot what got persisted (after a successful save OR after
+// loading an existing build) and compare current state against it.
+// Editing the form away from that baseline = dirty. The Update button
+// stays dimmed + non-interactive while clean, so users can't trigger
+// a no-op update.
+type Snapshot = {
+  name: string
+  isPublic: boolean
+  parts: Record<PartCategory, string | null>
+}
+const baseline = ref<Snapshot | null>(null)
+
+function currentSnapshot(): Snapshot {
+  const parts = {} as Record<PartCategory, string | null>
+  for (const k of Object.keys(selections.value) as PartCategory[]) {
+    parts[k] = selections.value[k]?.id ?? null
+  }
+  return { name: buildName.value, isPublic: isPublic.value, parts }
+}
+function snapshotEqual(a: Snapshot, b: Snapshot): boolean {
+  if (a.name !== b.name || a.isPublic !== b.isPublic) return false
+  for (const k of Object.keys(a.parts) as PartCategory[]) {
+    if (a.parts[k] !== b.parts[k]) return false
+  }
+  return true
+}
+
+const dirty = computed(() => {
+  // Create mode (no baseline yet): "dirty enough to save" = at least
+  // one part picked. The Save button uses this same condition.
+  if (!baseline.value) return hasAnySelection.value
+  return !snapshotEqual(currentSnapshot(), baseline.value)
+})
+
+// If the user starts editing during the success flash window, cancel
+// the flash immediately so the button reflects the new dirty state
+// without lingering on "✓ Updated".
+watch(dirty, (isDirty) => {
+  if (isDirty && savedAt.value !== null) savedAt.value = null
+})
 
 async function saveBuild() {
   saveError.value = ''
@@ -458,13 +502,16 @@ async function saveBuild() {
     case:        selections.value.case,
     cooler:      selections.value.cooler,
     ram:         selections.value.ram,
+    storage:     selections.value.storage,
   }
 
+  // Snapshot what's being saved BEFORE the request so that edits made
+  // during the in-flight save still register as dirty afterwards.
+  const snapshotBeingSaved = currentSnapshot()
   saving.value = true
   try {
     if (editingId.value) {
-      // Edit — stay on the builder so the user can keep tweaking. The
-      // "✓ Saved" flag in the actions strip is the only confirmation.
+      // Edit — stay on the builder so the user can keep tweaking.
       await updateBuild(editingId.value, payload)
     } else {
       // Create — swap the URL from /builder/manual to /builder/manual/:id
@@ -474,14 +521,17 @@ async function saveBuild() {
       const newId = await createBuild({ userId: userId.value, ...payload })
       await router.replace(`/builder/manual/${newId}`)
     }
+    // What we just persisted becomes the new clean baseline. With
+    // `dirty` now false, the button transitions from the green "✓
+    // Updated" flash into its dimmed/disabled idle state.
+    baseline.value = snapshotBeingSaved
     savedAt.value = Date.now()
-    // Auto-clear the "✓ Saved" pill after a moment so it doesn't linger.
     setTimeout(() => {
       // Only clear if no newer save happened in the meantime.
-      if (savedAt.value && Date.now() - savedAt.value >= 2400) {
+      if (savedAt.value && Date.now() - savedAt.value >= 1400) {
         savedAt.value = null
       }
-    }, 2500)
+    }, 1500)
   } catch (e: any) {
     saveError.value = e?.message ?? 'Failed to save build.'
     savedAt.value = null
@@ -653,17 +703,20 @@ async function saveBuild() {
 
         <div class="builder-actions">
           <button
-            class="t-btn primary full"
-            :disabled="saving || !hasAnySelection || editLoading"
+            class="t-btn primary full save-btn"
+            :class="{ 'flash-success': justSaved, idle: !dirty && !saving && !justSaved }"
+            :disabled="saving || editLoading || justSaved || (!dirty && isSignedIn)"
             @click="saveBuild"
           >{{
             saving
               ? (editingId ? 'Updating…' : 'Saving…')
-              : !isSignedIn
-                ? 'Sign In to Save'
-                : editingId
-                  ? 'Update Build'
-                  : 'Save Build'
+              : justSaved
+                ? (editingId ? '✓ Updated' : '✓ Saved')
+                : !isSignedIn
+                  ? 'Sign In to Save'
+                  : editingId
+                    ? 'Update Build'
+                    : 'Save Build'
           }}</button>
           <button
             class="t-btn full"
@@ -672,7 +725,6 @@ async function saveBuild() {
             type="button"
           >{{ isPublic ? '✓ Public' : 'Make Public' }}</button>
           <p v-if="saveError" class="save-err">{{ saveError }}</p>
-          <p v-else-if="justSaved" class="save-ok">✓ Saved</p>
         </div>
 
         <!-- Quick link to the budget auto-builder. -->
@@ -1158,16 +1210,32 @@ async function saveBuild() {
   border: 1px solid rgba(255, 70, 85, 0.35);
   letter-spacing: 0.04em;
 }
-.save-ok {
-  margin-top: 6px;
-  padding: 8px 10px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--green);
-  background: rgba(34, 211, 168, 0.08);
-  border: 1px solid rgba(34, 211, 168, 0.35);
-  letter-spacing: 0.04em;
-  text-align: center;
+/* Save button states ───────────────────────────────────────
+   - `.idle`  : the form matches the last persisted state, so there's
+                nothing to save. Visible but dimmed + non-interactive
+                so the user can see the action exists without firing
+                a no-op update.
+   - `.flash-success` : just-saved state. Switches to the brand green
+                + "✓ Updated/Saved" label. After the 1.5s timeout in
+                JS the class drops and the button transitions smoothly
+                back to whatever its current state is (almost always
+                `.idle`, since dirty was just reset).
+   The `transition` on the base rule does the heavy lifting — the
+   handoff between flash-success and idle is a continuous fade in
+   background + opacity, no snap. */
+.save-btn {
+  transition: background-color 0.45s ease, border-color 0.45s ease,
+              color 0.45s ease, opacity 0.45s ease;
+}
+.save-btn.idle {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.save-btn.flash-success {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg);
+  opacity: 1;
 }
 
 .switch-link {
