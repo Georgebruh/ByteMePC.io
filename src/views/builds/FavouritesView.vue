@@ -95,10 +95,9 @@ async function onFork(buildId: string) {
 
     <template v-else>
       <!-- Same shape as the community head-bar — red accent on the
-           kicker + count so it reads as a saved/heart context. -->
+           count so it reads as a saved/heart context. -->
       <div class="head-bar">
-        <span class="kicker red">// favourites</span>
-        <div class="title">Saved Builds</div>
+        <div class="title">Favourites</div>
         <span class="count"><b>♥ {{ visibleBuilds.length }}</b> saved</span>
         <div class="grow"></div>
         <input v-model="search" class="search" placeholder="Search saved…" />
@@ -151,7 +150,6 @@ async function onFork(buildId: string) {
   letter-spacing: -0.015em;
   color: var(--text);
 }
-.head-bar .kicker.red { color: var(--red); }
 .head-bar .count {
   font-family: var(--mono);
   font-size: 10.5px;

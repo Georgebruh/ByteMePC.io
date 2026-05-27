@@ -93,9 +93,8 @@ async function onFork(buildId: string) {
   <div class="page">
     <BuildsSubNav />
 
-    <!-- One-line head-bar: kicker + title + live count + search + sort. -->
+    <!-- One-line head-bar: title + live count + search + sort. -->
     <div class="head-bar">
-      <span class="kicker">// community</span>
       <div class="title">Community Builds</div>
       <span class="count"><b>{{ visibleBuilds.length }}</b> public</span>
       <div class="grow"></div>

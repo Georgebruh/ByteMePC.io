@@ -82,9 +82,8 @@ async function onDelete(buildId: string, name: string) {
     </div>
 
     <template v-else>
-      <!-- One-line strip: kicker + title + inline KPI chips + New Build CTA. -->
+      <!-- One-line strip: title + inline KPI chips + New Build CTA. -->
       <div class="top-strip">
-        <span class="kicker">// dashboard</span>
         <div class="title">My Builds</div>
         <div class="pipe"></div>
         <span class="kpi"><b>{{ totalCount }}</b> total</span>
