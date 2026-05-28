@@ -769,7 +769,7 @@ async function saveBuild() {
   outline: none;
   padding: 0 0 2px;
   margin: 0;
-  min-width: 320px;
+  min-width: 500px;
 }
 .title-input:hover  { border-bottom-color: var(--line); }
 .title-input:focus  { border-bottom-color: var(--cyan); }

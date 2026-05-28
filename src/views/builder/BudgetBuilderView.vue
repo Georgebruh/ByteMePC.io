@@ -15,7 +15,12 @@ import type { CreateBuildInput } from '../../data/builds'
 const budget = ref('120,000')
 
 // Preset budget chips under the big input.
-const presets = ['₱40k', '₱80k', '₱120k', '₱200k']
+const presets = new Map<string, string>([
+  ['₱40k', '40,000'],
+  ['₱80k', '80,000'],
+  ['₱120k', '120,000'],
+  ['₱200k', '200,000']
+])
 const activePreset = ref('₱120k')
 
 interface SuggestedPart extends BuildPartRef {
@@ -181,12 +186,12 @@ async function saveGeneratedBuild() {
 
       <div class="presets">
         <button
-          v-for="p in presets"
+          v-for="p in presets.keys()"
           :key="p"
           type="button"
           class="t-btn"
           :class="{ primary: activePreset === p }"
-          @click="activePreset = p"
+          @click="activePreset = p; budget = (presets.get(p) as string)"
         >{{ p }}</button>
       </div>
     </div>
