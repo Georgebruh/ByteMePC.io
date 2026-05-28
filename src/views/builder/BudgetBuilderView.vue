@@ -244,7 +244,7 @@ async function saveGeneratedBuild() {
         <span class="kicker mute side-kicker">// auto result</span>
         <div class="row-sum"><span class="lbl">Budget</span><span class="val">{{ php(summary.budget) }}</span></div>
         <div class="row-sum"><span class="lbl">Total</span><span class="val">{{ php(summary.total) }}</span></div>
-        <div class="row-sum"><span class="lbl">Over budget</span><span class="val warn">+ {{ php(summary.overBudget) }}</span></div>
+        <div class="row-sum"><span class="lbl">Over budget</span><span class="val warn">+ {{ (summary.overBudget > 0) ? php(summary.overBudget) : php(0) }}</span></div>
         <div class="row-sum"><span class="lbl">Est. perf</span><span class="val">{{ summary.perfScore.toLocaleString() }}</span></div>
 
         <div class="row-total">
