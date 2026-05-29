@@ -1,0 +1,502 @@
+[
+    {
+        "gpu_id": 1,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 1,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 2,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 2,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 3,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 3,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 4,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 4,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 5,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 5,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 6,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 6,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 7,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 7,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 8,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 8,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 9,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 9,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 10,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 10,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 11,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 11,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 12,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 12,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 13,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 13,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 14,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 14,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 15,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 15,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 16,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 16,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 17,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 17,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 18,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 18,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 19,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 19,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 20,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 20,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 21,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 21,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 22,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 22,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 23,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 23,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 24,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 24,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 25,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 25,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 26,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 26,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 27,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 27,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 28,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 28,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 29,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 29,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 30,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 30,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 31,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 31,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 32,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 32,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 33,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 33,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 34,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 34,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 35,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 35,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 36,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 36,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 37,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 37,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 38,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 38,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 39,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 39,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 40,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 40,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 41,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 41,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 42,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 42,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 43,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 43,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 44,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 44,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 45,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 45,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 46,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 46,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 47,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 47,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 48,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 48,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    },
+    {
+        "gpu_id": 49,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 49,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 50,
+        "port_type": "HDMI 2.1",
+        "quantity": 1
+    },
+    {
+        "gpu_id": 50,
+        "port_type": "DisplayPort 1.4",
+        "quantity": 3
+    }
+]

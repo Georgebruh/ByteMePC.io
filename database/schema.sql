@@ -52,7 +52,7 @@ CREATE TABLE motherboard (
   socket     VARCHAR(50)   NOT NULL,                            -- must match cpu.socket
   size       VARCHAR(50)   NOT NULL,                            -- ATX, mATX, ITX — matched against pc_case
   ram_slots  INT           NOT NULL CHECK (ram_slots > 0),
-  ram_type   VARCHAR(10)   NOT NULL CHECK (ram_type IN ('DDR4', 'DDR5')), -- must match ram.type
+  ram_type   VARCHAR(10)   NOT NULL CHECK (ram_type IN ('DDR3', 'DDR4', 'DDR5')), -- must match ram.type
   price      NUMERIC(10,2) NOT NULL CHECK (price >= 0)
 );
 
@@ -72,7 +72,7 @@ CREATE TABLE ram (
   name       VARCHAR(255)  NOT NULL,
   brand      VARCHAR(100)  NOT NULL,
   image_link VARCHAR(500),
-  type       VARCHAR(10)   NOT NULL CHECK (type IN ('DDR4', 'DDR5')), -- must match motherboard.ram_type
+  type       VARCHAR(10)   NOT NULL CHECK (type IN ('DDR3', 'DDR4', 'DDR5')), -- must match motherboard.ram_type
   capacity   INT           NOT NULL CHECK (capacity > 0),       -- GB
   speed      FLOAT         NOT NULL CHECK (speed > 0),           -- MHz
   price      NUMERIC(10,2) NOT NULL CHECK (price >= 0)
@@ -166,8 +166,6 @@ CREATE TABLE builds (
   build_id    UUID          PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id     UUID          NOT NULL REFERENCES profiles(user_id)   ON DELETE CASCADE,
   name        VARCHAR(255)  NOT NULL,
-  description TEXT,
-  budget      NUMERIC(10,2),                                         -- target budget (used by auto-builder)
   cpu_id      INT           REFERENCES cpu(cpu_id)         ON DELETE SET NULL,
   mb_id       INT           REFERENCES motherboard(mb_id)  ON DELETE SET NULL,
   gpu_id      INT           REFERENCES gpu(gpu_id)         ON DELETE SET NULL,
