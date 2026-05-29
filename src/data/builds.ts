@@ -86,7 +86,7 @@ function usdToPhp(n: number | string): number {
 // One Supabase select string used by every "build with parts" query — keeps
 // the projection identical whether we're listing or fetching a single row.
 const BUILD_SELECT = `
-  build_id, user_id, name, description, is_public, views, created_at, updated_at,
+  build_id, user_id, name, is_public, views, created_at, updated_at,
   cpu:cpu_id ( cpu_id, name, brand, core_numbers, frequency, socket, price ),
   motherboard:mb_id ( mb_id, name, brand, socket, size, ram_type, price ),
   gpu:gpu_id ( gpu_id, name, brand, memory, core_clock, tdp, price ),
@@ -102,7 +102,6 @@ interface BuildRow {
   build_id: string
   user_id: string
   name: string
-  description: string | null
   is_public: boolean
   views: number
   created_at: string
@@ -148,7 +147,7 @@ function rowToBuild(row: BuildRow, favouritedIds: Set<string>): Build {
     id: row.build_id,
     name: row.name,
     user: row.profile?.username ? `@${row.profile.username}` : '@anonymous',
-    desc: row.description ?? '',
+    desc: '',
     tags,
     totalPrice,
     isPublic: row.is_public,
@@ -324,7 +323,7 @@ export async function forkBuild(sourceBuildId: string, userId: string): Promise<
   const { data: source, error: srcErr } = await supabase
     .from('builds')
     .select(`
-      name, description,
+      name,
       cpu_id, mb_id, gpu_id, psu_id, case_id, cooler_id,
       build_ram ( ram_id, quantity ),
       build_storage ( storage_id, quantity )
@@ -338,7 +337,6 @@ export async function forkBuild(sourceBuildId: string, userId: string): Promise<
     .insert({
       user_id: userId,
       name: `Fork of ${source.name}`,
-      description: source.description,
       cpu_id: source.cpu_id,
       mb_id:  source.mb_id,
       gpu_id: source.gpu_id,
@@ -383,7 +381,6 @@ export async function forkBuild(sourceBuildId: string, userId: string): Promise<
 // shared between create and update.
 export interface BuildInput {
   name: string
-  description?: string | null
   isPublic: boolean
   cpu?: { id: string } | null
   motherboard?: { id: string } | null
@@ -413,7 +410,6 @@ function partIdToDbId(stringId: string | undefined | null): number | null {
 function buildRowPayload(input: BuildInput) {
   return {
     name: input.name,
-    description: input.description ?? null,
     is_public: input.isPublic,
     cpu_id:    partIdToDbId(input.cpu?.id),
     mb_id:     partIdToDbId(input.motherboard?.id),
