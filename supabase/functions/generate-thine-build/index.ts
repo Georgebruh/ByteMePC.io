@@ -53,16 +53,26 @@ Deno.serve(async (req) => {
       required: ["suggested", "summary"]
     };
 
+    // lockedParts is now a list of { category, tag, partId, name, price } —
+    // the exact SKU the user owns/wants for each locked slot. The model must
+    // copy these into the response unchanged (same id/tag/name/price) and
+    // build the rest of the system around them.
+    const lockedSection = Array.isArray(lockedParts) && lockedParts.length
+      ? `Locked parts (must appear verbatim in the response, same id/tag/name/price):\n${JSON.stringify(lockedParts, null, 2)}`
+      : 'No parts are locked — pick every slot freely.';
+
     const prompt = `
       You are an expert PC builder. Build a PC for a budget of PHP ${budget}.
-      
+
       Rules:
-      1. Select exactly one part for each tag: CPU, MOBO, GPU, RAM, PSU, STORAGE, CASE, COOLER.
-      2. Ensure compatibility (e.g., match CPU socket to Motherboard socket, ensure PSU wattage covers TDP).
-      3. Keep total price near the budget.
+      1. Return exactly one part for each tag: CPU, MOBO, GPU, RAM, PSU, STORAGE, CASE, COOLER.
+      2. Ensure compatibility (match CPU socket to Motherboard socket, RAM type to MB ram_type, MB form factor to case, cooler socket to CPU, PSU wattage covers system TDP).
+      3. Keep total price near the budget. Prefer staying at or under the budget.
       4. Calculate an estimated performance score (out of 10000).
-      5. LOCKED PARTS: You MUST include the following parts in your final build, no matter what: ${JSON.stringify(lockedParts)} 
-      
+      5. LOCKED PARTS: For any locked part below, include it in your response with the exact same id, tag, name, and price. Build around it — pick compatible parts for every other slot.
+
+      ${lockedSection}
+
       Here is the catalog of available parts:
       ${JSON.stringify(catalog)}
     `;
