@@ -1,14 +1,14 @@
-// Supabase-backed build queries. Mirrors the conventions in catalog.ts —
-// shapes are flattened into the existing Build / BuildPartRef types so
-// every view that already consumes mock.builds keeps working.
-//
-// Prices are stored in USD in the DB; we convert once at this boundary
-// so downstream code only ever sees PHP (matching the catalog module).
+/* Supabase-backed build queries. Mirrors the conventions in catalog.ts —
+shapes are flattened into the existing Build / BuildPartRef types so
+every view that already consumes mock.builds keeps working.
+
+Prices are stored in USD in the DB but itll be converted with the php function.
+*/
 
 import { supabase } from '../lib/supabase'
 import type { Build, BuildPartRef } from './mock'
 
-const USD_TO_PHP = 57
+const USD_TO_PHP = 57 // changeable to reflect current times
 
 // Map each slot's DB row to the BuildPartRef shape (tag + name + sub + price).
 // Sub-lines mirror catalog.ts so a card on the feed and a slot on detail read
@@ -118,7 +118,7 @@ interface BuildRow {
   profile: { username: string } | null
 }
 
-// Flatten one DB row into the shared Build shape.
+// makes one row of the Builds table into the interface
 function rowToBuild(row: BuildRow, favouritedIds: Set<string>): Build {
   const parts: BuildPartRef[] = []
   if (row.cpu)         parts.push(slotMappers.cpu(row.cpu))
@@ -138,6 +138,7 @@ function rowToBuild(row: BuildRow, favouritedIds: Set<string>): Build {
 
   // Lightweight tag derivation: brand + family pulled from the CPU/GPU/RAM
   // slots so the card chips look like the mock data without a tags column.
+  // Note: change this later on because it looks weird seeing Intel Intel 
   const tags: string[] = []
   if (row.cpu?.name) tags.push(shortCpu(row.cpu.name))
   if (row.gpu?.name) tags.push(shortGpu(row.gpu.name))
@@ -171,10 +172,9 @@ function shortGpu(name: string): string {
   return name.replace(/^GeForce\s+/, '').replace(/^Radeon\s+/, '')
 }
 
-// ─── Queries ────────────────────────────────────────────
+// QUERIES/FETCH/READ WOOOOOOOOO
 
-// All builds visible in the public Field Notes feed.
-// `favouritedIds` (optional) is used to mark the heart state per card.
+// fetches all builds that are public, to be shown in the comm builds tab
 export async function fetchPublicBuilds(favouritedIds: Set<string> = new Set()): Promise<Build[]> {
   const { data, error } = await supabase
     .from('builds')
@@ -222,7 +222,7 @@ export async function fetchTopFavouritedBuilds(limit = 3): Promise<Build[]> {
   return rows.sort((a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99))
 }
 
-// Builds owned by the current authenticated user (private + public).
+// gets own builds based on user_id
 export async function fetchMyBuilds(userId: string): Promise<Build[]> {
   const { data, error } = await supabase
     .from('builds')
@@ -234,8 +234,7 @@ export async function fetchMyBuilds(userId: string): Promise<Build[]> {
   return (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, new Set()))
 }
 
-// Builds the current user has favourited. Two-step: get the ids first,
-// then fetch the build rows in one query.
+// gets favorited builds from user_id
 export async function fetchFavouriteBuilds(userId: string): Promise<Build[]> {
   const { data: favRows, error: favErr } = await supabase
     .from('favorite_builds')
@@ -256,8 +255,8 @@ export async function fetchFavouriteBuilds(userId: string): Promise<Build[]> {
   return (data as unknown as BuildRow[] ?? []).map(r => rowToBuild(r, favSet))
 }
 
-// Detail-page fetch. Increments the view counter for public builds the
-// caller doesn't own (best-effort; ignore failures).
+// build detail fetch, increments view counter for public builds that the caller
+// doesn't own
 export async function fetchBuildById(buildId: string, viewerId: string | null): Promise<Build | null> {
   const favSet = new Set<string>()
   if (viewerId) {
@@ -280,8 +279,7 @@ export async function fetchBuildById(buildId: string, viewerId: string | null): 
   return rowToBuild(data as unknown as BuildRow, favSet)
 }
 
-// Look up just the set of build IDs the current user has favourited.
-// Used by the public feed to render the heart state correctly.
+// fetches the list of builds that is favorited
 export async function fetchFavouriteIds(userId: string): Promise<Set<string>> {
   const { data, error } = await supabase
     .from('favorite_builds')
@@ -292,7 +290,7 @@ export async function fetchFavouriteIds(userId: string): Promise<Set<string>> {
   return new Set((data ?? []).map(r => r.build_id as string))
 }
 
-// Toggle the favourite state. Returns the new state.
+// toggle the favourite state. Returns the new state.
 export async function toggleFavourite(userId: string, buildId: string, currentlyFav: boolean): Promise<boolean> {
   if (currentlyFav) {
     const { error } = await supabase
@@ -310,7 +308,7 @@ export async function toggleFavourite(userId: string, buildId: string, currently
   return true
 }
 
-// Hard-delete a build the user owns.
+// hard-delete the specific build (no recovery option for now)
 export async function deleteBuild(buildId: string): Promise<void> {
   const { error } = await supabase
     .from('builds')
@@ -379,10 +377,10 @@ export async function forkBuild(sourceBuildId: string, userId: string): Promise<
   return newId
 }
 
-// ─── Create / update builds ─────────────────────────────
+// CREATE AND UPDATE
 
-// Inputs the builder passes in — one Part per slot, name + visibility.
-// Shared between create and update.
+// inputs the builder passes in - one Part per slot, name + visibility.
+// shared between create and update.
 export interface BuildInput {
   name: string
   description?: string | null
@@ -401,7 +399,7 @@ export interface CreateBuildInput extends BuildInput {
   userId: string
 }
 
-// Parts in the catalog have stringy ids shaped like "cpu-13" — strip the
+// Parts in the catalog have stringy ids shaped like "cpu-13" - remove the
 // category prefix to recover the numeric DB key.
 function partIdToDbId(stringId: string | undefined | null): number | null {
   if (!stringId) return null
@@ -426,9 +424,8 @@ function buildRowPayload(input: BuildInput) {
   }
 }
 
-// Replace the build's RAM junction rows with whatever's in the input
-// (currently a single ram entry). Called by both create and update so
-// the "RAM slot now empty" edit case actually removes the existing row.
+// replace the RAM junction since it is connected through another table
+// called by create and update so the RAM SLOT NOW EMPTY edit case actually removes the row
 async function replaceBuildRam(buildId: string, ramId: string | null | undefined): Promise<void> {
   // Drop any existing rows for this build first.
   const { error: delErr } = await supabase
@@ -446,9 +443,7 @@ async function replaceBuildRam(buildId: string, ramId: string | null | undefined
   if (insErr) throw insErr
 }
 
-// Mirror of replaceBuildRam for the storage junction. Storage is a
-// many-to-one in the schema (one row per drive), but the builder UI
-// currently exposes a single slot, so we keep it 1:1 like RAM.
+// same as replaceBuildRam but with storage
 async function replaceBuildStorage(buildId: string, storageId: string | null | undefined): Promise<void> {
   const { error: delErr } = await supabase
     .from('build_storage')
@@ -465,8 +460,8 @@ async function replaceBuildStorage(buildId: string, storageId: string | null | u
   if (insErr) throw insErr
 }
 
-// Insert the build row + (optionally) one ram junction row. Returns the
-// new build_id so the caller can navigate to /builds/:id.
+// insert the build row + (optionally) one ram junction row
+// returns the new build_id so the caller can navigate to /builds/:id.
 export async function createBuild(input: CreateBuildInput): Promise<string> {
   const { data, error } = await supabase
     .from('builds')
