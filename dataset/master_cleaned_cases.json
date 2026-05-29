@@ -4,349 +4,349 @@
         "name": "Fractal Design Meshify C ATX Mid Tower Black",
         "brand": "Fractal Design",
         "image_link": "https://www.fractal-design.com/app/uploads/2019/06/Meshify-C_1.jpg",
-        "price": 0.0
+        "price": 110.99
     },
     {
         "case_id": 2,
         "name": "Deepcool CH510 MESH DIGITAL ATX Mid Tower Black Tempered Glass",
         "brand": "DeepCool",
         "image_link": "https://cdn.deepcool.com/public/ProductFile/DEEPCOOL/Cases/CH510_MESH_DIGITAL/Gallery/800X800/01.jpg?fm=webp&q=60",
-        "price": 0.0
+        "price": 74.99
     },
     {
         "case_id": 3,
         "name": "Thermaltake View 380 XL WS ARGB Mid Tower Chassis Wood Edition Snow",
         "brand": "Thermaltake",
         "image_link": "https://www.thermaltake.com/media/catalog/product/cache/cc8b24283b13da6bc2ff91682c03b54b/v/i/view_380_xl_ws_argb_mid_tower_chassis_sn_img01.jpg",
-        "price": 0.0
+        "price": 196.99
     },
     {
         "case_id": 4,
         "name": "Silverstone Sugo SG11 Micro ATX Mini Tower Black",
         "brand": "Silverstone",
         "image_link": "https://www.silverstonetek.com/upload/images/products/sg11/sg11b-34right.jpg",
-        "price": 0.0
+        "price": 55.99
     },
     {
         "case_id": 5,
         "name": "Lian Li LANCOOL 216 EATX Mid Tower White Tempered Glass RGB w/Controller",
         "brand": "Lian Li",
         "image_link": "https://ecommerce.datablitz.com.ph/cdn/shop/products/1007_136-c_1.jpg?v=1676921737",
-        "price": 0.0
+        "price": 117.99
     },
     {
         "case_id": 6,
         "name": "Cougar DarkBlader-G ATX Full Tower Black / Silver with Tempered Glass Side Panel and USB 3.2 Gen 1 Type-A Front Panel",
         "brand": "Cougar",
         "image_link": "https://cougargaming.com/_cgrwdr_/wwdpp/wp-content/uploads/2019/09/05-3.png",
-        "price": 0.0
+        "price": 155.99
     },
     {
         "case_id": 7,
         "name": "HYTE Y40 ATX Mid Tower Red / Black with Tempered Glass Side Panel and USB 3.2 Gen 2 Type-C, USB 3.2 Gen 1 Type-A",
         "brand": "HYTE",
         "image_link": "https://m.media-amazon.com/images/I/71EOS9+NUFL.jpg",
-        "price": 0.0
+        "price": 150.99
     },
     {
         "case_id": 8,
         "name": "Fractal Design Define R4 ATX Mid Tower Black / Gray with Acrylic Side Panel and USB 3.2 Gen 1 Type-A, USB 2.0 Type-A",
         "brand": "Fractal Design",
         "image_link": "https://cdna.pcpartpicker.com/static/forever/images/product/38c1c900e2390f8ecab985c533298d7c.1600.jpg",
-        "price": 0.0
+        "price": 72.99
     },
     {
         "case_id": 9,
         "name": "Antec AX67 ARGB ATX Mid Tower Tempered Glass",
         "brand": "Antec",
         "image_link": "https://www.antec.com/product/case/images/ax67-argb-pdt02.png",
-        "price": 0.0
+        "price": 110.99
     },
     {
         "case_id": 10,
         "name": "Chieftec Chieftronic M2 MicroATX Mid Tower Tempered Glass Side Panel, Front USB 3.2 Gen 1 Type-A & USB 2.0 Type-A",
         "brand": "Chieftec",
         "image_link": "https://www.dateks.lv/images/pic/1200/1200/617/1296.jpg",
-        "price": 0.0
+        "price": 75.99
     },
     {
         "case_id": 11,
         "name": "Silverstone Lucid 04 Micro ATX Mid Tower White Tempered Glass Side Panel, USB 3.2 Gen 2 Type-C, USB 3.2 Gen 1 Type-A",
         "brand": "Silverstone",
         "image_link": "https://www.scan.co.uk/images/products/xlarge/3700039-xl-a.jpg",
-        "price": 0.0
+        "price": 75.99
     },
     {
         "case_id": 12,
         "name": "NZXT H7 Flow RGB (2024) ATX Mid Tower White Tempered Glass, USB 3.2 Gen 2x2 Type-C USB 3.2 Gen 1 Type-A",
         "brand": "NZXT",
         "image_link": "https://support.nzxt.com/hc/article_attachments/40379395663387",
-        "price": 0.0
+        "price": 162.99
     },
     {
         "case_id": 13,
         "name": "Corsair 6500X ATX Mid Tower Black Tempered Glass Side Panel",
         "brand": "Corsair",
         "image_link": "https://cdn.cs.1worldsync.com/e7/91/e791f9aa-0357-453f-97b2-0f677584f514.jpg",
-        "price": 0.0
+        "price": 212.99
     },
     {
         "case_id": 14,
         "name": "Fractal Design Focus 2 ATX Mid Tower Black",
         "brand": "Fractal Design",
         "image_link": "https://ecommerce.datablitz.com.ph/cdn/shop/files/Focus_2_RGB_Black_TGC_1-Left-Front-810x810_800x.jpg?v=1746705925",
-        "price": 0.0
+        "price": 72.99
     },
     {
         "case_id": 15,
         "name": "Rosewill R379-M Micro ATX Slim Black / Silver w/300 W Power Supply",
         "brand": "Rosewill",
         "image_link": "https://c1.neweggimages.com/productimage/nb640/11-147-098-50.jpg",
-        "price": 0.0
+        "price": 74.99
     },
     {
         "case_id": 16,
         "name": "Corsair Carbide Series Air 240 Micro ATX Mid Tower White Acrylic Side Panel, USB 3.2 Gen 1 Type-A",
         "brand": "Corsair",
         "image_link": "https://sm.pcmag.com/pcmag_au/review/c/corsair-ca/corsair-carbide-air-240-review_4zxv.jpg",
-        "price": 0.0
+        "price": 61.99
     },
     {
         "case_id": 17,
         "name": "Silverstone RVZ03W-ARGB Mini-ITX Desktop White",
         "brand": "Silverstone",
         "image_link": "https://www.memoryc.com/images/products/550x550/image_0_141664.jpg",
-        "price": 0.0
+        "price": 125.99
     },
     {
         "case_id": 18,
         "name": "be quiet! Silent Base 601 ATX Mid Tower Black / Silver with Tempered Glass Side Panel and USB 3.2 Gen 1 Type-A USB 2.0 Type-A",
         "brand": "be quiet!",
         "image_link": "https://easypc.com.ph/cdn/shop/products/BEBG2431-e_2048x.jpg?v=1637631610",
-        "price": 0.0
+        "price": 95.99
     },
     {
         "case_id": 19,
         "name": "Corsair 2000D RGB AIRFLOW Mini-ITX Tower Black Mesh Side Panel, USB 3.2 Gen 2 Type-C, USB 3.2 Gen 1 Type-A",
         "brand": "Corsair",
         "image_link": "https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Cases/base-2000D-rgb-airflow/CC-9011246/CC-9011246_11.webp",
-        "price": 0.0
+        "price": 140.99
     },
     {
         "case_id": 20,
         "name": "Vetroo AL700 ATX Mid Tower Black with Tempered Glass Side Panel and Front Panel USB 3.2 Gen 2 Type-C, USB 3.2 Gen 1 Type-A, USB 2.0 Type-A",
         "brand": "Vetroo",
         "image_link": "https://m.media-amazon.com/images/I/71sSGZAbNfL.jpg",
-        "price": 0.0
+        "price": 85.99
     },
     {
         "case_id": 21,
         "name": "Rosewill BLACKHAWK-ULTRA ATX Full Tower Black with USB 3.2 Gen 1 Type-A and USB 2.0 Type-A",
         "brand": "Rosewill",
         "image_link": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkgjvjpNlJmaGVUAc4QDbJCeX9Rl425YHucw&s",
-        "price": 0.0
+        "price": 118.99
     },
     {
         "case_id": 22,
         "name": "Lian Li O11 Dynamic EVO ATX Mid Tower Gray / Black Tinted Tempered Glass Side Panel, USB 3.2 Gen 2 Type-C USB 3.2 Gen 1 Type-A",
         "brand": "Lian Li",
         "image_link": "https://lian-li.com/wp-content/uploads/2021/12/evo-600-000.jpg",
-        "price": 0.0
+        "price": 95.99
     },
     {
         "case_id": 23,
         "name": "In Win D-Frame 2.0 ATX Full Tower White / Blue Tempered Glass Side Panel w/1065 W Power Supply",
         "brand": "InWin",
         "image_link": "https://m.media-amazon.com/images/I/514bTZQU-wL.jpg",
-        "price": 0.0
+        "price": 155.99
     },
     {
         "case_id": 24,
         "name": "GameMax White Diamond ARGB ATX Mid Tower White / Black with Tempered Glass Side Panel and USB 3.2 Gen 1 Type-A, USB 2.0 Type-A",
         "brand": "GAMEMAX",
         "image_link": "https://cdna.pcpartpicker.com/static/forever/images/product/fa0812def2f50aa721204a1cbdad1dff.1600.jpg",
-        "price": 0.0
+        "price": 110.99
     },
     {
         "case_id": 25,
         "name": "Corsair Carbide Series SPEC-06 ATX Mid Tower Black with Tempered Glass Side Panel and USB 3.2 Gen 1 Type-A Front Panel",
         "brand": "Corsair",
         "image_link": "https://cdna.pcpartpicker.com/static/forever/images/product/d719f8d9f77586947ce311d0de640a79.1600.jpg",
-        "price": 0.0
+        "price": 95.99
     },
     {
         "case_id": 26,
         "name": "DIYPC ARGB-Q8-BK Micro ATX Mid Tower Black Tempered Glass Side Panel",
         "brand": "DIYPC",
         "image_link": "https://c1.neweggimages.com/NeweggImage/productimage/11-353-215-V01.jpg",
-        "price": 0.0
+        "price": 100.99
     },
     {
         "case_id": 27,
         "name": "Azza Spectra ATX Mid Tower White with Tempered Glass Side Panel and Front Panel USB 3.2 Gen 1 Type-A, USB 2.0 Type-A",
         "brand": "AZZA",
         "image_link": "https://www.azza.gg/cdn/shop/products/regular_2_0020_01_Spectra280W.jpg?v=1676446284&width=2048",
-        "price": 0.0
+        "price": 85.99
     },
     {
         "case_id": 28,
         "name": "Apevia X-FIT-100 Mini-ITX Tower Case Black with 250 W Power Supply",
         "brand": "Apevia",
         "image_link": "https://m.media-amazon.com/images/I/41ZEmbU1fvL.jpg",
-        "price": 0.0
+        "price": 100.99
     },
     {
         "case_id": 29,
         "name": "APNX V1 ATX Mid Tower White / Brown Tempered Glass Side Panel",
         "brand": "APNX",
         "image_link": "https://www.apnx.com/wp-content/uploads/2024/07/V1-BWW-Product-Gallery-1.png",
-        "price": 0.0
+        "price": 85.99
     },
     {
         "case_id": 30,
         "name": "Montech AIR 903 MAX ATX Mid Tower Black Tempered Glass Side Panel",
         "brand": "MONTECH",
         "image_link": "https://netcodex.ph/wp-content/uploads/2025/04/Air-903-Max-Black-1.webp",
-        "price": 0.0
+        "price": 85.99
     },
     {
         "case_id": 31,
         "name": "Cooler Master MasterCase Maker 5 ATX Mid Tower Black with Acrylic Side Panel and Front Panel: USB 3.2 Gen 2 Type-C, USB 3.2 Gen 1 Type-A, USB 2.0 Type-A",
         "brand": "Cooler Master",
         "image_link": "https://www.coolermaster.com/on/demandware.static/-/Sites-cooler-master-main/default/dw227ab4fe/Assets/mastercase-maker-5/large/0224_14.png",
-        "price": 0.0
+        "price": 72.99
     },
     {
         "case_id": 32,
         "name": "RAIJINTEK PAN Slim Mini-ITX Desktop",
         "brand": "RAIJINTEK",
         "image_link": "https://i0.wp.com/raijintek.com/wp-content/uploads/2025/10/pan-slim-01-b.png?fit=1536%2C1119&ssl=1",
-        "price": 0.0
+        "price": 100.99
     },
     {
         "case_id": 33,
         "name": "be quiet! Pure Base 600 ATX Mid Tower Black / Orange Tempered Glass Side Panel",
         "brand": "be quiet!",
         "image_link": "https://www.canadacomputers.com/marketing/overviews/CSBEQ00022/img/1.jpg",
-        "price": 0.0
+        "price": 95.99
     },
     {
         "case_id": 34,
         "name": "Zalman Z10 DUO ATX Mid Tower Black with Tempered Glass Side Panel and USB 3.2 Gen 2 Type-C / USB 3.2 Gen 1 Type-A",
         "brand": "Zalman",
         "image_link": "https://www.zalman.com/cmm/fms/getImage.do?atchFileId=FILE_000000000020503&fileSn=4",
-        "price": 0.0
+        "price": 85.99
     },
     {
         "case_id": 35,
         "name": "Fractal Design Epoch RGB ATX Mid Tower White Tempered Glass Side Panel",
         "brand": "Fractal Design",
         "image_link": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx5cqNZJlHrQ9SN946HWTfl67WyXG6fJrpbg&s",
-        "price": 0.0
+        "price": 123.99
     },
     {
         "case_id": 36,
         "name": "Fractal Design Meshify 2 Compact TG Dark Tint ATX Mid Tower Black Tinted Tempered Glass",
         "brand": "Fractal Design",
         "image_link": "https://cdna.pcpartpicker.com/static/forever/images/product/70ac697e3e6678daf16d38842957b0c0.256p.jpg",
-        "price": 0.0
+        "price": 95.99
     },
     {
         "case_id": 37,
         "name": "CiT Master ATX Mid Tower Black Tempered Glass Side Panel, USB 3.2 Gen 1 & USB 2.0 Front USB",
         "brand": "CiT",
         "image_link": "https://www.pcupgrade.co.uk/images/uploads/CITMASTER_1.jpg",
-        "price": 0.0
+        "price": 85.99
     },
     {
         "case_id": 38,
         "name": "Corsair Obsidian Series 350D Micro ATX Mid Tower Black Window",
         "brand": "Corsair",
         "image_link": "https://c1.neweggimages.com/productimage/nb640/11-139-021-02.jpg",
-        "price": 0.0
+        "price": 61.99
     },
     {
         "case_id": 39,
         "name": "Fractal Design Meshify 2 Compact ATX Mid Tower White TG Clear Tint Tempered Glass",
         "brand": "Fractal Design",
         "image_link": "https://netcodex.ph/wp-content/uploads/2025/05/Meshify-2-Compact-RGB-White-TG-Clear-Tint-1-500x500.jpg",
-        "price": 0.0
+        "price": 95.99
     },
     {
         "case_id": 40,
         "name": "HAVN BF 360 Flow White",
         "brand": "HAVN",
         "image_link": "https://havn.global/cdn/shop/files/havn-product-bf-360-flow-white-02.gif?v=1759735802&width=2048",
-        "price": 0.0
+        "price": 65.99
     },
     {
         "case_id": 41,
         "name": "Corsair Obsidian Series 450D ATX Mid Tower Black Acrylic Side Panel",
         "brand": "Corsair",
         "image_link": "https://m.media-amazon.com/images/I/61xW0K7YEtL._AC_UF350,350_QL50_.jpg",
-        "price": 0.0
+        "price": 72.99
     },
     {
         "case_id": 42,
         "name": "Rosewill FBM-X1 Micro ATX Mini Tower Black with Acrylic Side Panel and USB 3.2 Gen 1 Type-A, USB 2.0 Type-A Front Panel",
         "brand": "Rosewill",
         "image_link": "https://cdna.pcpartpicker.com/static/forever/images/product/d5f9bd6685cc1bf4644fd87188402fcc.256p.jpg",
-        "price": 0.0
+        "price": 48.99
     },
     {
         "case_id": 43,
         "name": "Jonsbo BO 100 Mini-ITX Desktop Silver with Tempered Glass Side Panel and USB 3.2 Gen 2 Type-C, USB 3.2 Gen 1 Type-A",
         "brand": "Jonsbo",
         "image_link": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeLnmMNBMToPUYEUFiFp17dSh8C3_r14WEMw&s",
-        "price": 0.0
+        "price": 105.99
     },
     {
         "case_id": 44,
         "name": "FSP Group CUT593P ATX Full Tower White with Tempered Glass Side Panel, USB 3.2 Gen 2 Type-C USB 3.2 Gen 1 Type-A, and Dimensions 500 x 230 x 544",
         "brand": "FSP Group",
         "image_link": "https://www.fsplifestyle.com/upload/product/PIC23b00000000011888.jpg",
-        "price": 0.0
+        "price": 155.99
     },
     {
         "case_id": 45,
         "name": "LIAN LI O11 Dynamic EVO O11DEX Black Aluminum / Steel / Tempered Glass ATX Mid Tower Computer Case",
         "brand": "Lian Li",
         "image_link": "https://lian-li.com/wp-content/uploads/2021/12/evo-600-000.jpg",
-        "price": 0.0
+        "price": 95.99
     },
     {
         "case_id": 46,
         "name": "Cougar Purity MicroATX Mini Tower Black",
         "brand": "Cougar",
         "image_link": "https://cougargaming.com/_cgrwdr_/wwdpp/wp-content/uploads/2022/10/02-purity.png",
-        "price": 0.0
+        "price": 55.99
     },
     {
         "case_id": 47,
         "name": "NZXT H700 ATX Mid Tower White Tempered Glass Side Panel",
         "brand": "NZXT",
         "image_link": "https://m.media-amazon.com/images/I/51CHQRGKMwL._AC_UF1000,1000_QL80_.jpg",
-        "price": 0.0
+        "price": 162.99
     },
     {
         "case_id": 48,
         "name": "GameMax Master M905 ATX Full Tower Black Tempered Glass Side Panel",
         "brand": "GAMEMAX",
         "image_link": "https://cdn.gamemaxpc.com/runtime/image/w320px_h320px_1702103267.png",
-        "price": 0.0
+        "price": 155.99
     },
     {
         "case_id": 49,
         "name": "NZXT H7 Flow (2024) ATX Mid Tower Black with Tempered Glass Side Panel and USB 3.2 Gen 2x2 Type-C USB 3.2 Gen 1 Type-A",
         "brand": "NZXT",
         "image_link": "https://netcodex.ph/wp-content/uploads/2025/09/h7-flow-hero-black-600x600.webp",
-        "price": 0.0
+        "price": 162.99
     },
     {
         "case_id": 50,
         "name": "Corsair Vengeance C70 ATX Mid Tower Green Acrylic Side Panel",
         "brand": "Corsair",
         "image_link": "https://c1.neweggimages.com/productimage/nb640/11-139-015-06.jpg",
-        "price": 0.0
+        "price": 72.99
     }
 ]

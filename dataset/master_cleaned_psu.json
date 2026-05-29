@@ -7,9 +7,8 @@
         "wattage": 550,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 55.99
     },
-
     {
         "psu_id": 2,
         "name": "Cougar GEX X2 Black 1000W Fully Modular 80+ Gold Certified",
@@ -18,7 +17,7 @@
         "wattage": 1000,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 132.99
     },
     {
         "psu_id": 3,
@@ -28,7 +27,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 136.99
     },
     {
         "psu_id": 4,
@@ -38,7 +37,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": "80+",
-        "price": 0.0
+        "price": 46.99
     },
     {
         "psu_id": 5,
@@ -48,7 +47,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 94.99
     },
     {
         "psu_id": 6,
@@ -58,7 +57,7 @@
         "wattage": 1200,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 206.99
     },
     {
         "psu_id": 7,
@@ -68,7 +67,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": null,
-        "price": 0.0
+        "price": 86.99
     },
     {
         "psu_id": 8,
@@ -78,7 +77,7 @@
         "wattage": 750,
         "form_factor": "ATX",
         "efficiency_rating": null,
-        "price": 0.0
+        "price": 59.99
     },
     {
         "psu_id": 9,
@@ -88,7 +87,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": null,
-        "price": 0.0
+        "price": 46.99
     },
     {
         "psu_id": 10,
@@ -98,7 +97,7 @@
         "wattage": 750,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Platinum",
-        "price": 0.0
+        "price": 139.99
     },
     {
         "psu_id": 11,
@@ -108,7 +107,7 @@
         "wattage": 450,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 54.99
     },
     {
         "psu_id": 12,
@@ -118,7 +117,7 @@
         "wattage": 600,
         "form_factor": "ATX",
         "efficiency_rating": "80+",
-        "price": 0.0
+        "price": 54.99
     },
     {
         "psu_id": 13,
@@ -128,7 +127,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 121.99
     },
     {
         "psu_id": 14,
@@ -138,7 +137,7 @@
         "wattage": 1600,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Titanium",
-        "price": 0.0
+        "price": 329.99
     },
     {
         "psu_id": 15,
@@ -148,7 +147,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 106.99
     },
     {
         "psu_id": 16,
@@ -158,7 +157,7 @@
         "wattage": 1650,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 237.99
     },
     {
         "psu_id": 17,
@@ -168,7 +167,7 @@
         "wattage": 1000,
         "form_factor": "SFX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 187.99
     },
     {
         "psu_id": 18,
@@ -178,7 +177,7 @@
         "wattage": 450,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 104.99
     },
     {
         "psu_id": 19,
@@ -188,7 +187,7 @@
         "wattage": 550,
         "form_factor": "ATX",
         "efficiency_rating": "80+",
-        "price": 0.0
+        "price": 45.99
     },
     {
         "psu_id": 20,
@@ -198,7 +197,7 @@
         "wattage": 700,
         "form_factor": "ATX",
         "efficiency_rating": null,
-        "price": 0.0
+        "price": 81.99
     },
     {
         "psu_id": 21,
@@ -208,7 +207,7 @@
         "wattage": 600,
         "form_factor": "ATX",
         "efficiency_rating": "80+",
-        "price": 0.0
+        "price": 43.99
     },
     {
         "psu_id": 22,
@@ -218,7 +217,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 136.99
     },
     {
         "psu_id": 23,
@@ -228,7 +227,7 @@
         "wattage": 600,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 88.99
     },
     {
         "psu_id": 24,
@@ -238,7 +237,7 @@
         "wattage": 600,
         "form_factor": "ATX",
         "efficiency_rating": "80+",
-        "price": 0.0
+        "price": 54.99
     },
     {
         "psu_id": 25,
@@ -248,7 +247,7 @@
         "wattage": 520,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 87.99
     },
     {
         "psu_id": 26,
@@ -258,7 +257,7 @@
         "wattage": 1200,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Platinum",
-        "price": 0.0
+        "price": 258.99
     },
     {
         "psu_id": 27,
@@ -268,7 +267,7 @@
         "wattage": 500,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 71.99
     },
     {
         "psu_id": 28,
@@ -278,7 +277,7 @@
         "wattage": 550,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 112.99
     },
     {
         "psu_id": 29,
@@ -288,7 +287,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Platinum",
-        "price": 0.0
+        "price": 164.99
     },
     {
         "psu_id": 30,
@@ -298,7 +297,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 136.99
     },
     {
         "psu_id": 31,
@@ -308,7 +307,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 107.99
     },
     {
         "psu_id": 32,
@@ -318,7 +317,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 136.99
     },
     {
         "psu_id": 33,
@@ -328,7 +327,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 121.99
     },
     {
         "psu_id": 34,
@@ -338,7 +337,7 @@
         "wattage": 600,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 88.99
     },
     {
         "psu_id": 35,
@@ -348,7 +347,7 @@
         "wattage": 750,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 128.99
     },
     {
         "psu_id": 36,
@@ -358,7 +357,7 @@
         "wattage": 600,
         "form_factor": "SFX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 139.99
     },
     {
         "psu_id": 37,
@@ -368,7 +367,7 @@
         "wattage": 1050,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Platinum",
-        "price": 0.0
+        "price": 179.99
     },
     {
         "psu_id": 38,
@@ -378,7 +377,7 @@
         "wattage": 750,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 101.99
     },
     {
         "psu_id": 39,
@@ -388,7 +387,7 @@
         "wattage": 450,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 67.99
     },
     {
         "psu_id": 40,
@@ -398,7 +397,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 92.99
     },
     {
         "psu_id": 41,
@@ -408,7 +407,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Platinum",
-        "price": 0.0
+        "price": 148.99
     },
     {
         "psu_id": 42,
@@ -418,7 +417,7 @@
         "wattage": 450,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 68.99
     },
     {
         "psu_id": 43,
@@ -428,7 +427,7 @@
         "wattage": 950,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 93.99
     },
     {
         "psu_id": 44,
@@ -438,7 +437,7 @@
         "wattage": 600,
         "form_factor": "ATX",
         "efficiency_rating": null,
-        "price": 0.0
+        "price": 49.99
     },
     {
         "psu_id": 45,
@@ -448,7 +447,7 @@
         "wattage": 750,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 91.99
     },
     {
         "psu_id": 46,
@@ -458,7 +457,7 @@
         "wattage": 1000,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Platinum",
-        "price": 0.0
+        "price": 157.99
     },
     {
         "psu_id": 47,
@@ -468,7 +467,7 @@
         "wattage": 850,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Platinum",
-        "price": 0.0
+        "price": 164.99
     },
     {
         "psu_id": 48,
@@ -478,7 +477,7 @@
         "wattage": 650,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 107.99
     },
     {
         "psu_id": 49,
@@ -488,7 +487,7 @@
         "wattage": 400,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Bronze",
-        "price": 0.0
+        "price": 45.99
     },
     {
         "psu_id": 50,
@@ -498,6 +497,6 @@
         "wattage": 700,
         "form_factor": "ATX",
         "efficiency_rating": "80+ Gold",
-        "price": 0.0
+        "price": 111.99
     }
 ]

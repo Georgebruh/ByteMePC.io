@@ -7,7 +7,7 @@
         "core-clock": 1168,
         "memory": 4,
         "tdp": 150,
-        "price": 0.0
+        "price": 108.99
     },
     {
         "gpu_id": 2,
@@ -17,7 +17,7 @@
         "core-clock": 1244,
         "memory": 8,
         "tdp": 150,
-        "price": 0.0
+        "price": 100.99
     },
     {
         "gpu_id": 3,
@@ -27,7 +27,7 @@
         "core-clock": 1920,
         "memory": 12,
         "tdp": 200,
-        "price": 0.0
+        "price": 724.99
     },
     {
         "gpu_id": 4,
@@ -37,7 +37,7 @@
         "core-clock": 3840,
         "memory": 8,
         "tdp": 145,
-        "price": 0.0
+        "price": 384.99
     },
     {
         "gpu_id": 5,
@@ -47,7 +47,7 @@
         "core-clock": 1605,
         "memory": 8,
         "tdp": 215,
-        "price": 0.0
+        "price": 266.99
     },
     {
         "gpu_id": 6,
@@ -57,7 +57,7 @@
         "core-clock": 1400,
         "memory": 16,
         "tdp": 300,
-        "price": 0.0
+        "price": 504.99
     },
     {
         "gpu_id": 7,
@@ -67,7 +67,7 @@
         "core-clock": 1410,
         "memory": 8,
         "tdp": 185,
-        "price": 0.0
+        "price": 229.99
     },
     {
         "gpu_id": 8,
@@ -77,7 +77,7 @@
         "core-clock": 1506,
         "memory": 6,
         "tdp": 120,
-        "price": 0.0
+        "price": 123.99
     },
     {
         "gpu_id": 9,
@@ -87,7 +87,7 @@
         "core-clock": 1660,
         "memory": 16,
         "tdp": 304,
-        "price": 0.0
+        "price": 669.99
     },
     {
         "gpu_id": 10,
@@ -97,7 +97,7 @@
         "core-clock": 2325,
         "memory": 12,
         "tdp": 250,
-        "price": 0.0
+        "price": 664.99
     },
     {
         "gpu_id": 11,
@@ -107,7 +107,7 @@
         "core-clock": 1900,
         "memory": 16,
         "tdp": 160,
-        "price": 0.0
+        "price": 422.99
     },
     {
         "gpu_id": 12,
@@ -117,7 +117,7 @@
         "core-clock": 1203,
         "memory": 6,
         "tdp": 250,
-        "price": 0.0
+        "price": 134.99
     },
     {
         "gpu_id": 13,
@@ -127,7 +127,7 @@
         "core-clock": 2310,
         "memory": 12,
         "tdp": 285,
-        "price": 0.0
+        "price": 966.99
     },
     {
         "gpu_id": 14,
@@ -137,7 +137,7 @@
         "core-clock": 1208,
         "memory": 8,
         "tdp": 225,
-        "price": 0.0
+        "price": 108.99
     },
     {
         "gpu_id": 15,
@@ -147,7 +147,7 @@
         "core-clock": 2150,
         "memory": 12,
         "tdp": 250,
-        "price": 0.0
+        "price": 355.99
     },
     {
         "gpu_id": 16,
@@ -157,7 +157,7 @@
         "core-clock": 815,
         "memory": 48,
         "tdp": 300,
-        "price": 0.0
+        "price": 6800.99
     },
     {
         "gpu_id": 17,
@@ -167,7 +167,7 @@
         "core-clock": 1720,
         "memory": 8,
         "tdp": 185,
-        "price": 0.0
+        "price": 325.99
     },
     {
         "gpu_id": 18,
@@ -177,7 +177,7 @@
         "core-clock": 1968,
         "memory": 8,
         "tdp": 160,
-        "price": 0.0
+        "price": 276.99
     },
     {
         "gpu_id": 19,
@@ -187,7 +187,7 @@
         "core-clock": 0,
         "memory": 6,
         "tdp": 0,
-        "price": 0.0
+        "price": 181.99
     },
     {
         "gpu_id": 20,
@@ -197,7 +197,7 @@
         "core-clock": 1900,
         "memory": 16,
         "tdp": 190,
-        "price": 0.0
+        "price": 392.99
     },
     {
         "gpu_id": 21,
@@ -207,7 +207,7 @@
         "core-clock": 1304,
         "memory": 4,
         "tdp": 120,
-        "price": 0.0
+        "price": 170.99
     },
     {
         "gpu_id": 22,
@@ -217,7 +217,7 @@
         "core-clock": 1980,
         "memory": 12,
         "tdp": 220,
-        "price": 0.0
+        "price": 599.99
     },
     {
         "gpu_id": 23,
@@ -227,7 +227,7 @@
         "core-clock": 780,
         "memory": 4,
         "tdp": 30,
-        "price": 0.0
+        "price": 120.99
     },
     {
         "gpu_id": 24,
@@ -237,7 +237,7 @@
         "core-clock": 1540,
         "memory": 8,
         "tdp": 187,
-        "price": 0.0
+        "price": 108.99
     },
     {
         "gpu_id": 25,
@@ -247,7 +247,7 @@
         "core-clock": 1320,
         "memory": 8,
         "tdp": 170,
-        "price": 0.0
+        "price": 292.99
     },
     {
         "gpu_id": 26,
@@ -257,7 +257,7 @@
         "core-clock": 1395,
         "memory": 48,
         "tdp": 295,
-        "price": 0.0
+        "price": 1005.99
     },
     {
         "gpu_id": 27,
@@ -267,7 +267,7 @@
         "core-clock": 2407,
         "memory": 8,
         "tdp": 180,
-        "price": 0.0
+        "price": 361.99
     },
     {
         "gpu_id": 28,
@@ -277,17 +277,17 @@
         "core-clock": 1050,
         "memory": 2,
         "tdp": 65,
-        "price": 0.0
+        "price": 108.99
     },
     {
-       "gpu_id": 29,
+        "gpu_id": 29,
         "name": "PowerColor Radeon AI PRO R9700S",
         "brand": "PowerColor",
         "image_link": "https://www.techpowerup.com/img/2Y7sF1RkmRQzEb76.jpg",
         "core-clock": 1600,
         "memory": 32,
         "tdp": 304,
-        "price": 0.0 
+        "price": 720.99
     },
     {
         "gpu_id": 30,
@@ -297,7 +297,7 @@
         "core-clock": 1775,
         "memory": 16,
         "tdp": 250,
-        "price": 0.0
+        "price": 413.99
     },
     {
         "gpu_id": 31,
@@ -307,7 +307,7 @@
         "core-clock": 2205,
         "memory": 16,
         "tdp": 320,
-        "price": 0.0
+        "price": 490.99
     },
     {
         "gpu_id": 32,
@@ -317,7 +317,7 @@
         "core-clock": 1825,
         "memory": 16,
         "tdp": 300,
-        "price": 0.0
+        "price": 431.99
     },
     {
         "gpu_id": 33,
@@ -327,7 +327,7 @@
         "core-clock": 900,
         "memory": 3,
         "tdp": 244,
-        "price": 0.0
+        "price": 198.99
     },
     {
         "gpu_id": 34,
@@ -337,7 +337,7 @@
         "core-clock": 1404,
         "memory": 2,
         "tdp": 75,
-        "price": 0.0
+        "price": 134.99
     },
     {
         "gpu_id": 35,
@@ -347,7 +347,7 @@
         "core-clock": 2410,
         "memory": 8,
         "tdp": 180,
-        "price": 0.0
+        "price": 299.99
     },
     {
         "gpu_id": 36,
@@ -357,7 +357,7 @@
         "core-clock": 2325,
         "memory": 12,
         "tdp": 250,
-        "price": 0.0
+        "price": 614.99
     },
     {
         "gpu_id": 37,
@@ -367,7 +367,7 @@
         "core-clock": 1605,
         "memory": 8,
         "tdp": 215,
-        "price": 0.0
+        "price": 288.99
     },
     {
         "gpu_id": 38,
@@ -377,7 +377,7 @@
         "core-clock": 1257,
         "memory": 4,
         "tdp": 225,
-        "price": 0.0
+        "price": 228.99
     },
     {
         "gpu_id": 39,
@@ -387,7 +387,7 @@
         "core-clock": 2310,
         "memory": 12,
         "tdp": 285,
-        "price": 0.0
+        "price": 799.99
     },
     {
         "gpu_id": 40,
@@ -397,7 +397,7 @@
         "core-clock": 1469,
         "memory": 8,
         "tdp": 225,
-        "price": 0.0
+        "price": 260.99
     },
     {
         "gpu_id": 41,
@@ -407,7 +407,7 @@
         "core-clock": 1366,
         "memory": 4,
         "tdp": 75,
-        "price": 0.0
+        "price": 152.99
     },
     {
         "gpu_id": 42,
@@ -417,7 +417,7 @@
         "core-clock": 1550,
         "memory": 8,
         "tdp": 130,
-        "price": 0.0
+        "price": 254.99
     },
     {
         "gpu_id": 43,
@@ -427,7 +427,7 @@
         "core-clock": 1395,
         "memory": 24,
         "tdp": 350,
-        "price": 0.0
+        "price": 592.99
     },
     {
         "gpu_id": 44,
@@ -437,7 +437,7 @@
         "core-clock": 1090,
         "memory": 4,
         "tdp": 84,
-        "price": 0.0
+        "price": 178.99
     },
     {
         "gpu_id": 45,
@@ -447,7 +447,7 @@
         "core-clock": 1540,
         "memory": 8,
         "tdp": 187,
-        "price": 0.0
+        "price": 108.99
     },
     {
         "gpu_id": 46,
@@ -457,7 +457,7 @@
         "core-clock": 1900,
         "memory": 8,
         "tdp": 182,
-        "price": 0.0
+        "price": 369.99
     },
     {
         "gpu_id": 47,
@@ -467,7 +467,7 @@
         "core-clock": 1980,
         "memory": 12,
         "tdp": 220,
-        "price": 0.0
+        "price": 599.99
     },
     {
         "gpu_id": 48,
@@ -477,7 +477,7 @@
         "core-clock": 1825,
         "memory": 16,
         "tdp": 300,
-        "price": 0.0
+        "price": 431.99
     },
     {
         "gpu_id": 49,
@@ -487,16 +487,16 @@
         "core-clock": 1265,
         "memory": 2,
         "tdp": 30,
-        "price": 0.0
+        "price": 94.99
     },
     {
-       "gpu_id": 50,
+        "gpu_id": 50,
         "name": "MSI GeForce RTX 3060 GAMING X TRIO 12GB",
         "brand": "MSI",
         "image_link": "https://shop.villman.com/cdn/shop/files/download_17b09808-953b-4610-8c54-eae071ece63b_800x.png?v=1714186904",
         "core-clock": 1320,
         "memory": 12,
         "tdp": 170,
-        "price": 0.0 
+        "price": 351.99
     }
 ]
