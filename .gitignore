@@ -26,3 +26,7 @@ dist-ssr
 .env
 .env.local
 *.mcp.json
+
+# Database — ignore everything except the dataset insert script
+database/*
+!database/InsertDataset.sql
