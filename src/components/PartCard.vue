@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import type { Part } from '../data/mock'
-import { builds, php } from '../data/mock'
+import type { Build, Part } from '../data/mock'
+import { php } from '../data/mock'
+import { fetchMyBuilds } from '../data/builds'
 import { useSession } from '../lib/session'
 import SignInPromptModal from './SignInPromptModal.vue'
 
@@ -23,12 +24,46 @@ const emit = defineEmits<{
 }>()
 
 const router = useRouter()
-const { isSignedIn } = useSession()
+const { isSignedIn, userId } = useSession()
+
+// ─── "Add to existing build" list ─────────────────────────
+// Lazily loaded from Supabase the first time the Build submenu opens, so
+// the catalog grid doesn't fire a query per card on mount. These are the
+// signed-in user's own builds — not mock data.
+const myBuilds = ref<Build[]>([])
+const buildsLoading = ref(false)
+const buildsError = ref(false)
+let buildsLoaded = false
+
+async function loadMyBuilds() {
+  if (buildsLoaded || buildsLoading.value || !userId.value) return
+  buildsLoading.value = true
+  buildsError.value = false
+  try {
+    myBuilds.value = await fetchMyBuilds(userId.value)
+    buildsLoaded = true
+  } catch {
+    buildsError.value = true
+  } finally {
+    buildsLoading.value = false
+  }
+}
+
+function openBuildSubmenu() {
+  menuView.value = 'build'
+  loadMyBuilds()
+}
 
 // Sign-in prompt shown when a signed-out user tries to pin (a "favourite"
 // in catalog terms). The pin context-menu action funnels through here so
 // the auth gate is consistent with build favourites.
 const signInOpen = ref(false)
+
+// Fall back to the emoji placeholder when there's no image URL or the
+// thumbnail fails to load (dead link / hotlink-blocked source).
+const imgFailed = ref(false)
+watch(() => props.part.image, () => { imgFailed.value = false })
+const showImage = computed(() => !!props.part.image && !imgFailed.value)
 
 // Mono part-class label used in the top-left of the hero panel.
 const classTag = computed(() => {
@@ -128,7 +163,15 @@ onBeforeUnmount(closeMenu)
     <RouterLink :to="`/parts/${part.id}`" class="part-img grid-paper">
       <span class="cls">// {{ classTag }}</span>
       <span v-if="part.pinned" class="pin-badge">◉ PINNED</span>
-      {{ part.icon ?? '🖥' }}
+      <img
+        v-if="showImage"
+        class="part-thumb"
+        :src="part.image!"
+        :alt="part.name"
+        loading="lazy"
+        @error="imgFailed = true"
+      />
+      <template v-else>{{ part.icon ?? '🖥' }}</template>
     </RouterLink>
 
     <span class="brand-mono">{{ part.brand }}</span>
@@ -163,7 +206,7 @@ onBeforeUnmount(closeMenu)
             class="ctx-item"
             type="button"
             role="menuitem"
-            @click="menuView = 'build'"
+            @click="openBuildSubmenu"
           >
             <span class="ctx-glyph">⌥</span>
             <span>Build</span>
@@ -182,17 +225,23 @@ onBeforeUnmount(closeMenu)
           </button>
           <div class="ctx-section">// add to existing</div>
           <div class="ctx-scroll">
-            <button
-              v-for="b in builds"
-              :key="b.id"
-              class="ctx-build"
-              type="button"
-              role="menuitem"
-              @click="onExistingBuild(b.id)"
-            >
-              <span class="ctx-build-icon">{{ b.icon }}</span>
-              <span class="ctx-build-name">{{ b.name }}</span>
-            </button>
+            <div v-if="!isSignedIn" class="ctx-empty">Sign in to see your builds.</div>
+            <div v-else-if="buildsLoading" class="ctx-empty">Loading builds…</div>
+            <div v-else-if="buildsError" class="ctx-empty">Couldn't load builds.</div>
+            <div v-else-if="!myBuilds.length" class="ctx-empty">No builds yet.</div>
+            <template v-else>
+              <button
+                v-for="b in myBuilds"
+                :key="b.id"
+                class="ctx-build"
+                type="button"
+                role="menuitem"
+                @click="onExistingBuild(b.id)"
+              >
+                <span class="ctx-build-icon">{{ b.icon }}</span>
+                <span class="ctx-build-name">{{ b.name }}</span>
+              </button>
+            </template>
           </div>
         </template>
       </div>
@@ -230,6 +279,13 @@ onBeforeUnmount(closeMenu)
   margin-bottom: 14px;
   color: var(--text-mute);
   text-decoration: none;
+}
+.part-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+  background: #fff;
 }
 .part-img .cls {
   position: absolute;
@@ -426,6 +482,12 @@ h4 {
   background: rgba(168, 85, 247, 0.08);
   border-color: var(--line);
   color: var(--purple);
+}
+.ctx-empty {
+  padding: 8px 10px;
+  color: var(--text-mute);
+  font-family: var(--mono);
+  font-size: 11px;
 }
 .ctx-build-icon { font-size: 13px; }
 .ctx-build-name {

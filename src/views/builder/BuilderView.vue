@@ -175,10 +175,21 @@ const visibleParts = computed(() => {
   )
 })
 
-const totalPages = computed(() => Math.max(1, Math.ceil(visibleParts.value.length / PAGE_SIZE)))
+// compat parts must be top of the list
+const rankedParts = computed(() => {
+  const list = visibleParts.value
+  if (!list.length || !hasCompatContext(list[0])) return list
+  return [...list].sort((a, b) => {
+    const ra = partWarning(a) ? 1 : 0
+    const rb = partWarning(b) ? 1 : 0
+    return ra - rb
+  })
+})
+
+const totalPages = computed(() => Math.max(1, Math.ceil(rankedParts.value.length / PAGE_SIZE)))
 const pagedParts = computed(() => {
   const start = (currentPage.value - 1) * PAGE_SIZE
-  return visibleParts.value.slice(start, start + PAGE_SIZE)
+  return rankedParts.value.slice(start, start + PAGE_SIZE)
 })
 
 // Snap back to page 1 whenever the visible set shrinks below the current

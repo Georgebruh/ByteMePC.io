@@ -111,7 +111,7 @@ export async function fetchPartsByCategory(category: PartCategory): Promise<Part
   const cfg = CONFIGS[category]
   const { data, error } = await supabase
     .from(cfg.table)
-    .select(`${cfg.idCol}, name, brand, price, ${specColumns(category)}`)
+    .select(`${cfg.idCol}, name, brand, price, image_link, ${specColumns(category)}`)
     .order(cfg.idCol, { ascending: true })
 
   if (error) throw error
@@ -126,6 +126,7 @@ export async function fetchPartsByCategory(category: PartCategory): Promise<Part
     spec: (cfg.toSpec as (r: any) => string)(row),
     price: Math.round(Number(row.price) * USD_TO_PHP),
     icon: ICONS[category],
+    image: row.image_link ?? null,
     ...(extras ? extras(row) : {}),
   }))
 }

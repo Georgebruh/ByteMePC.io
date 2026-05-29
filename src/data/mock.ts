@@ -17,6 +17,8 @@ export interface Part {
   pinned?: boolean
   // Optional emoji used as the placeholder image on cards.
   icon?: string
+  // Product thumbnail URL (DB `image_link`). Falls back to `icon` when null.
+  image?: string | null
   // Structured fields used by the catalog filter sidebar.
   // Populated for the categories that have them (CPU/Motherboard for socket,
   // CPU for cores) so the chips + counts can be real.

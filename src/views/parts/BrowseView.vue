@@ -5,6 +5,10 @@ import PartCard from '../../components/PartCard.vue'
 import type { Part, PartCategory } from '../../data/mock'
 import { php } from '../../data/mock'
 import { fetchAllParts, fetchCategoryCounts, fetchPartsByCategory } from '../../data/catalog'
+import { fetchPinnedIds, togglePin as togglePinDb } from '../../data/pins'
+import { useSession } from '../../lib/session'
+
+const { userId } = useSession()
 
 // Categories shown in the sidebar — the old segmented tabs row was folded
 // into the filter sidebar so the left column owns the entire chrome.
@@ -43,6 +47,15 @@ const tabParts = ref<Part[]>([])
 const loading = ref(false)
 const errorMsg = ref<string | null>(null)
 
+// The signed-in user's pinned part ids ("cpu-13", …). Used to mark grid
+// cards as pinned after each category load, since the catalog query itself
+// doesn't know about per-user pins.
+const pinnedIds = ref<Set<string>>(new Set())
+
+function markPinned() {
+  for (const p of tabParts.value) p.pinned = pinnedIds.value.has(p.id)
+}
+
 async function loadActiveCat() {
   loading.value = true
   errorMsg.value = null
@@ -50,6 +63,7 @@ async function loadActiveCat() {
     tabParts.value = activeCat.value
       ? await fetchPartsByCategory(activeCat.value)
       : await fetchAllParts()
+    markPinned()
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Failed to load parts.'
     tabParts.value = []
@@ -58,13 +72,35 @@ async function loadActiveCat() {
   }
 }
 
+async function loadPinnedIds() {
+  if (!userId.value) {
+    pinnedIds.value = new Set()
+    return
+  }
+  try {
+    pinnedIds.value = await fetchPinnedIds(userId.value)
+  } catch {
+    // Pin markers are cosmetic on Browse — leave cards unmarked if the
+    // lookup fails rather than blocking the grid.
+    pinnedIds.value = new Set()
+  }
+}
+
 onMounted(async () => {
+  await loadPinnedIds()
   await loadActiveCat()
   try {
     categoryCounts.value = await fetchCategoryCounts()
   } catch {
     // Sidebar counts are cosmetic — leave them at 0 if the count query fails.
   }
+})
+
+// Re-sync pins when auth changes (e.g. the user signs in via the pin
+// prompt and returns to the catalog).
+watch(userId, async () => {
+  await loadPinnedIds()
+  markPinned()
 })
 
 watch(activeCat, () => {
@@ -253,9 +289,27 @@ function clearFilters() {
 }
 
 // Pin toggle handled at the grid level so the card itself stays stateless.
-function togglePin(id: string) {
+// The card only emits this once the user is signed in (it gates anonymous
+// clicks behind a sign-in prompt), so we can assume a userId here. The UI
+// flips optimistically and reverts if the write fails.
+async function togglePin(id: string) {
+  if (!userId.value) return
   const part = tabParts.value.find(p => p.id === id)
-  if (part) part.pinned = !part.pinned
+  if (!part) return
+
+  const next = !part.pinned
+  part.pinned = next
+  if (next) pinnedIds.value.add(id)
+  else pinnedIds.value.delete(id)
+
+  try {
+    await togglePinDb(userId.value, id, !next)
+  } catch {
+    // Revert on failure so the card doesn't lie about the saved state.
+    part.pinned = !next
+    if (next) pinnedIds.value.delete(id)
+    else pinnedIds.value.add(id)
+  }
 }
 
 // Singular label used in the search placeholder + results count.
