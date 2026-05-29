@@ -9,7 +9,7 @@
         "size": "EATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 526.99
     },
     {
         "mb_id": 2,
@@ -21,7 +21,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 100.99
     },
     {
         "mb_id": 3,
@@ -33,7 +33,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 151.99
     },
     {
         "mb_id": 4,
@@ -45,7 +45,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 100.99
     },
     {
         "mb_id": 5,
@@ -57,7 +57,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 128.99
     },
     {
         "mb_id": 6,
@@ -69,7 +69,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR3",
-        "price": 125.0
+        "price": 50.99
     },
     {
         "mb_id": 7,
@@ -81,7 +81,7 @@
         "size": "EATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 621.99
     },
     {
         "mb_id": 8,
@@ -93,7 +93,7 @@
         "size": "XL ATX",
         "ram_slots": 8,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 582.99
     },
     {
         "mb_id": 9,
@@ -105,7 +105,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 155.99
     },
     {
         "mb_id": 10,
@@ -117,7 +117,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 84.99
     },
     {
         "mb_id": 11,
@@ -129,7 +129,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 118.99
     },
     {
         "mb_id": 12,
@@ -141,7 +141,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 66.99
     },
     {
         "mb_id": 13,
@@ -153,7 +153,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 112.99
     },
     {
         "mb_id": 14,
@@ -165,7 +165,7 @@
         "size": "ATX",
         "ram_slots": 8,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 340.99
     },
     {
         "mb_id": 15,
@@ -177,7 +177,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 431.99
     },
     {
         "mb_id": 16,
@@ -189,7 +189,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 75.99
     },
     {
         "mb_id": 17,
@@ -201,7 +201,7 @@
         "size": "Mini-ITX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 252.99
     },
     {
         "mb_id": 18,
@@ -213,7 +213,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 100.99
     },
     {
         "mb_id": 19,
@@ -225,7 +225,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 155.99
     },
     {
         "mb_id": 20,
@@ -237,7 +237,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 173.99
     },
     {
         "mb_id": 21,
@@ -249,7 +249,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 100.99
     },
     {
         "mb_id": 22,
@@ -261,7 +261,7 @@
         "size": "EATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 509.99
     },
     {
         "mb_id": 23,
@@ -273,7 +273,7 @@
         "size": "ATX",
         "ram_slots": 8,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 179.99
     },
     {
         "mb_id": 24,
@@ -285,7 +285,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR3",
-        "price": 125.0
+        "price": 89.99
     },
     {
         "mb_id": 25,
@@ -297,7 +297,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 100.99
     },
     {
         "mb_id": 26,
@@ -309,7 +309,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 136.99
     },
     {
         "mb_id": 27,
@@ -321,7 +321,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 100.99
     },
     {
         "mb_id": 28,
@@ -333,7 +333,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 84.99
     },
     {
         "mb_id": 29,
@@ -345,7 +345,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 201.99
     },
     {
         "mb_id": 30,
@@ -357,7 +357,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR3",
-        "price": 125.0
+        "price": 80.99
     },
     {
         "mb_id": 31,
@@ -369,7 +369,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 110.99
     },
     {
         "mb_id": 32,
@@ -381,7 +381,7 @@
         "size": "ATX",
         "ram_slots": 8,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 179.99
     },
     {
         "mb_id": 33,
@@ -393,7 +393,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 75.99
     },
     {
         "mb_id": 34,
@@ -405,7 +405,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 201.99
     },
     {
         "mb_id": 35,
@@ -417,7 +417,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 464.99
     },
     {
         "mb_id": 36,
@@ -429,7 +429,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 84.99
     },
     {
         "mb_id": 37,
@@ -441,7 +441,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 201.99
     },
     {
         "mb_id": 38,
@@ -453,7 +453,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 173.99
     },
     {
         "mb_id": 39,
@@ -465,7 +465,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 128.99
     },
     {
         "mb_id": 40,
@@ -477,7 +477,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 90.99
     },
     {
         "mb_id": 41,
@@ -489,7 +489,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 319.99
     },
     {
         "mb_id": 42,
@@ -501,7 +501,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 90.99
     },
     {
         "mb_id": 43,
@@ -513,7 +513,7 @@
         "size": "Micro ATX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 84.99
     },
     {
         "mb_id": 44,
@@ -525,7 +525,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR3",
-        "price": 125.0
+        "price": 89.99
     },
     {
         "mb_id": 45,
@@ -537,7 +537,7 @@
         "size": "ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 285.99
     },
     {
         "mb_id": 46,
@@ -549,7 +549,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR3",
-        "price": 125.0
+        "price": 72.99
     },
     {
         "mb_id": 47,
@@ -561,7 +561,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR3",
-        "price": 125.0
+        "price": 72.99
     },
     {
         "mb_id": 48,
@@ -573,7 +573,7 @@
         "size": "EATX",
         "ram_slots": 4,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 302.99
     },
     {
         "mb_id": 49,
@@ -585,7 +585,7 @@
         "size": "Micro ATX",
         "ram_slots": 4,
         "ram_type": "DDR5",
-        "price": 125.0
+        "price": 173.99
     },
     {
         "mb_id": 50,
@@ -597,6 +597,6 @@
         "size": "ATX",
         "ram_slots": 2,
         "ram_type": "DDR4",
-        "price": 125.0
+        "price": 100.99
     }
 ]

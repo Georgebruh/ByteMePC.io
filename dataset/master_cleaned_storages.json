@@ -9,7 +9,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 39.99
     },
     {
         "storage_id": 2,
@@ -21,7 +21,7 @@
         "interface": "M.2 PCIe 5.0 x4",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 308.99
     },
     {
         "storage_id": 3,
@@ -33,7 +33,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 53.99
     },
     {
         "storage_id": 4,
@@ -45,7 +45,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 53.99
     },
     {
         "storage_id": 5,
@@ -57,7 +57,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 454.99
     },
     {
         "storage_id": 6,
@@ -69,7 +69,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 88.99
     },
     {
         "storage_id": 7,
@@ -81,7 +81,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 55.99
     },
     {
         "storage_id": 8,
@@ -93,7 +93,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 100.99
     },
     {
         "storage_id": 9,
@@ -105,7 +105,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 66.99
     },
     {
         "storage_id": 10,
@@ -117,7 +117,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 53.99
     },
     {
         "storage_id": 11,
@@ -129,7 +129,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 59.99
     },
     {
         "storage_id": 12,
@@ -141,7 +141,7 @@
         "interface": "M.2 PCIe 5.0 x4",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 564.99
     },
     {
         "storage_id": 13,
@@ -153,7 +153,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 329.99
     },
     {
         "storage_id": 14,
@@ -165,7 +165,7 @@
         "interface": "SATA 3.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 43.99
     },
     {
         "storage_id": 15,
@@ -177,7 +177,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 265.99
     },
     {
         "storage_id": 16,
@@ -189,7 +189,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 116.99
     },
     {
         "storage_id": 17,
@@ -201,7 +201,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 30.99
     },
     {
         "storage_id": 18,
@@ -213,7 +213,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 230.99
     },
     {
         "storage_id": 19,
@@ -225,7 +225,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 63.99
     },
     {
         "storage_id": 20,
@@ -237,7 +237,7 @@
         "interface": "SATA 3.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 45.99
     },
     {
         "storage_id": 21,
@@ -249,7 +249,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 173.99
     },
     {
         "storage_id": 22,
@@ -261,7 +261,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 83.99
     },
     {
         "storage_id": 23,
@@ -273,7 +273,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 83.99
     },
     {
         "storage_id": 24,
@@ -285,7 +285,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 73.99
     },
     {
         "storage_id": 25,
@@ -297,7 +297,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 33.99
     },
     {
         "storage_id": 26,
@@ -309,7 +309,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 166.99
     },
     {
         "storage_id": 27,
@@ -321,7 +321,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 79.99
     },
     {
         "storage_id": 28,
@@ -333,7 +333,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 200.99
     },
     {
         "storage_id": 29,
@@ -345,7 +345,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 43.99
     },
     {
         "storage_id": 30,
@@ -357,7 +357,7 @@
         "interface": "M.2 SATA",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 55.99
     },
     {
         "storage_id": 31,
@@ -369,7 +369,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 198.99
     },
     {
         "storage_id": 32,
@@ -381,7 +381,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 43.99
     },
     {
         "storage_id": 33,
@@ -393,7 +393,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 42.99
     },
     {
         "storage_id": 34,
@@ -405,7 +405,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 34.99
     },
     {
         "storage_id": 35,
@@ -417,7 +417,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 63.99
     },
     {
         "storage_id": 36,
@@ -429,7 +429,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 47.99
     },
     {
         "storage_id": 37,
@@ -441,7 +441,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 170.99
     },
     {
         "storage_id": 38,
@@ -453,7 +453,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 134.99
     },
     {
         "storage_id": 39,
@@ -465,7 +465,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 88.99
     },
     {
         "storage_id": 40,
@@ -477,7 +477,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 112.99
     },
     {
         "storage_id": 41,
@@ -489,7 +489,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 99.99
     },
     {
         "storage_id": 42,
@@ -501,7 +501,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 34.99
     },
     {
         "storage_id": 43,
@@ -513,7 +513,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 100.99
     },
     {
         "storage_id": 44,
@@ -525,7 +525,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 550,
         "write_speed": 500,
-        "price": 0.0
+        "price": 67.99
     },
     {
         "storage_id": 45,
@@ -537,7 +537,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 155.99
     },
     {
         "storage_id": 46,
@@ -549,7 +549,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 173.99
     },
     {
         "storage_id": 47,
@@ -561,7 +561,7 @@
         "interface": "SATA 6.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 294.99
     },
     {
         "storage_id": 48,
@@ -573,7 +573,7 @@
         "interface": "M.2 PCIe 4.0 x4",
         "read_speed": 5000,
         "write_speed": 4400,
-        "price": 0.0
+        "price": 100.99
     },
     {
         "storage_id": 49,
@@ -585,7 +585,7 @@
         "interface": "M.2 PCIe 3.0 x4",
         "read_speed": 3000,
         "write_speed": 2000,
-        "price": 0.0
+        "price": 74.99
     },
     {
         "storage_id": 50,
@@ -597,6 +597,6 @@
         "interface": "SATA 3.0 Gb/s",
         "read_speed": 150,
         "write_speed": 130,
-        "price": 0.0
+        "price": 40.99
     }
 ]

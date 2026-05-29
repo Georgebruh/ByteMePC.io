@@ -2,60 +2,70 @@
 import { RouterLink } from 'vue-router'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import AppNav from '../components/AppNav.vue'
+import { fetchTopFavouritedBuilds } from '../data/builds'
+import type { Build } from '../data/mock'
 
 
 type SpecRow = { k: string; v: string; p: string }
 type FeaturedBuild = {
-  slug: string
+  id: string
+  name: string
+  builder: string
   pins: number
   total: string
   parts: number
   rows: SpecRow[]
 }
-// Three featured builds — the spec card is now a carousel that cycles
-// through these. Only the text inside the card animates between
-// slides; the frame stays put.
-const featured: FeaturedBuild[] = [
-  {
-    slug: 'midnight-foundry',
-    pins: 412,
-    total: '$2,507',
-    parts: 5,
-    rows: [
-      { k: 'CPU',  v: 'Ryzen 7 9800X3D',     p: '$479' },
-      { k: 'GPU',  v: 'RTX 5080 Ventus',     p: '$999' },
-      { k: 'RAM',  v: 'G.Skill 32GB / 6000', p: '$118' },
-      { k: 'SSD',  v: 'Crucial T705 2TB',    p: '$214' },
-      { k: 'PSU',  v: 'Corsair RM850x',      p: '$139' },
-    ],
-  },
-  {
-    slug: 'apex-predator-v2',
-    pins: 287,
-    total: '$3,612',
-    parts: 5,
-    rows: [
-      { k: 'CPU',  v: 'Intel i9-14900K',       p: '$589' },
-      { k: 'GPU',  v: 'RTX 4090 Founders',     p: '$1,719' },
-      { k: 'RAM',  v: 'Corsair 64GB / 6400',   p: '$232' },
-      { k: 'SSD',  v: 'Samsung 990 Pro 2TB',   p: '$178' },
-      { k: 'PSU',  v: 'Corsair HX1000i',       p: '$252' },
-    ],
-  },
-  {
-    slug: 'silent-storm',
-    pins: 198,
-    total: '$2,670',
-    parts: 5,
-    rows: [
-      { k: 'CPU',  v: 'Ryzen 9 7950X3D',       p: '$649' },
-      { k: 'GPU',  v: 'RTX 4080 Noctua',       p: '$1,099' },
-      { k: 'RAM',  v: 'Kingston 32GB / 5600',  p: '$128' },
-      { k: 'SSD',  v: 'WD Black SN850X 2TB',   p: '$184' },
-      { k: 'PSU',  v: 'Seasonic Prime 850',    p: '$210' },
-    ],
-  },
-]
+
+// PHP formatter for the spec card's price column. Prices coming back from
+// fetchTopFavouritedBuilds are already converted to PHP at the data boundary.
+const phpFmt = new Intl.NumberFormat('en-PH', {
+  style: 'currency', currency: 'PHP', maximumFractionDigits: 0,
+})
+
+// Featured builds are fetched from Supabase (top 3 by favourite count via
+// the top_favourited_builds RPC). Until the fetch resolves we show a single
+// placeholder slide so the carousel frame stays put.
+const PLACEHOLDER: FeaturedBuild = {
+  id: '',
+  name: 'Loading…',
+  builder: '@—',
+  pins: 0,
+  total: '₱0',
+  parts: 0,
+  rows: [
+    { k: 'CPU', v: '—', p: '—' },
+    { k: 'GPU', v: '—', p: '—' },
+    { k: 'RAM', v: '—', p: '—' },
+  ],
+}
+const featured = ref<FeaturedBuild[]>([PLACEHOLDER])
+
+// Reduce a fetched Build to the 5 rows the spec card shows: CPU, GPU,
+// RAM, the first storage row, PSU. We tag-match instead of relying on
+// slot order so a build missing a slot just drops that row.
+function buildToFeatured(b: Build): FeaturedBuild {
+  const want = ['CPU', 'GPU', 'RAM', 'STORAGE', 'PSU']
+  const rows: SpecRow[] = []
+  for (const tag of want) {
+    const p = b.parts.find(x => x.tag === tag)
+    if (!p) continue
+    rows.push({
+      k: tag === 'STORAGE' ? 'SSD' : tag,
+      v: p.name,
+      p: phpFmt.format(p.price),
+    })
+  }
+  return {
+    id: b.id,
+    name: b.name,
+    builder: b.user,
+    pins: b.views,
+    total: phpFmt.format(b.totalPrice),
+    parts: b.parts.length,
+    rows,
+  }
+}
 
 // ─── Carousel state ──────────────────────────────────────────────
 // `activeIdx` is the slide on screen. `progress` (0 → 1) drives the
@@ -64,13 +74,14 @@ const featured: FeaturedBuild[] = [
 // card reveals together like a console teleprinting.
 const activeIdx = ref(0)
 const progress = ref(1)
-const active = computed(() => featured[activeIdx.value])
+const active = computed(() => featured.value[activeIdx.value] ?? PLACEHOLDER)
 
 function typedSlice(s: string): string {
   return s.slice(0, Math.ceil(s.length * progress.value))
 }
-const typedSlug  = computed(() => typedSlice(active.value.slug))
-const typedTotal = computed(() => typedSlice(active.value.total))
+const typedName    = computed(() => typedSlice(active.value.name))
+const typedBuilder = computed(() => typedSlice(active.value.builder))
+const typedTotal   = computed(() => typedSlice(active.value.total))
 const typedRows  = computed(() =>
   active.value.rows.map(r => ({
     k: r.k,
@@ -102,8 +113,9 @@ function goTo(i: number) {
 }
 function restartCycle() {
   if (cycleTimer) clearInterval(cycleTimer)
+  if (featured.value.length < 2) return
   cycleTimer = setInterval(() => {
-    goTo((activeIdx.value + 1) % featured.length)
+    goTo((activeIdx.value + 1) % featured.value.length)
   }, 5200)
 }
 function jumpTo(i: number) {
@@ -111,15 +123,39 @@ function jumpTo(i: number) {
   restartCycle()
 }
 
-// ─── Cursor-tracked gradient glow ─────────────────────────────────
-// Fixed radial-gradient layer that follows the pointer for the
-// Antigravity / Project IDX-style spotlight. Updates the --mx / --my
-// custom properties on the root element on every pointermove.
+// ─── Cursor-tracked spotlight ─────────────────────────────────────
+// The aurora background does the heavy lifting; this layer just adds a
+// soft cyan spotlight that tracks the pointer, so motion still responds
+// to the user instead of running on a fixed timeline alone.
 const rootEl = ref<HTMLElement | null>(null)
+const trailEl = ref<HTMLElement | null>(null)
 function onPointerMove(e: PointerEvent) {
   if (!rootEl.value) return
   rootEl.value.style.setProperty('--mx', `${e.clientX}px`)
   rootEl.value.style.setProperty('--my', `${e.clientY}px`)
+  // The trail node chases the cursor through a CSS transition so it
+  // lags behind for a soft comet tail. translate(-50%) centres the
+  // blob on the pointer.
+  if (trailEl.value) {
+    trailEl.value.style.transform =
+      `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`
+  }
+}
+
+async function loadFeatured() {
+  try {
+    const rows = await fetchTopFavouritedBuilds(3)
+    if (!rows.length) return
+    featured.value = rows.map(buildToFeatured)
+    activeIdx.value = 0
+    progress.value = 0
+    animateIn()
+    restartCycle()
+  } catch (e) {
+    // Leave the placeholder up if Supabase is unreachable — the rest of
+    // the landing chrome (modules, ticker, nav) doesn't depend on this.
+    console.error('Featured builds failed to load', e)
+  }
 }
 
 onMounted(() => {
@@ -131,6 +167,7 @@ onMounted(() => {
     restartCycle()
   }
   window.addEventListener('pointermove', onPointerMove, { passive: true })
+  loadFeatured()
 })
 onBeforeUnmount(() => {
   if (cycleTimer) clearInterval(cycleTimer)
@@ -155,7 +192,7 @@ const modules: Module[] = [
     title: 'Compatibility, on every click.',
     desc: 'Socket, TDP, RAM, PCIe, GPU clearance — checked before you commit.',
     cta: 'Open Builder',
-    to: '/builder',
+    to: '/builder/manual',
     tone: 'cyan',
   },
   {
@@ -164,7 +201,7 @@ const modules: Module[] = [
     title: 'Spend the budget, not the weekend.',
     desc: 'Type a number. Get a curated, in-stock, fully compatible build.',
     cta: 'Auto-Build',
-    to: '/builder/budget',
+    to: '/builder/auto',
     tone: 'amber',
   },
   {
@@ -199,15 +236,23 @@ const ticks: Tick[] = [
        chrome + hero + modules + ticker all sit above the fold. -->
   <div ref="rootEl" class="landing">
 
-    <!-- Cursor-tracked radial gradient. pointer-events: none keeps
-         it inert; --mx / --my are set from JS each pointermove. -->
+    <!-- Layered aurora background. Three slow-drifting colour blobs +
+         a cursor-tracked cyan spotlight on top. All layers sit behind
+         the page content (z-index: 0) and are inert (pointer-events
+         none) so they never interfere with clicks/hover. -->
+    <div class="aurora" aria-hidden="true">
+      <span class="blob blob-cyan"></span>
+      <span class="blob blob-purple"></span>
+      <span class="blob blob-amber"></span>
+    </div>
     <div class="cursor-glow" aria-hidden="true"></div>
+    <div ref="trailEl" class="cursor-trail" aria-hidden="true"></div>
 
-    <!-- Status strip removed — irrelevant ops info, not wired up. -->
-    <AppNav
-      :show-avatar="false"
-      :secondary-cta="{ label: 'Sign In', to: '/sign-in' }"
-    />
+    <!-- Status strip removed — irrelevant ops info, not wired up.
+         Avatar visibility is left to AppNav's default (show when signed
+         in, hide otherwise). The Sign In secondary CTA self-hides for
+         signed-in viewers so the right-side slot doesn't double up. -->
+    <AppNav :secondary-cta="{ label: 'Sign In', to: '/sign-in' }" />
 
     <!-- The main column is a 3-row grid: hero takes the remaining
          space (1fr), modules + ticker collapse to their natural
@@ -225,14 +270,12 @@ const ticks: Tick[] = [
           </h1>
 
           <p class="lede">
-            A bench, not a checkout. Spec the rig, check the compatibility,
-            see the price in <strong>PHP</strong> — then save it, share it,
-            or fork someone else's. No carts, no upsells, no nag.
+            Pick parts. Stay compatible. Price in <strong>PHP</strong>.
           </p>
 
           <div class="actions">
             <RouterLink to="/builder" class="t-btn primary">
-              <span>Start a Bench</span>
+              <span>Start Building</span>
               <span class="arrow">→</span>
             </RouterLink>
             <RouterLink to="/community" class="t-btn">
@@ -248,9 +291,19 @@ const ticks: Tick[] = [
           <aside class="specsheet">
             <span class="corner"></span>
             <h4>
-              Featured · /builds/<span class="typed">{{ typedSlug }}</span>
-              <span>↑ {{ active.pins }} pins</span>
+              Featured Build
+              <span>↑ {{ active.pins }} views</span>
             </h4>
+
+            <div class="build-id">
+              <RouterLink
+                v-if="active.id"
+                :to="`/builds/${active.id}`"
+                class="build-name typed"
+              >{{ typedName }}</RouterLink>
+              <span v-else class="build-name typed">{{ typedName }}</span>
+              <span class="build-builder typed">by {{ typedBuilder }}</span>
+            </div>
 
             <div
               v-for="(r, i) in typedRows"
@@ -265,7 +318,7 @@ const ticks: Tick[] = [
 
             <div class="spec-foot">
               <div>
-                <div class="foot-lbl">TOTAL · USD</div>
+                <div class="foot-lbl">TOTAL · PHP</div>
                 <div class="foot-sub">{{ active.parts }} parts · compat ✓</div>
               </div>
               <div class="total typed">{{ typedTotal }}</div>
@@ -277,7 +330,7 @@ const ticks: Tick[] = [
           <div class="dots" role="tablist" aria-label="Featured build carousel">
             <button
               v-for="(b, i) in featured"
-              :key="b.slug"
+              :key="b.id || `placeholder-${i}`"
               type="button"
               class="dot"
               :class="{ active: i === activeIdx }"
@@ -301,16 +354,16 @@ const ticks: Tick[] = [
           :class="`tone-${m.tone}`"
         >
           <!-- Per-module inline SVG. currentColor lets the tone class
-               on the parent recolour both the icon and the CTA. -->
+               on the parent recolour both the icon and the CTA.
+               Manual ('smart') uses the wrench and Auto ('budget') uses
+               the zap — matched to the icons on the Builder hub. -->
           <svg
             v-if="m.id === 'smart'"
             class="ic" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="1.6"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
           >
-            <rect x="6" y="6" width="12" height="12" rx="1" />
-            <rect x="9.5" y="9.5" width="5" height="5" />
-            <path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3" />
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
           </svg>
           <svg
             v-else-if="m.id === 'budget'"
@@ -318,9 +371,7 @@ const ticks: Tick[] = [
             fill="none" stroke="currentColor" stroke-width="1.6"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
           >
-            <path d="M3 7l9-4 9 4-9 4-9-4z" />
-            <path d="M3 12l9 4 9-4" />
-            <path d="M3 17l9 4 9-4" />
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
           </svg>
           <svg
             v-else
@@ -377,9 +428,87 @@ const ticks: Tick[] = [
   flex-direction: column;
 }
 
-/* Cursor-follow radial gradient. Sits above the body grid but below
-   the nav + content. --mx / --my are written from JS on every
-   pointermove; transition: none so it tracks the cursor 1:1. */
+/* ─── Aurora ──────────────────────────────────────────────────────
+   Three big, very-blurred colour blobs drift slowly across the
+   viewport on independent loops. Together they read as a living
+   "workshop ambient light" instead of the previous flat gradient.
+   Everything is fixed + pointer-events:none + behind content. */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Soft additive lift on top of the body grid + radial glow. */
+  mix-blend-mode: screen;
+}
+.aurora .blob {
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform, opacity;
+}
+.aurora .blob-cyan {
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.55), transparent 65%);
+  top: -20vmax;
+  left: -15vmax;
+  /* Long loop (45s) with many keyframe stops so the path isn't a
+     straight A→B oscillation. Each stop nudges in a different
+     direction, giving the blob an organic, living drift. `infinite`
+     (not `alternate`) so the loop is a closed circuit instead of
+     bouncing back along the same line. */
+  animation: aurora-drift-a 48s ease-in-out infinite;
+}
+.aurora .blob-purple {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.55), transparent 65%);
+  bottom: -25vmax;
+  right: -20vmax;
+  animation: aurora-drift-b 62s ease-in-out infinite;
+}
+.aurora .blob-amber {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.32), transparent 65%);
+  top: 20vmax;
+  right: 10vmax;
+  width: 45vmax;
+  height: 45vmax;
+  animation: aurora-drift-c 74s ease-in-out infinite;
+}
+
+/* Multi-stop keyframes — each blob wanders in a small loop and gently
+   pulses scale + opacity so it reads as "breathing" rather than
+   scripted. Keep the magnitudes small (~10vw / ±0.1 scale) so the
+   motion is felt, not noticed. */
+@keyframes aurora-drift-a {
+  0%   { transform: translate(0, 0)        scale(1);    opacity: 0.50; }
+  20%  { transform: translate(6vw, 4vh)    scale(1.06); opacity: 0.58; }
+  40%  { transform: translate(10vw, 9vh)   scale(1.10); opacity: 0.55; }
+  60%  { transform: translate(4vw, 12vh)   scale(1.04); opacity: 0.62; }
+  80%  { transform: translate(-3vw, 6vh)   scale(0.96); opacity: 0.52; }
+  100% { transform: translate(0, 0)        scale(1);    opacity: 0.50; }
+}
+@keyframes aurora-drift-b {
+  0%   { transform: translate(0, 0)         scale(1);    opacity: 0.50; }
+  25%  { transform: translate(-7vw, -4vh)   scale(1.08); opacity: 0.58; }
+  50%  { transform: translate(-10vw, -10vh) scale(1.14); opacity: 0.55; }
+  75%  { transform: translate(-3vw, -12vh)  scale(1.02); opacity: 0.60; }
+  100% { transform: translate(0, 0)         scale(1);    opacity: 0.50; }
+}
+@keyframes aurora-drift-c {
+  0%   { transform: translate(0, 0)        scale(1);    opacity: 0.36; }
+  20%  { transform: translate(-6vw, 5vh)   scale(1.08); opacity: 0.42; }
+  45%  { transform: translate(-11vw, 8vh)  scale(1.15); opacity: 0.40; }
+  70%  { transform: translate(-4vw, -3vh)  scale(1.05); opacity: 0.46; }
+  100% { transform: translate(0, 0)        scale(1);    opacity: 0.36; }
+}
+
+/* ─── Cursor reticle ──────────────────────────────────────────────
+   Two layers, both pointer-events:none and behind content:
+     .cursor-glow  — wide cyan→purple radial, tracks 1:1
+     .cursor-trail — soft amber blob that LAGS behind for a tail
+   No mix-blend-mode here — the aurora already screens onto the body
+   grid; stacking another blend layer washed out the page. */
 .cursor-glow {
   position: fixed;
   inset: 0;
@@ -387,11 +516,31 @@ const ticks: Tick[] = [
   pointer-events: none;
   background:
     radial-gradient(
-      620px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(0, 212, 255, 0.18) 0%,
-      rgba(168, 85, 247, 0.10) 28%,
+      520px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(0, 212, 255, 0.28) 0%,
+      rgba(168, 85, 247, 0.14) 35%,
       transparent 62%
     );
+}
+
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(245, 158, 11, 0.20) 0%,
+    rgba(168, 85, 247, 0.12) 40%,
+    transparent 70%
+  );
+  /* Lag is the whole point — slow easing so it trails like a comet. */
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 /* Note: the cyan blueprint grid is drawn globally on <body> in
@@ -557,6 +706,35 @@ h1.title .strike::after {
    "teleprinting" effect reads even after the text settles. */
 .specsheet .typed {
   position: relative;
+}
+
+/* Build identity — name + author. Sits between the section heading
+   and the spec rows; name is display-weighted, author drops to mono
+   so the two read as a citation. */
+.specsheet .build-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+}
+.specsheet .build-name {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1.15;
+}
+a.specsheet,
+.specsheet a.build-name:hover { color: var(--cyan); }
+.specsheet .build-builder {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-low);
+  letter-spacing: 0.04em;
 }
 
 .spec-row {
@@ -766,10 +944,13 @@ h1.title .strike::after {
   to   { transform: translateX(-50%); }
 }
 
-/* Honour reduced-motion: stop the ticker scroll + cursor glow. */
+/* Honour reduced-motion: freeze the aurora drift, hide the cursor
+   spotlight, and stop the ticker scroll. The static aurora layers
+   stay visible so the page doesn't go flat. */
 @media (prefers-reduced-motion: reduce) {
   .ticker .scroll { animation: none !important; }
-  .cursor-glow { display: none; }
+  .cursor-glow, .cursor-trail { display: none; }
+  .aurora .blob { animation: none !important; }
 }
 
 /* ─── Smaller laptops ─────────────────────────────────────────────

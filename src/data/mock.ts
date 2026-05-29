@@ -2,7 +2,7 @@
 // Keeps screens deterministic and lets us cross-link by ID (e.g. clicking
 // a part card on /browse opens the same part on /parts/:id).
 
-export type PartCategory = 'cpu' | 'motherboard' | 'gpu' | 'ram' | 'psu'
+export type PartCategory = 'cpu' | 'motherboard' | 'gpu' | 'ram' | 'storage' | 'psu' | 'case' | 'cooler'
 
 export interface Part {
   id: string
@@ -17,6 +17,23 @@ export interface Part {
   pinned?: boolean
   // Optional emoji used as the placeholder image on cards.
   icon?: string
+  // Structured fields used by the catalog filter sidebar.
+  // Populated for the categories that have them (CPU/Motherboard for socket,
+  // CPU for cores) so the chips + counts can be real.
+  socket?: string
+  cores?: number
+  // Extra compat fields used by the manual builder.
+  // ramType: motherboard + ram. tdp: gpu. wattage: psu.
+  // size: motherboard form factor (ATX/mATX/ITX).
+  // caseSizes: MB form factors the case accepts.
+  // coolerSockets: CPU sockets the cooler mounts on. tdpRating: cooler dissipation ceiling.
+  ramType?: 'DDR4' | 'DDR5'
+  tdp?: number
+  wattage?: number
+  size?: string
+  caseSizes?: string[]
+  coolerSockets?: string[]
+  tdpRating?: number
 }
 
 export interface BuildPartRef {
@@ -25,6 +42,16 @@ export interface BuildPartRef {
   name: string
   sub: string
   price: number
+  // Optional structured compat fields, populated by data/builds.ts when
+  // they're known from the source row. Mirrors the catalog Part shape so
+  // the detail view can run the same cross-part checks as the Builder.
+  socket?: string
+  ramType?: 'DDR4' | 'DDR5'
+  size?: string
+  caseSizes?: string[]
+  coolerSockets?: string[]
+  tdp?: number
+  wattage?: number
 }
 
 export interface Build {
@@ -48,6 +75,12 @@ export interface Build {
   parts: BuildPartRef[]
   // Big tile background icon on the card.
   icon: string
+  // ISO timestamp of the last edit. Populated by the Supabase queries;
+  // mock builds leave it undefined.
+  updatedAt?: string
+  // Auth user id of the build's owner. Used by the detail page to decide
+  // whether to show owner-only controls (visibility toggle, edit, delete).
+  ownerUserId?: string
 }
 
 // ─── Parts catalog ────────────────────────────────────────

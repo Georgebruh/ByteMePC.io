@@ -1,25 +1,62 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import { supabase } from '../../lib/supabase'
+import { useSession } from '../../lib/session'
 
-// Local form state. No backend yet — submitting just bounces to the
-// my-builds dashboard so the click flow is testable end-to-end.
 const email = ref('')
 const password = ref('')
 const remember = ref(false)
+const errorMsg = ref('')
+const loading = ref(false)
 
 const router = useRouter()
+const route = useRoute()
+const { isSignedIn } = useSession()
 
-function onSubmit(e: Event) {
+// Only honour same-origin relative paths so a crafted ?redirect=https://evil
+// link can't bounce the user off-site after auth.
+const redirectTarget = computed(() => {
+  const raw = route.query.redirect
+  if (typeof raw !== 'string') return '/builds'
+  return raw.startsWith('/') && !raw.startsWith('//') ? raw : '/builds'
+})
+
+const signUpTarget = computed(() => {
+  const raw = route.query.redirect
+  return typeof raw === 'string'
+    ? `/sign-up?redirect=${encodeURIComponent(raw)}`
+    : '/sign-up'
+})
+
+// Already-signed-in users have no business on this screen — bounce
+// them to the redirect target (or /builds) the moment we know it.
+// Watching `isSignedIn` covers both the cached-session-on-mount and
+// the rare cross-tab sign-in case.
+watch(isSignedIn, (signedIn) => {
+  if (signedIn) router.replace(redirectTarget.value)
+}, { immediate: true })
+
+async function onSubmit(e: Event) {
   e.preventDefault()
-  // TODO: replace with real Supabase sign-in once auth is wired.
-  router.push('/builds')
+  errorMsg.value = ''
+  loading.value = true
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  })
+  loading.value = false
+  if (error) {
+    errorMsg.value = error.message
+    return
+  }
+  router.push(redirectTarget.value)
 }
 </script>
 
 <template>
-  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign Up', to: '/sign-up' }" />
+  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign Up', to: signUpTarget }" />
 
   <div class="auth-wrap">
     <form class="auth-card spec-frame" @submit="onSubmit">
@@ -46,8 +83,10 @@ function onSubmit(e: Event) {
         <a href="#">Forgot password?</a>
       </div>
 
-      <button type="submit" class="t-btn primary full">
-        Sign In <span class="arrow">→</span>
+      <p v-if="errorMsg" class="err">{{ errorMsg }}</p>
+
+      <button type="submit" class="t-btn primary full" :disabled="loading">
+        {{ loading ? 'Signing in…' : 'Sign In' }} <span class="arrow">→</span>
       </button>
 
       <div class="divider">OR</div>
@@ -56,7 +95,7 @@ function onSubmit(e: Event) {
 
       <div class="auth-foot">
         Don't have an account?
-        <RouterLink to="/sign-up">Create one</RouterLink>
+        <RouterLink :to="signUpTarget">Create one</RouterLink>
       </div>
     </form>
   </div>
@@ -143,4 +182,14 @@ function onSubmit(e: Event) {
   color: var(--text-mute);
 }
 .auth-foot a { color: var(--cyan); font-weight: 600; }
+
+.err {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  background: rgba(255, 70, 85, 0.06);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
 </style>

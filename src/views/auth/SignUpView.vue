@@ -1,26 +1,66 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import { supabase } from '../../lib/supabase'
+import { useSession } from '../../lib/session'
 
-// Same shape as SignInView — keeping a thin local state until Supabase
-// sign-up is wired in. Reuses the .auth-card styling.
 const username = ref('')
 const email = ref('')
 const password = ref('')
 const acceptedTerms = ref(false)
+const errorMsg = ref('')
+const loading = ref(false)
 
 const router = useRouter()
+const route = useRoute()
+const { isSignedIn } = useSession()
 
-function onSubmit(e: Event) {
+// Only relative same-origin paths are honoured so the param can't be
+// abused to bounce the user off-site after sign-up.
+const redirectTarget = computed(() => {
+  const raw = route.query.redirect
+  if (typeof raw !== 'string') return '/builds'
+  return raw.startsWith('/') && !raw.startsWith('//') ? raw : '/builds'
+})
+
+const signInTarget = computed(() => {
+  const raw = route.query.redirect
+  return typeof raw === 'string'
+    ? `/sign-in?redirect=${encodeURIComponent(raw)}`
+    : '/sign-in'
+})
+
+// Already-signed-in users get bounced off the sign-up screen — same
+// pattern as SignInView so the auth flows stay symmetric.
+watch(isSignedIn, (signedIn) => {
+  if (signedIn) router.replace(redirectTarget.value)
+}, { immediate: true })
+
+async function onSubmit(e: Event) {
   e.preventDefault()
   if (!acceptedTerms.value) return
-  router.push('/builds')
+  errorMsg.value = ''
+  loading.value = true
+  // username is forwarded via raw_user_meta_data so the handle_new_user()
+  // trigger picks it up when it auto-creates the profiles row.
+  const handle = username.value.replace(/^@/, '').trim()
+  const { error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value,
+    options: { data: { username: handle } },
+  })
+  loading.value = false
+  if (error) {
+    errorMsg.value = error.message
+    return
+  }
+  router.push(redirectTarget.value)
 }
 </script>
 
 <template>
-  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign In', to: '/sign-in' }" />
+  <AppNav :show-avatar="false" :right-cta="{ label: 'Sign In', to: signInTarget }" />
 
   <div class="auth-wrap">
     <form class="auth-card spec-frame" @submit="onSubmit">
@@ -52,13 +92,15 @@ function onSubmit(e: Event) {
         </span>
       </label>
 
-      <button type="submit" class="t-btn primary full" :disabled="!acceptedTerms">
-        Create Account <span class="arrow">→</span>
+      <p v-if="errorMsg" class="err">{{ errorMsg }}</p>
+
+      <button type="submit" class="t-btn primary full" :disabled="!acceptedTerms || loading">
+        {{ loading ? 'Creating…' : 'Create Account' }} <span class="arrow">→</span>
       </button>
 
       <div class="auth-foot">
         Already have an account?
-        <RouterLink to="/sign-in">Sign in</RouterLink>
+        <RouterLink :to="signInTarget">Sign in</RouterLink>
       </div>
     </form>
   </div>
@@ -121,4 +163,14 @@ function onSubmit(e: Event) {
   color: var(--text-mute);
 }
 .auth-foot a { color: var(--cyan); font-weight: 600; }
+
+.err {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  background: rgba(255, 70, 85, 0.06);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
 </style>

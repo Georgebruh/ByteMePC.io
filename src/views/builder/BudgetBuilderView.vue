@@ -2,7 +2,13 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
-import { php } from '../../data/mock'
+import { php, type BuildPartRef } from '../../data/mock'
+
+// AI stuff grrrr
+import { supabase } from '../../lib/supabase' 
+import { fetchAllParts } from '../../data/catalog'
+import { createBuild } from '../../data/builds'
+import type { CreateBuildInput } from '../../data/builds'
 
 // User-typed budget — kept as a string so the input handles commas
 // gracefully and we don't fight number/locale formatting.
@@ -11,6 +17,23 @@ const budget = ref('120,000')
 // Preset budget chips under the big input.
 const presets = ['₱40k', '₱80k', '₱120k', '₱200k']
 const activePreset = ref('₱120k')
+
+interface SuggestedPart extends BuildPartRef {
+  id: string;
+}
+
+const suggested = ref<SuggestedPart[]>([])
+const summary = ref({
+  budget: 0,
+  total: 0,
+  overBudget: 0,
+  perfScore: 0,
+})
+
+// for some UI loading stuff I guess
+const isGenerating = ref(false)
+const isSaving = ref(false)
+import loadingScreenDark from "../../assets/loading-screen-dark.gif"
 
 // Locks — slots where the user said "I already own this, build around
 // it". The GPU one is locked in the design preview to demo the state.
@@ -37,23 +60,98 @@ function toggleLock(key: string) {
   if (slot) slot.locked = !slot.locked
 }
 
-// ─── Suggested build result ─────────────────────────
-// Hardcoded for now — eventually this comes back from the optimiser.
-const suggested = [
-  { tag: 'CPU',  name: 'AMD Ryzen 9 7900X',                 sub: '12 cores · AM5 · 5.6GHz boost', price: 28900 },
-  { tag: 'MOBO', name: 'ASUS ROG STRIX B650-E',             sub: 'ATX · AM5 · DDR5',              price: 16800 },
-  { tag: 'GPU',  name: 'NVIDIA RTX 4080',                   sub: '16GB GDDR6X · LOCKED',          price: 68500 },
-  { tag: 'RAM',  name: 'Corsair Vengeance 32GB DDR5-6000',  sub: '2 × 16GB',                      price: 9200 },
-  { tag: 'PSU',  name: 'Corsair RM850x',                    sub: '850W · 80+ Gold',               price: 8400 },
-  { tag: 'SSD',  name: 'Samsung 990 Pro 2TB',               sub: 'NVMe Gen4',                     price: 9800 },
-  { tag: 'CASE', name: 'Lian Li Lancool 216',               sub: 'ATX Mid Tower',                 price: 5200 },
-]
+async function generatePCBuild() {
+  console.log("Clicked generate build!");
+  isGenerating.value = true;
+  const numericBudget = Number(budget.value.replace(/,/g, ''));
+  const lockedParts = locks.value.filter(l => l.locked);
 
-const summary = {
-  budget: 120000,
-  total: 146800,
-  overBudget: 26800,
-  perfScore: 9420,
+  try {
+    // 1. Fetch the formatted catalog from your existing logic
+    const allParts = await fetchAllParts();
+
+    // 2. Token Optimization: Filter out parts that cost more than 80% of the total budget
+    // (You wouldn't spend 100k on a GPU if your total budget is 120k)
+    const sensibleParts = allParts.filter(part => part.price <= numericBudget * 0.8);
+
+    // gotta be logged in to generate a build
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    // 2. Handle the case where they aren't logged in
+    if (sessionError || !session) {
+      throw new Error("You must be logged in to generate a build.");
+    }
+
+    // 3. Extract the token
+    const accessToken = session.access_token;
+
+    // 3. Send the budget, locks, and the optimized catalog to your Edge Function
+    const response = await fetch(import.meta.env.VITE_EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        // 4. Attach the token here using the standard Bearer format
+        'Authorization': `Bearer ${accessToken}` 
+      },
+      body: JSON.stringify({ 
+        budget: numericBudget, 
+        lockedParts,
+        catalog: sensibleParts 
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to generate build: ${errorText}`);
+    }
+
+    const data = await response.json();
+    
+    // 4. Update the UI
+    suggested.value = data.suggested;
+    summary.value = data.summary;
+
+  } catch (error) {
+    console.error("Generation failed:", error);
+  } finally {
+    isGenerating.value = false;
+  }
+}
+
+async function saveGeneratedBuild() {
+  if (!suggested.value.length) return;
+  isSaving.value = true;
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Must be logged in to save.");
+
+    const getId = (tag: string) => {
+      const part = suggested.value.find(p => p.tag === tag);
+      return part ? { id: part.id } : null; // id will be formatted like "cpu-123"
+    };
+
+    const buildPayload: CreateBuildInput = {
+      userId: user.id,
+      name: `Auto-Build (${summary.value.perfScore})`,
+      isPublic: false,
+      cpu: getId('CPU'),
+      motherboard: getId('MOBO'),
+      gpu: getId('GPU'),
+      ram: getId('RAM'),
+      psu: getId('PSU'),
+      case: getId('CASE'),
+      cooler: getId('COOLER'),
+    };
+
+    const newBuildId = await createBuild(buildPayload);
+    console.log("Saved! Build ID:", newBuildId);
+
+  } catch (error) {
+    console.error("Failed to save:", error);
+  } finally {
+    isSaving.value = false;
+  }
 }
 </script>
 
@@ -67,7 +165,7 @@ const summary = {
         <div class="section-title">Budget Auto-Builder</div>
         <div class="section-sub">Drop a budget · we pick the parts</div>
       </div>
-      <RouterLink to="/builder" class="t-btn">Switch to Manual <span class="arrow">→</span></RouterLink>
+      <RouterLink to="/builder/manual" class="t-btn">Switch to Manual <span class="arrow">→</span></RouterLink>
     </div>
 
     <!-- ─── Command-prompt budget panel ─── -->
@@ -113,23 +211,29 @@ const summary = {
     </div>
 
     <div class="generate-row">
-      <button class="t-btn primary big">⚡ Generate Build</button>
+      <button class="t-btn primary big" @click="generatePCBuild">⚡ Generate Build</button>
       <button class="t-btn">Advanced Options</button>
     </div>
 
     <!-- ─── Suggested build result ─── -->
     <div class="result-wrap">
       <div class="parts-list">
-        <div class="result-head">// suggested build · 99% budget utilized</div>
-        <div v-for="row in suggested" :key="row.tag" class="row">
-          <span class="tag">{{ row.tag }}</span>
-          <div>
-            <div class="part-name">{{ row.name }}</div>
-            <div class="part-sub">{{ row.sub }}</div>
-          </div>
-          <div class="pr">{{ php(row.price) }}</div>
+        <div class="result-head">// suggested build · {{ (summary.budget != 0) ? Math.round((summary.total / summary.budget) * 100) : 0 }}% budget utilized</div>
+        
+        <div class="loading-screen-container" v-if="isGenerating">
+          <img class="loading-screen" :src="loadingScreenDark"/>
         </div>
-      </div>
+    
+        <div v-for="row in suggested" :key="row.tag" class="row">
+            <span class="tag">{{ row.tag }}</span>
+            <div>
+              <div class="part-name">{{ row.name }}</div>
+              <div class="part-sub">{{ row.sub }}</div>
+            </div>
+            <div class="pr">{{ php(row.price) }}</div>
+        </div>
+      </div> 
+       
 
       <aside class="result-summary">
         <span class="kicker mute side-kicker">// auto result</span>
@@ -140,12 +244,18 @@ const summary = {
 
         <div class="row-total">
           <span class="lbl">STATUS</span>
-          <span class="h-tag warn">Over budget</span>
+          <span class="h-tag" :class="(summary.overBudget > 0) ? 'warn' : ''">{{ (summary.overBudget > 0) ? "Over budget" : (summary.budget == 0 || summary.total == 0 ) ? "Incomplete" : "Compatible"  }}</span>
         </div>
 
         <div class="result-actions">
-          <button class="t-btn primary full">Tweak Build</button>
-          <button class="t-btn full">Re-generate</button>
+          <button 
+            class="t-btn primary full" 
+            @click="saveGeneratedBuild" 
+            :disabled="isSaving || suggested.length === 0"
+          >
+            {{ isSaving ? 'Saving...' : 'Save Build to Profile' }}
+          </button>
+          <button class="t-btn full" @click="generatePCBuild">Re-generate</button>
         </div>
       </aside>
     </div>
@@ -313,7 +423,22 @@ const summary = {
   grid-template-columns: 1fr 320px;
   gap: 22px;
 }
+.loading-screen-container {
+  position: absolute;
+  display: flex;
+  backdrop-filter: blur(2px);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+.loading-screen {
+  margin-top: -5%;
+  width: 40%;
+}
 .parts-list {
+  position: relative;
   background: rgba(10, 18, 32, 0.5);
   border: 1px solid var(--line);
   overflow: hidden;

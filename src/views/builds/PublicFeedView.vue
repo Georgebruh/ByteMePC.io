@@ -1,182 +1,198 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import AppNav from '../../components/AppNav.vue'
+import BuildsSubNav from '../../components/BuildsSubNav.vue'
 import BuildCard from '../../components/BuildCard.vue'
-import { builds } from '../../data/mock'
+import type { Build } from '../../data/mock'
+import {
+  fetchPublicBuilds,
+  fetchFavouriteIds,
+  toggleFavourite,
+  forkBuild,
+} from '../../data/builds'
+import { useSession } from '../../lib/session'
 
-// Filter chips along the top of the feed. "All" shows everything; the
-// rest are placeholder taxonomies until the DB exposes real ones.
-const chips = ['All', 'Gaming', 'Workstation', 'Budget', 'High-End', 'SFF / ITX']
-const activeChip = ref('All')
+const { userId } = useSession()
+const router = useRouter()
 
-// Search filter applies to the build name + tags.
+const builds = ref<Build[]>([])
+const loading = ref(true)
+const errorMsg = ref('')
+
 const search = ref('')
+
+type SortMode = 'newest' | 'popular' | 'price-asc' | 'price-desc'
+const sortMode = ref<SortMode>('newest')
+const sortLabels: Record<SortMode, string> = {
+  newest:       'Newest',
+  popular:      'Popular',
+  'price-asc':  'Price ↑',
+  'price-desc': 'Price ↓',
+}
+
+async function load() {
+  loading.value = true
+  errorMsg.value = ''
+  try {
+    const favIds = userId.value
+      ? await fetchFavouriteIds(userId.value)
+      : new Set<string>()
+    builds.value = await fetchPublicBuilds(favIds)
+  } catch (e: any) {
+    errorMsg.value = e?.message ?? 'Failed to load builds.'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(load)
+watch(userId, load)
 
 const visibleBuilds = computed(() => {
   const q = search.value.trim().toLowerCase()
-  return builds.filter(b => {
+  const filtered = builds.value.filter(b => {
     if (!q) return true
     return b.name.toLowerCase().includes(q)
       || b.tags.some(t => t.toLowerCase().includes(q))
   })
+  const arr = [...filtered]
+  switch (sortMode.value) {
+    case 'popular':    return arr.sort((a, b) => b.views - a.views)
+    case 'price-asc':  return arr.sort((a, b) => a.totalPrice - b.totalPrice)
+    case 'price-desc': return arr.sort((a, b) => b.totalPrice - a.totalPrice)
+    default:           return arr // newest = server order (updated_at desc)
+  }
 })
 
-// Trending ticker — frozen mock data, parallel to the landing's.
-type Trend = { name: string; pins: string; dir: 'up' | 'dn' | 'hot' }
-const trending: Trend[] = [
-  { name: 'MIDNIGHT FOUNDRY', pins: '412 PINS', dir: 'hot' },
-  { name: 'SILENT STORM',     pins: '287 PINS', dir: 'up'  },
-  { name: 'APEX PREDATOR V2', pins: '231 PINS', dir: 'up'  },
-  { name: 'BUDGET BEAST MK1', pins: '174 PINS', dir: 'dn'  },
-  { name: 'WORKSTATION 2026', pins: '142 PINS', dir: 'up'  },
-  { name: 'NORTH STAR ITX',   pins: '118 PINS', dir: 'hot' },
-]
+async function onToggleFav(buildId: string) {
+  if (!userId.value) return
+  const target = builds.value.find(b => b.id === buildId)
+  if (!target) return
+  const newState = await toggleFavourite(userId.value, buildId, !!target.favourited)
+  target.favourited = newState
+}
+
+async function onFork(buildId: string) {
+  // BuildCard already gates the action behind the sign-in modal when
+  // the user is signed out, so this handler only runs once we have a
+  // userId. Bail defensively if that ever changes.
+  if (!userId.value) return
+  try {
+    const newId = await forkBuild(buildId, userId.value)
+    router.push(`/builder/manual/${newId}`)
+  } catch (e: any) {
+    errorMsg.value = e?.message ?? 'Failed to fork build.'
+  }
+}
 </script>
 
 <template>
   <AppNav />
 
   <div class="page">
-    <div class="page-header">
-      <div>
-        <span class="kicker">// field notes</span>
-        <div class="section-title">Community Builds</div>
-        <div class="section-sub">8,942 public builds · live trending index</div>
+    <BuildsSubNav />
+
+    <!-- One-line head-bar: title + live count + search + sort. -->
+    <div class="head-bar">
+      <div class="title">Community Builds</div>
+      <span class="count"><b>{{ visibleBuilds.length }}</b> public</span>
+      <div class="grow"></div>
+      <input v-model="search" class="search" placeholder="Search…" />
+      <label class="sort">
+        Sort
+        <select v-model="sortMode">
+          <option v-for="(label, mode) in sortLabels" :key="mode" :value="mode">{{ label }}</option>
+        </select>
+      </label>
+    </div>
+
+    <div v-if="loading" class="empty-state">Loading builds…</div>
+    <div v-else-if="errorMsg" class="empty-state err">{{ errorMsg }}</div>
+    <template v-else>
+      <div v-if="visibleBuilds.length" class="feed-grid">
+        <BuildCard
+          v-for="b in visibleBuilds"
+          :key="b.id"
+          :build="b"
+          from="community"
+          @toggle-fav="onToggleFav"
+          @fork="onFork"
+        />
       </div>
-      <button class="t-btn">Sort: Popular</button>
-    </div>
-
-    <!-- Trending builds ticker. -->
-    <div class="ticker" aria-hidden="true">
-      <div class="scroll">
-        <template v-for="pass in 2" :key="pass">
-          <span v-for="t in trending" :key="`${pass}-${t.name}`" class="tick">
-            <b>{{ t.name }}</b>
-            {{ t.pins }}
-            <em :class="`d-${t.dir}`">
-              {{ t.dir === 'hot' ? '↑ HOT' : t.dir === 'up' ? '↑' : '↓' }}
-            </em>
-          </span>
-        </template>
+      <div v-else class="empty-state">
+        <div class="empty-title">No public builds yet</div>
       </div>
-    </div>
-
-    <!-- Chip row + search box live on the same line. -->
-    <div class="feed-controls">
-      <div class="seg-tabs">
-        <button
-          v-for="c in chips"
-          :key="c"
-          class="seg"
-          :class="{ active: activeChip === c }"
-          @click="activeChip = c"
-        >{{ c }}</button>
-      </div>
-      <div class="spacer" />
-      <input class="input search" v-model="search" placeholder="🔍  Search builds…" />
-    </div>
-
-    <!-- The card grid. BuildCard handles its own click + favourite logic. -->
-    <div class="feed-grid">
-      <BuildCard v-for="b in visibleBuilds" :key="b.id" :build="b" />
-    </div>
-
-    <div v-if="!visibleBuilds.length" class="empty-state">
-      <div class="ic" style="font-size:40px;margin-bottom:12px">🔍</div>
-      No builds match your search.
-    </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
 .page { font-family: var(--mono); }
 
-.page-header .kicker { display: block; margin-bottom: 6px; }
-.section-title {
+.head-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  background: rgba(5, 8, 16, 0.5);
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.head-bar .title {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 28px;
-  letter-spacing: -0.02em;
+  font-size: 20px;
+  letter-spacing: -0.015em;
   color: var(--text);
-  margin-bottom: 4px;
 }
-.section-sub {
+.head-bar .count {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-low);
 }
-
-/* Trending ticker — same vocab as Browse / landing. */
-.ticker {
-  padding: 8px 16px;
-  overflow: hidden;
+.head-bar .count b { color: var(--cyan); font-weight: 500; }
+.head-bar .grow { flex: 1; }
+.head-bar .search {
+  width: 240px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--line);
+  color: var(--text);
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-mute);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  border: 1px solid var(--line);
-  background: rgba(5, 8, 16, 0.5);
-  margin: 18px 0 22px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
-  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  outline: none;
+  border-radius: 0;
 }
-.ticker .scroll {
+.head-bar .search:focus { border-color: var(--cyan); }
+.head-bar .sort {
   display: inline-flex;
-  gap: 40px;
-  white-space: nowrap;
-  animation: feed-scroll 50s linear infinite;
-}
-.ticker .tick { display: inline-flex; align-items: baseline; gap: 8px; }
-.ticker b      { color: var(--cyan); font-weight: 500; }
-.ticker .d-up  { color: var(--green); font-style: normal; }
-.ticker .d-dn  { color: var(--red);   font-style: normal; }
-.ticker .d-hot { color: var(--amber); font-style: normal; }
-@keyframes feed-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ticker .scroll { animation: none !important; }
-}
-
-.feed-controls {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 22px;
   align-items: center;
-  flex-wrap: wrap;
-}
-
-/* Hairline segmented chips — same pattern as Browse + AppNav. */
-.seg-tabs {
-  display: flex;
-  gap: 2px;
-  padding: 2px;
+  gap: 8px;
+  padding: 6px 12px;
   border: 1px solid var(--line);
-  overflow-x: auto;
-}
-.seg {
-  padding: 7px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--text);
   font-family: var(--mono);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-mute);
-  background: none;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.15s, background 0.15s;
 }
-.seg:hover:not(.active) { color: var(--text); }
-.seg.active { background: var(--text); color: var(--bg); }
-
-.spacer { flex: 1; }
-.search { max-width: 280px; }
+.head-bar .sort select {
+  background: transparent;
+  color: var(--text);
+  border: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  outline: none;
+  cursor: pointer;
+}
+.head-bar .sort select option { background: var(--bg-2); color: var(--text); }
 
 .feed-grid {
   display: grid;
@@ -184,10 +200,16 @@ const trending: Trend[] = [
   gap: 16px;
 }
 
+.empty-state .empty-title {
+  font-family: var(--display);
+  font-size: 16px;
+  color: var(--text);
+}
+.empty-state.err { color: var(--red); border-color: rgba(255, 70, 85, 0.35); }
+
 @media (max-width: 1100px) {
   .feed-grid { grid-template-columns: 1fr 1fr; }
-  .spacer { display: none; }
-  .search { max-width: 100%; flex: 1; }
+  .head-bar .search { width: auto; flex: 1; min-width: 160px; }
 }
 @media (max-width: 600px) {
   .feed-grid { grid-template-columns: 1fr; }
