@@ -1,452 +1,453 @@
 [
-    {
-        "cooler_id": 1,
-        "name": "Gelid Solutions Liquid 240 Water 240mm Black",
-        "brand": "Gelid Solutions",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 100.99
-    },
-    {
-        "cooler_id": 2,
-        "name": "Thermaltake UX 210 Air ARGB Black / Silver",
-        "brand": "Thermaltake",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 54.99
-    },
-    {
-        "cooler_id": 3,
-        "name": "Alphacool Eisbaer Aurora Water 240mm 61.5 CFM Black",
-        "brand": "Alphacool",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 100.99
-    },
-    {
-        "cooler_id": 4,
-        "name": "ID-COOLING IS-30 40 CFM Air 30mm",
-        "brand": "ID-COOLING",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 34.99
-    },
-    {
-        "cooler_id": 5,
-        "name": "Thermalright Frozen Warframe PRO Water 360mm Black",
-        "brand": "Thermalright",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 120.99
-    },
-    {
-        "cooler_id": 6,
-        "name": "Jonsbo CR-3000 Standard 59.48 CFM Air 160mm Black / Silver",
-        "brand": "Jonsbo",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 34.99
-    },
-    {
-        "cooler_id": 7,
-        "name": "Lian Li Hydroshift II LCD-C CL 72 CFM Water 360mm Black",
-        "brand": "Lian Li",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 268.99
-    },
-    {
-        "cooler_id": 8,
-        "name": "Deepcool AK400 Air 155mm Black / Silver",
-        "brand": "Deepcool",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 30.99
-    },
-    {
-        "cooler_id": 9,
-        "name": "ARCTIC Alpine 11 GT Rev. 2 Air 64mm 28.6 CFM",
-        "brand": "ARCTIC",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 10,
-        "name": "MSI MAG CORELIQUID C240 Water 240mm EVA e-PROJECT Black",
-        "brand": "MSI",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 112.99
-    },
-    {
-        "cooler_id": 11,
-        "name": "Alpenföhn Brocken 2 Air 165mm 64.15 CFM",
-        "brand": "Alpenföhn",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 12,
-        "name": "Deepcool CAPTAIN Water 240mm 91.12 CFM",
-        "brand": "Deepcool",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 88.99
-    },
-    {
-        "cooler_id": 13,
-        "name": "ASUS ROG RYUO IV 360 ARGB White",
-        "brand": "Asus",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 257.99
-    },
-    {
-        "cooler_id": 14,
-        "name": "Deepcool LQ240 Water 240mm Black",
-        "brand": "Deepcool",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 88.99
-    },
-    {
-        "cooler_id": 15,
-        "name": "Thermaltake TH240 V2 ARGB Black",
-        "brand": "Thermaltake",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 134.99
-    },
-    {
-        "cooler_id": 16,
-        "name": "Thermaltake MAGFloe 360 Ultra ARGB Sync 57.11 CFM Water 360mm Black",
-        "brand": "Thermaltake",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 156.99
-    },
-    {
-        "cooler_id": 17,
-        "name": "be quiet! Silent Loop 2 Water 240mm Black",
-        "brand": "be quiet!",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 112.99
-    },
-    {
-        "cooler_id": 18,
-        "name": "Cooler Master CHD-00008-01-GP Air 30.67 CFM Rifle Bearing",
-        "brand": "Cooler Master",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 43.99
-    },
-    {
-        "cooler_id": 19,
-        "name": "Cooler Master Hyper 212 LED Air 160mm 66.3 CFM Rifle Bearing",
-        "brand": "Cooler Master",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 44.99
-    },
-    {
-        "cooler_id": 20,
-        "name": "MSI MAG CORELIQUID R Water 78.73 CFM 360mm Black",
-        "brand": "MSI",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 134.99
-    },
-    {
-        "cooler_id": 21,
-        "name": "NZXT Kraken X73 Water 360mm RGB 52.44 CFM Black",
-        "brand": "NZXT",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 156.99
-    },
-    {
-        "cooler_id": 22,
-        "name": "NZXT Kraken Water 240mm RGB White",
-        "brand": "NZXT",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 134.99
-    },
-    {
-        "cooler_id": 23,
-        "name": "GAMDIAS CHIONE M2 Water 240mm Black",
-        "brand": "GAMDIAS",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 100.99
-    },
-    {
-        "cooler_id": 24,
-        "name": "Thermalright Le Grand Macho Air 159mm Fanless",
-        "brand": "Thermalright",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 45,
-        "price": 24.99
-    },
-    {
-        "cooler_id": 25,
-        "name": "GameMax Twin 600 88.2 CFM Air 155mm Black",
-        "brand": "GameMax",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 26,
-        "name": "Corsair iCUE LINK TITAN 240 RX Water 240mm RGB 73.5 CFM White",
-        "brand": "Corsair",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 134.99
-    },
-    {
-        "cooler_id": 27,
-        "name": "Silverstone NovaPeak 360 Water 360mm 69.8 CFM Black",
-        "brand": "Silverstone",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 120.99
-    },
-    {
-        "cooler_id": 28,
-        "name": "Thermalright Burst Assassin Air 154mm Gray / Black",
-        "brand": "Thermalright",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 29,
-        "name": "ID-COOLING FROSTFLOW X LITE Water 240mm White",
-        "brand": "ID-COOLING",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 88.99
-    },
-    {
-        "cooler_id": 30,
-        "name": "ID-COOLING IS-55 Air ARGB 55mm Black",
-        "brand": "ID-COOLING",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 43.99
-    },
-    {
-        "cooler_id": 31,
-        "name": "Corsair iCUE LINK H100i Water 240mm RGB Black",
-        "brand": "Corsair",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 134.99
-    },
-    {
-        "cooler_id": 32,
-        "name": "Cooler Master X Dream I117 Air 60mm 36.5 CFM",
-        "brand": "Cooler Master",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 43.99
-    },
-    {
-        "cooler_id": 33,
-        "name": "iTek Hydro Cube 65.54 CFM Water 240mm White",
-        "brand": "iTek",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 100.99
-    },
-    {
-        "cooler_id": 34,
-        "name": "ARCTIC Liquid Freezer III Water 280 A-RGB 69.9 CFM White",
-        "brand": "ARCTIC",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 120.99
-    },
-    {
-        "cooler_id": 35,
-        "name": "Asus ROG STRIX LC II 80.95 CFM Water 360mm Black",
-        "brand": "Asus",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 235.99
-    },
-    {
-        "cooler_id": 36,
-        "name": "Thermalright Peerless Assassin 140 SE Black/Silver",
-        "brand": "Thermalright",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 37,
-        "name": "Iceberg Thermal IceSLEET G6 Stealth 85 CFM Air 160mm Black / Blue",
-        "brand": "Iceberg Thermal",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 38,
-        "name": "Iceberg Thermal IceSLEET X6 76 CFM Air 159mm Teal / Silver",
-        "brand": "Iceberg Thermal",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 39,
-        "name": "MSI MPG CORELIQUID P13 360 White",
-        "brand": "MSI",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 134.99
-    },
-    {
-        "cooler_id": 40,
-        "name": "Valkyrie SYN 80 CFM Water 240mm White / Blue",
-        "brand": "Valkyrie",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 100.99
-    },
-    {
-        "cooler_id": 41,
-        "name": "upHere AC12BE Air 154mm Black",
-        "brand": "upHere",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 42,
-        "name": "Asus ROG Ryujin 240 RGB AIO Water 240mm 121.8 CFM Black",
-        "brand": "Asus",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 235.99
-    },
-    {
-        "cooler_id": 43,
-        "name": "EVGA CLCx Water 280mm 85.13 CFM Black",
-        "brand": "EVGA",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 112.99
-    },
-    {
-        "cooler_id": 44,
-        "name": "FSP Group MP7 76 CFM Air 153mm Black",
-        "brand": "FSP Group",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 45,
-        "name": "Rosewill RCX-ZAIO-92 54.8 CFM Sleeve Bearing Air 138mm",
-        "brand": "Rosewill",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 34.99
-    },
-    {
-        "cooler_id": 46,
-        "name": "ARCTIC Alpine 11 Plus Air 70mm Fluid Dynamic Bearing",
-        "brand": "ARCTIC",
-        "image_link": "placeholder",
-        "type": "Air Cooler",
-        "tdp_rating": 150,
-        "price": 39.99
-    },
-    {
-        "cooler_id": 47,
-        "name": "Cooler Master MasterLiquid ML240R RGB Water 240mm",
-        "brand": "Cooler Master",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 134.99
-    },
-    {
-        "cooler_id": 48,
-        "name": "Deepcool Gammaxx L360 V2 Water 360mm Black / White",
-        "brand": "Deepcool",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 105.99
-    },
-    {
-        "cooler_id": 49,
-        "name": "Enermax LIQMAX III RGB Water 240mm 72.1 CFM Black",
-        "brand": "Enermax",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 250,
-        "price": 120.99
-    },
-    {
-        "cooler_id": 50,
-        "name": "MSI MAG CORELIQUID I360 70.7 CFM Water 360mm White",
-        "brand": "MSI",
-        "image_link": "placeholder",
-        "type": "Liquid Cooler",
-        "tdp_rating": 300,
-        "price": 134.99
-    }
+  {
+    "cooler_id": 1,
+    "name": "Gelid Solutions Liquid 240 Water 240mm Black",
+    "brand": "Gelid Solutions",
+    "image_link": "https://m.media-amazon.com/images/I/61kxa9+TQ+L._AC_SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 2,
+    "name": "Thermaltake UX 210 Air ARGB Black / Silver",
+    "brand": "Thermaltake",
+    "image_link": "https://m.media-amazon.com/images/I/81puVs4aLCL._AC_SL1500_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 3,
+    "name": "Alphacool Eisbaer Aurora Water 240mm 61.5 CFM Black",
+    "brand": "Alphacool",
+    "image_link": "https://m.media-amazon.com/images/I/61BCxUKt8AL._SL1200_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 4,
+    "name": "ID-COOLING IS-30 40 CFM Air 30mm",
+    "brand": "ID-COOLING",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 5,
+    "name": "Thermalright Frozen Warframe PRO Water 360mm Black",
+    "brand": "Thermalright",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 6,
+    "name": "Jonsbo CR-3000 Standard 59.48 CFM Air 160mm Black / Silver",
+    "brand": "Jonsbo",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 7,
+    "name": "Lian Li Hydroshift II LCD-C CL 72 CFM Water 360mm Black",
+    "brand": "Lian Li",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 8,
+    "name": "Deepcool AK400 Air 155mm Black / Silver",
+    "brand": "Deepcool",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 9,
+    "name": "ARCTIC Alpine 11 GT Rev. 2 Air 64mm 28.6 CFM",
+    "brand": "ARCTIC",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 10,
+    "name": "MSI MAG CORELIQUID C240 Water 240mm EVA e-PROJECT Black",
+    "brand": "MSI",
+    "image_link": "https://m.media-amazon.com/images/I/71aqRsyoh6L._AC_SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 11,
+    "name": "Alpenf\u00f6hn Brocken 2 Air 165mm 64.15 CFM",
+    "brand": "Alpenf\u00f6hn",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 12,
+    "name": "Deepcool CAPTAIN Water 240mm 91.12 CFM",
+    "brand": "Deepcool",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 13,
+    "name": "ASUS ROG RYUO IV 360 ARGB White",
+    "brand": "Asus",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 14,
+    "name": "Deepcool LQ240 Water 240mm Black",
+    "brand": "Deepcool",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 15,
+    "name": "Thermaltake TH240 V2 ARGB Black",
+    "brand": "Thermaltake",
+    "image_link": "https://m.media-amazon.com/images/I/61eQonFtnpL._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 16,
+    "name": "Thermaltake MAGFloe 360 Ultra ARGB Sync 57.11 CFM Water 360mm Black",
+    "brand": "Thermaltake",
+    "image_link": "https://m.media-amazon.com/images/I/61o9WVfCq8L._AC_SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 17,
+    "name": "be quiet! Silent Loop 2 Water 240mm Black",
+    "brand": "be quiet!",
+    "image_link": "https://m.media-amazon.com/images/I/61X68f-6xPL._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 18,
+    "name": "Cooler Master CHD-00008-01-GP Air 30.67 CFM Rifle Bearing",
+    "brand": "Cooler Master",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 19,
+    "name": "Cooler Master Hyper 212 LED Air 160mm 66.3 CFM Rifle Bearing",
+    "brand": "Cooler Master",
+    "image_link": "https://m.media-amazon.com/images/I/71Rv1Lt8imL._AC_SL1000_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 20,
+    "name": "MSI MAG CORELIQUID R Water 78.73 CFM 360mm Black",
+    "brand": "MSI",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 21,
+    "name": "NZXT Kraken X73 Water 360mm RGB 52.44 CFM Black",
+    "brand": "NZXT",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 22,
+    "name": "NZXT Kraken Water 240mm RGB White",
+    "brand": "NZXT",
+    "image_link": "https://m.media-amazon.com/images/I/515UNgTSWJL._AC_SL1000_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 23,
+    "name": "GAMDIAS CHIONE M2 Water 240mm Black",
+    "brand": "GAMDIAS",
+    "image_link": "https://m.media-amazon.com/images/I/61uZjpK0VvS._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 24,
+    "name": "Thermalright Le Grand Macho Air 159mm Fanless",
+    "brand": "Thermalright",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 45,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 25,
+    "name": "GameMax Twin 600 88.2 CFM Air 155mm Black",
+    "brand": "GameMax",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 26,
+    "name": "Corsair iCUE LINK TITAN 240 RX Water 240mm RGB 73.5 CFM White",
+    "brand": "Corsair",
+    "image_link": "https://m.media-amazon.com/images/I/71Ln1NjFrUL._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 27,
+    "name": "Silverstone NovaPeak 360 Water 360mm 69.8 CFM Black",
+    "brand": "Silverstone",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 28,
+    "name": "Thermalright Burst Assassin Air 154mm Gray / Black",
+    "brand": "Thermalright",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 29,
+    "name": "ID-COOLING FROSTFLOW X LITE Water 240mm White",
+    "brand": "ID-COOLING",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 30,
+    "name": "ID-COOLING IS-55 Air ARGB 55mm Black",
+    "brand": "ID-COOLING",
+    "image_link": "https://m.media-amazon.com/images/I/51TJd5s9nXL._AC_SL1000_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 31,
+    "name": "Corsair iCUE LINK H100i Water 240mm RGB Black",
+    "brand": "Corsair",
+    "image_link": "https://m.media-amazon.com/images/I/614A1TaDFjL._AC_SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 32,
+    "name": "Cooler Master X Dream I117 Air 60mm 36.5 CFM",
+    "brand": "Cooler Master",
+    "image_link": "https://m.media-amazon.com/images/I/61gv8VANZjL._AC_SL1000_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 33,
+    "name": "iTek Hydro Cube 65.54 CFM Water 240mm White",
+    "brand": "iTek",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 34,
+    "name": "ARCTIC Liquid Freezer III Water 280 A-RGB 69.9 CFM White",
+    "brand": "ARCTIC",
+    "image_link": "https://m.media-amazon.com/images/I/71WaFt7TffL._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 35,
+    "name": "Asus ROG STRIX LC II 80.95 CFM Water 360mm Black",
+    "brand": "Asus",
+    "image_link": "https://m.media-amazon.com/images/I/6143L3Ou+QL._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 36,
+    "name": "Thermalright Peerless Assassin 140 SE Black/Silver",
+    "brand": "Thermalright",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 37,
+    "name": "Iceberg Thermal IceSLEET G6 Stealth 85 CFM Air 160mm Black / Blue",
+    "brand": "Iceberg Thermal",
+    "image_link": "https://m.media-amazon.com/images/I/71uRT29B7NL._SL1000_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 38,
+    "name": "Iceberg Thermal IceSLEET X6 76 CFM Air 159mm Teal / Silver",
+    "brand": "Iceberg Thermal",
+    "image_link": "https://m.media-amazon.com/images/I/613dobbRneL._SL1000_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 39,
+    "name": "MSI MPG CORELIQUID P13 360 White",
+    "brand": "MSI",
+    "image_link": "https://m.media-amazon.com/images/I/71IJdK7MU3L._AC_SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 40,
+    "name": "Valkyrie SYN 80 CFM Water 240mm White / Blue",
+    "brand": "Valkyrie",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 41,
+    "name": "upHere AC12BE Air 154mm Black",
+    "brand": "upHere",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 42,
+    "name": "Asus ROG Ryujin 240 RGB AIO Water 240mm 121.8 CFM Black",
+    "brand": "Asus",
+    "image_link": "https://m.media-amazon.com/images/I/51OeoOqIh9L._AC_SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 43,
+    "name": "EVGA CLCx Water 280mm 85.13 CFM Black",
+    "brand": "EVGA",
+    "image_link": "https://m.media-amazon.com/images/I/71gl42-3VdL._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 44,
+    "name": "FSP Group MP7 76 CFM Air 153mm Black",
+    "brand": "FSP Group",
+    "image_link": "https://m.media-amazon.com/images/I/610o8Kk1MxL._SL1280_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 45,
+    "name": "Rosewill RCX-ZAIO-92 54.8 CFM Sleeve Bearing Air 138mm",
+    "brand": "Rosewill",
+    "image_link": "https://m.media-amazon.com/images/I/71ZXPx1EZGL._AC_SL1500_.jpg",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 46,
+    "name": "ARCTIC Alpine 11 Plus Air 70mm Fluid Dynamic Bearing",
+    "brand": "ARCTIC",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Air Cooler",
+    "tdp_rating": 150,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 47,
+    "name": "Cooler Master MasterLiquid ML240R RGB Water 240mm",
+    "brand": "Cooler Master",
+    "image_link": "https://m.media-amazon.com/images/I/51rXaoZH0XL._SL1000_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 48,
+    "name": "Deepcool Gammaxx L360 V2 Water 360mm Black / White",
+    "brand": "Deepcool",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 49,
+    "name": "Enermax LIQMAX III RGB Water 240mm 72.1 CFM Black",
+    "brand": "Enermax",
+    "image_link": "https://firstbenefits.org/wp-content/uploads/2017/10/placeholder-300x300.png",
+    "type": "Liquid Cooler",
+    "tdp_rating": 250,
+    "price": 0.0
+  },
+  {
+    "cooler_id": 50,
+    "name": "MSI MAG CORELIQUID I360 70.7 CFM Water 360mm White",
+    "brand": "MSI",
+    "image_link": "https://m.media-amazon.com/images/I/71agqNvOiaL._SL1500_.jpg",
+    "type": "Liquid Cooler",
+    "tdp_rating": 300,
+    "price": 0.0
+  }
 ]
+
