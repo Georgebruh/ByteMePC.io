@@ -18,9 +18,11 @@ Using **ByteMePC** is simple!
 <img width="1860" height="1069" alt="manual_build" src="https://github.com/user-attachments/assets/9ff17c7a-ae72-4590-b21d-5baa126b1ab1" />
 <br><br>
 2. Browse the catalog of computer parts - pin your favorites!
-<img width="1875" height="925" alt="image" src="https://github.com/user-attachments/assets/b86cdfa6-3515-4afe-9a8d-44364db9ce7c" />
+<img width="1845" height="1813" alt="image" src="https://github.com/user-attachments/assets/def7f79e-e8a1-49bb-adef-70ee23165d55" />
 <br><br>
 3. Check out and add to the community
+<img width="1864" height="887" alt="image" src="https://github.com/user-attachments/assets/de3182f4-fafd-40e4-b74e-c01e4cfbae9f" />
+<img width="1845" height="1683" alt="image" src="https://github.com/user-attachments/assets/8eae9c64-ad0e-4137-a837-6bc841ff5e17" />
 <br><br>
 
 ## Languages and Technologies Used
